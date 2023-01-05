@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "582083462263",
+    "project_id": "lunivaagriapplication",
+    "storage_bucket": "lunivaagriapplication.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:582083462263:android:24e4d0af5730e863c5b272",
+        "android_client_info": {
+          "package_name": "com.agrinepal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "582083462263-u72h6jjb5121iki7e9flcrp3v1bi2hjr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.agrinepal",
+            "certificate_hash": "3bd6374cd62e69c75c021971feed6ff8e27d6caf"
+          }
+        },
+        {
+          "client_id": "582083462263-fv7edpakuhc86s8ubd1tjf9mpu7e9v9a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBj1ON78XNPjKv7VJJj960IMXUlrR3Xgk8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "582083462263-fv7edpakuhc86s8ubd1tjf9mpu7e9v9a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
