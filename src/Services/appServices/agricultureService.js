@@ -1,7 +1,7 @@
 import {generateUrlEncodedData} from '../../Helpers/GenerateUrlEncodedData';
 import {
+  GetFarmListByFarmId,
   GetFarmListByUserCode,
-  GetFarmProductionDetailsByFarmId,
   GetListOfDistricts,
   GetListofUserTypes,
   InsertUpdateFarm,
@@ -59,13 +59,10 @@ export const GetFarmListByUserCodeApi = async (data, successCallback) => {
   }
 };
 
-export const GetFarmProductionDetailsByFarmIdApi = async (
-  data,
-  successCallback,
-) => {
+export const GetFarmListByFarmIdApi = async (data, successCallback) => {
   try {
     const response = await fetch(
-      `${GetFarmProductionDetailsByFarmId}?userCode=${data.userCode}`,
+      `${GetFarmListByFarmId}?farmId=${data.farmId}`,
     );
     if (response?.status === 200) {
       successCallback(response?.data?.FarmList);

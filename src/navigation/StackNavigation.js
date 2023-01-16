@@ -38,18 +38,18 @@ function StackNavigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {/* <Stack.Screen
+        <Stack.Screen
           options={{headerShown: false}}
           name="SplashScreen"
           component={SplashScreen}
-        /> */}
+        />
         {userCode == null && (
           <>
-            {/* <Stack.Screen
+            <Stack.Screen
               options={{headerShown: false}}
               name="Login"
               component={Login}
-            /> */}
+            />
             <Stack.Screen
               name="CreateProfile"
               options={{headerShown: false}}
@@ -62,8 +62,16 @@ function StackNavigation() {
           name="BottomNavigation"
           component={BottomNavigation}
         />
-        <Stack.Screen name="Agriculture" component={Agriculture} />
-        <Stack.Screen name="FarmRegistration" component={FarmRegistration} />
+        <Stack.Screen
+          name="Agriculture"
+          component={Agriculture}
+          options={{title: 'कृषि'}}
+        />
+        <Stack.Screen
+          name="FarmRegistration"
+          component={FarmRegistration}
+          options={{title: 'खेती दर्ता'}}
+        />
         <Stack.Screen name="Education" component={Education} />
         <Stack.Screen name="Law" component={Law} />
         <Stack.Screen name="Notification" component={Notification} />

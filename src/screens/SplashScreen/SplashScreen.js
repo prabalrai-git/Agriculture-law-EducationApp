@@ -1,10 +1,19 @@
-import {View, Text, Image, StyleSheet, StatusBar} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  StatusBar,
+  Dimensions,
+} from 'react-native';
 import React, {useEffect} from 'react';
 import {responsiveWidth} from 'react-native-responsive-dimensions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const width = Dimensions.get('window').width;
+
 const SplashScreen = ({navigation}) => {
-  React.useEffect(() => {
+  useEffect(() => {
     removeValue = async () => {
       try {
         await AsyncStorage.removeItem('userCode');
@@ -38,11 +47,36 @@ const SplashScreen = ({navigation}) => {
   return (
     <>
       <StatusBar backgroundColor={'white'} />
-      <View style={styles.container}>
-        {/* <Image source={require('../../Assets/Images/logo1.png')} resizeMode="cover" styles={styles.logo} /> */}
-        <Text style={{color: 'black', fontSize: 25, textAlign: 'center'}}>
-          Powered By{`\n`}Luniva Technology
-        </Text>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <View style={styles.container}>
+          <Image
+            source={require('../../Assets/Images/lunivalogo.png')}
+            style={{
+              justifyContent: 'center',
+              width: 200,
+              height: 100,
+              resizeMode: 'contain',
+              alignSelf: 'center',
+            }}
+          />
+        </View>
+        <View style={styles.container}>
+          {/* <Image source={require('../../Assets/Images/logo1.png')} resizeMode="cover" styles={styles.logo} /> */}
+
+          <Text style={{color: 'black', fontSize: 15, fontWeight: '500'}}>
+            Powered By{`\n`}Luniva Technology
+          </Text>
+          <Image
+            source={require('../../Assets/Images/logo1.png')}
+            style={{width: 40, height: 30}}
+          />
+        </View>
       </View>
     </>
   );
@@ -53,8 +87,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
     alignItems: 'center',
+    bottom: -140,
+    // marginBottom: 20,
   },
   logo: {
     alignSelf: 'center',

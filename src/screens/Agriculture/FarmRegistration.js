@@ -18,12 +18,14 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import Geolocation from 'react-native-geolocation-service';
 import {
+  GetFarmListByFarmIdApi,
   GetFarmListByUserCodeApi,
   InsertUpdateFarmApi,
 } from '../../Services/appServices/agricultureService';
 import {currentDateTime} from '../../Common/CurrentDateTime';
 import {set} from 'react-native-reanimated';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import KhetiGariyekoCha from '../../Common/KhetiGariyekoCha';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -56,7 +58,11 @@ const FarmRegistration = () => {
 
   useEffect(() => {
     getData();
-  }, []);
+    console.log(
+      editingFarm,
+      'this is the editing farm........................',
+    );
+  }, [editingFarm]);
   const handleValidation = (errorText, inputFieldName) => {
     setErrors(preState => ({...preState, [inputFieldName]: errorText}));
   };
@@ -92,6 +98,7 @@ const FarmRegistration = () => {
       handleValidation('स्थान विवरण प्राप्त गर्नुहोस्', 'locationDetails');
       isValid = false;
     }
+    console.log(errors);
     return isValid;
   };
 
@@ -180,6 +187,8 @@ const FarmRegistration = () => {
             setLocationDetails();
             setReload(!reload);
             setErrors({});
+            setEditingFarm();
+            setEditingFarmId();
           }
         });
       } catch (error) {
@@ -198,6 +207,15 @@ const FarmRegistration = () => {
     });
   }, [userCode, reload]);
 
+  useEffect(() => {
+    let data = {
+      farmId: editingFarmId,
+    };
+    GetFarmListByFarmIdApi(data, res => {
+      setEditingFarm(res[0]);
+    });
+  }, [editingFarmId]);
+
   return (
     <>
       <FAB
@@ -207,87 +225,121 @@ const FarmRegistration = () => {
         label="नयाँ दर्ता गर्नुहोस्"
         color="white"
       />
-      <Text style={{color: 'black', margin: 10, fontSize: 18}}>
-        दर्ता भएका फार्महरू
+      <Text
+        style={{color: 'black', margin: 10, fontSize: 18, fontWeight: '500'}}>
+        दर्ता भएका फार्महरू:
       </Text>
       <ScrollView>
-        {farmList?.map(item => {
-          return (
-            <View style={styles.farmContainer} key={item.frmID}>
-              <View style={styles.farmInfo}>
-                <Text style={styles.farmName}>{item.frmName}</Text>
-                <View style={{flexDirection: 'row', marginBottom: 10}}>
-                  <Image
-                    source={require('../../Assets/FarmImages/land.png')}
-                    style={styles.infoImage}
-                  />
-                  <Text
-                    style={{
-                      color: 'black',
-                      alignSelf: 'center',
-                      fontSize: 16,
-                      marginLeft: 8,
-                    }}>
-                    {item.frmEstArea} {item.frmAreaUnit}
-                  </Text>
+        <View style={{marginBottom: 100}}>
+          {farmList?.map(item => {
+            return (
+              <View style={styles.farmContainer} key={item.frmID}>
+                <View style={styles.farmInfo}>
+                  <Text style={styles.farmName}>{item.frmName}</Text>
+                  <View style={{flexDirection: 'row', marginBottom: 10}}>
+                    <Image
+                      source={require('../../Assets/FarmImages/land.png')}
+                      style={styles.infoImage}
+                    />
+                    <Text
+                      style={{
+                        color: 'black',
+                        alignSelf: 'center',
+                        fontSize: 16,
+                        marginLeft: 8,
+                      }}>
+                      {item.frmEstArea} {item.frmAreaUnit}
+                    </Text>
+                  </View>
+                  <View style={{flexDirection: 'row', marginBottom: 10}}>
+                    <Image
+                      source={require('../../Assets/FarmImages/location.png')}
+                      style={styles.infoImage}
+                    />
+                    <Text
+                      style={{
+                        color: 'black',
+                        alignSelf: 'center',
+                        fontSize: 16,
+                        marginLeft: 8,
+                      }}>
+                      {item.frmLocation}
+                    </Text>
+                  </View>
+                  <View style={{flexDirection: 'row', marginBottom: 10}}>
+                    <Image
+                      source={require('../../Assets/FarmImages/calendar.png')}
+                      style={styles.infoImage}
+                    />
+                    <Text
+                      style={{
+                        color: 'black',
+                        alignSelf: 'center',
+                        fontSize: 16,
+                        marginLeft: 8,
+                      }}>
+                      {item.frmAddedDate}
+                    </Text>
+                  </View>
+                  <View style={{flexDirection: 'row', marginBottom: 10}}>
+                    <Image
+                      source={require('../../Assets/Images/owner.png')}
+                      style={styles.infoImage}
+                    />
+                    <Text
+                      style={{
+                        color: 'black',
+                        alignSelf: 'center',
+                        fontSize: 16,
+                        marginLeft: 8,
+                      }}>
+                      {item.LandOwner}
+                    </Text>
+                  </View>
+                  <View style={{flexDirection: 'row', marginBottom: 10}}>
+                    <Image
+                      source={require('../../Assets/Images/kitta.png')}
+                      style={styles.infoImage}
+                    />
+                    <Text
+                      style={{
+                        color: 'black',
+                        alignSelf: 'center',
+                        fontSize: 16,
+                        marginLeft: 8,
+                      }}>
+                      {item.KittaNumber}
+                    </Text>
+                  </View>
+                  <KhetiGariyekoCha isCultivated={item.IsCultivated} />
                 </View>
-                <View style={{flexDirection: 'row', marginBottom: 10}}>
-                  <Image
-                    source={require('../../Assets/FarmImages/location.png')}
-                    style={styles.infoImage}
-                  />
-                  <Text
-                    style={{
-                      color: 'black',
-                      alignSelf: 'center',
-                      fontSize: 16,
-                      marginLeft: 8,
+                <View style={styles.actionIconContainer}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setEditingFarmId(item.frmID);
+                      setModalVisible(true);
                     }}>
-                    {item.frmLocation}
-                  </Text>
-                </View>
-                <View style={{flexDirection: 'row', marginBottom: 10}}>
-                  <Image
-                    source={require('../../Assets/FarmImages/calendar.png')}
-                    style={styles.infoImage}
-                  />
-                  <Text
-                    style={{
-                      color: 'black',
-                      alignSelf: 'center',
-                      fontSize: 16,
-                      marginLeft: 8,
-                    }}>
-                    {item.frmAddedDate}
-                  </Text>
+                    <Image
+                      source={require('../../Assets/FarmImages/writing.png')}
+                      style={{width: 28, height: 28, tintColor: 'green'}}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={e => console.log(e)}>
+                    <Image
+                      source={require('../../Assets/FarmImages/garbage.png')}
+                      style={{
+                        width: 28,
+                        height: 28,
+                        tintColor: 'red',
+                        marginLeft: 15,
+                      }}
+                    />
+                  </TouchableOpacity>
                 </View>
               </View>
-              <View style={styles.actionIconContainer}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setEditingFarmId(item.frmID);
-                    setModalVisible(true);
-                  }}>
-                  <Image
-                    source={require('../../Assets/FarmImages/writing.png')}
-                    style={{width: 28, height: 28, tintColor: 'green'}}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={e => console.log(e)}>
-                  <Image
-                    source={require('../../Assets/FarmImages/garbage.png')}
-                    style={{
-                      width: 28,
-                      height: 28,
-                      tintColor: 'red',
-                      marginLeft: 15,
-                    }}
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
-          );
-        })}
+            );
+          })}
+        </View>
       </ScrollView>
 
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -347,9 +399,9 @@ const FarmRegistration = () => {
                       {borderColor: errors.fieldName ? 'red' : 'black'},
                     ]}
                     onChangeText={text => setFieldName(text)}
-                    value={editingFarmId ? 'prabal farm' : fieldName}
+                    value={editingFarm ? editingFarm.frmName : fieldName}
                     placeholder="खेतको नाम राख्नुहोस्"
-                    placeholderTextColor={errors.fieldName ? 'red' : 'grey'}
+                    placeholderTextColor={errors.area ? 'red' : 'grey'}
                   />
                   <View style={{flexDirection: 'row', width: width * 0.78}}>
                     <View
@@ -360,13 +412,13 @@ const FarmRegistration = () => {
                           styles.input,
                           {
                             width: width * 0.36,
-                            borderColor: errors.fieldName ? 'red' : 'black',
+                            borderColor: errors.area ? 'red' : 'black',
                           },
                         ]}
                         onChangeText={text => setArea(text)}
-                        value={area}
+                        value={editingFarm ? editingFarm.frmEstArea : area}
                         placeholder="क्षेत्रफल राख्नुहोस्"
-                        placeholderTextColor={errors.fieldName ? 'red' : 'grey'}
+                        placeholderTextColor={errors.area ? 'red' : 'grey'}
                         keyboardType="numeric"
                       />
                     </View>
@@ -416,13 +468,17 @@ const FarmRegistration = () => {
                           styles.input,
                           {
                             width: width * 0.36,
-                            borderColor: errors.fieldName ? 'red' : 'black',
+                            borderColor: errors.kittaNumber ? 'red' : 'black',
                           },
                         ]}
                         onChangeText={text => setKittaNumber(text)}
-                        value={kittaNumber}
+                        value={
+                          editingFarm ? editingFarm.KittaNumber : kittaNumber
+                        }
                         placeholder="कित्ता नम्बर राख्नुहोस्"
-                        placeholderTextColor={errors.fieldName ? 'red' : 'grey'}
+                        placeholderTextColor={
+                          errors.kittaNumber ? 'red' : 'grey'
+                        }
                         keyboardType="numeric"
                       />
                     </View>
@@ -482,26 +538,26 @@ const FarmRegistration = () => {
                     style={[
                       styles.input,
                       {
-                        borderColor: errors.fieldName ? 'red' : 'black',
+                        borderColor: errors.place ? 'red' : 'black',
                       },
                     ]}
                     onChangeText={text => setPlace(text)}
-                    value={place}
+                    value={editingFarm ? editingFarm.frmLocation : place}
                     placeholder="स्थान राख्नुहोस्"
-                    placeholderTextColor={errors.fieldName ? 'red' : 'grey'}
+                    placeholderTextColor={errors.place ? 'red' : 'grey'}
                   />
                   <Text style={styles.label}>जग्गा धनीको नाम:</Text>
                   <TextInput
                     style={[
                       styles.input,
                       {
-                        borderColor: errors.fieldName ? 'red' : 'black',
+                        borderColor: errors.fieldOwner ? 'red' : 'black',
                       },
                     ]}
                     onChangeText={text => setFieldOwner(text)}
-                    value={fieldOwner}
+                    value={editingFarm ? editingFarm.LandOwner : fieldOwner}
                     placeholder="जग्गा धनी"
-                    placeholderTextColor={errors.fieldName ? 'red' : 'grey'}
+                    placeholderTextColor={errors.fieldOwner ? 'red' : 'grey'}
                   />
                 </View>
                 <View style={{flexDirection: 'row'}}>
@@ -535,10 +591,16 @@ const FarmRegistration = () => {
                   {locationDetails && (
                     <View style={{alignSelf: 'center', marginLeft: 15}}>
                       <Text style={{color: 'black'}}>
-                        देशान्तर: {locationDetails.coords.longitude}
+                        देशान्तर:{' '}
+                        {editingFarm
+                          ? editingFarm.frmLong
+                          : locationDetails.coords.longitude}
                       </Text>
                       <Text style={{color: 'black'}}>
-                        अक्षांश: {locationDetails.coords.latitude}
+                        अक्षांश:{' '}
+                        {editingFarm
+                          ? editingFarm.frmLat
+                          : locationDetails.coords.latitude}
                       </Text>
                     </View>
                   )}
@@ -642,13 +704,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#d4d4d4',
     borderRadius: 5,
     padding: 10,
+    // marginBottom: 50,
   },
   farmInfo: {
     flexDirection: 'column',
   },
   infoImage: {
-    width: 30,
-    height: 30,
+    width: 20,
+    height: 20,
     tintColor: 'green',
   },
   farmName: {

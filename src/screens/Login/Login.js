@@ -45,9 +45,12 @@ const Login = ({navigation}) => {
 
   const {t, i18n} = useTranslation();
 
-  // useEffect(() => {
-  //     console.log(email, userMobileNumber.length);
-  // }, [])
+  useEffect(() => {
+    navigation.addListener('beforeRemove', e => {
+      e.preventDefault();
+      //clear setInterval here and go back
+    });
+  }, []);
 
   // form validation code
 
@@ -196,14 +199,14 @@ const Login = ({navigation}) => {
       <View style={styles.container}>
         <View style={styles.topview}>
           <ImageBackground
-            resizeMode="cover"
-            source={require('../../Assets/Images/login3.jpg')}
+            resizeMode="contain"
+            source={require('../../Assets/Images/lunivalogo.png')}
             style={styles.banner}
           />
         </View>
 
         <View>
-          <Text style={styles.txt}>{t('Login/ Register')}</Text>
+          <Text style={styles.txt}>दर्ता गर्नुहोस्</Text>
         </View>
 
         {openOTPScreen === false ? (
@@ -244,22 +247,24 @@ const Login = ({navigation}) => {
                 {errors.userMobileNumber}
               </Text>
             )}
-
-            <TextInput
-              value={email}
-              onChangeText={text => setEmail(text)}
-              placeholder="आफ्नो इमेल राख्नुहोस्"
-              placeholderTextColor={'grey'}
-              style={{
-                width: width * 0.85,
-                marginRight: 'auto',
-                marginLeft: 'auto',
-                borderColor: 'black',
-                marginTop: 20,
-                backgroundColor: 'white',
-                color: 'black',
-              }}
-            />
+            <View>
+              <TextInput
+                value={email}
+                onChangeText={text => setEmail(text)}
+                placeholder="आफ्नो इमेल राख्नुहोस्"
+                placeholderTextColor={'grey'}
+                style={{
+                  width: width * 0.85,
+                  marginRight: 'auto',
+                  marginLeft: 'auto',
+                  borderColor: 'black',
+                  marginTop: 20,
+                  backgroundColor: 'white',
+                  color: 'black',
+                  elevation: 2,
+                }}
+              />
+            </View>
 
             {errors.email && (
               <Text
@@ -343,16 +348,21 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    marginBottom: 40,
   },
   topview: {
-    height: responsiveHeight(40),
-    marginBottom: 40,
+    height: responsiveHeight(25),
+    marginBottom: -70,
   },
   banner: {
     width: '100%',
-    height: '100%',
-    borderBottomWidth: 0.4,
-    borderColor: global.SecondaryColor,
+    height: '70%',
+
+    // justifyContent: 'center',
+    // alignSelf: 'center',
+    // borderBottomWidth: 0.4,
+    // borderColor: global.SecondaryColor,
   },
   txt: {
     color: 'black',
@@ -400,7 +410,7 @@ const styles = StyleSheet.create({
   },
   infoTxt: {
     color: 'grey',
-    fontSize: 14,
+    fontSize: 12,
     marginTop: 10,
     width: 300,
     textAlign: 'center',

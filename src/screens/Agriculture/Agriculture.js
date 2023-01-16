@@ -13,21 +13,25 @@ const Agriculture = ({navigation}) => {
       id: 2,
       name: 'माटो परीक्षण रेकर्ड',
       image: require('../../Assets/FarmImages/Soil.png'),
+      navigateTo: 'Agriculture',
     },
     {
       id: 3,
       name: 'फसल / पशु दर्ता',
       image: require('../../Assets/FarmImages/Crop-animal.png'),
+      navigateTo: 'Agriculture',
     },
     {
       id: 4,
       name: 'खर्च / बिक्री ट्र्याकिंग',
       image: require('../../Assets/FarmImages/Expenses.png'),
+      navigateTo: 'Agriculture',
     },
     {
       id: 5,
       name: 'JTA संचार',
       image: require('../../Assets/FarmImages/JTA.png'),
+      navigateTo: 'Agriculture',
     },
   ];
 

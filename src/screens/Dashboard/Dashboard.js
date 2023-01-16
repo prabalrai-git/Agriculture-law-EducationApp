@@ -14,6 +14,7 @@ import {Avatar} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ReanimatedCarousel from '../../components/ReanimatedCarousel';
 import '../../../global';
+import DataCards from '../../Common/DataCards';
 
 const width = Dimensions.get('window').width;
 
@@ -59,7 +60,17 @@ const Dashboard = ({navigation}) => {
       <StatusBar backgroundColor={'darkgreen'} />
       {/* Start of header */}
       <View style={styles.topbar}>
-        <View>
+        <View style={{flexDirection: 'row', marginLeft: -30}}>
+          <Image
+            source={require('../../Assets/Images/logo1.png')}
+            style={{
+              resizeMode: 'contain',
+              width: 35,
+              height: 35,
+              alignSelf: 'center',
+              marginRight: 5,
+            }}
+          />
           <Text
             style={{
               textAlign: 'center',
@@ -68,7 +79,7 @@ const Dashboard = ({navigation}) => {
               color: 'white',
               alignSelf: 'center',
             }}>
-            LUNIVA TECHNOLOGY
+            LUNIVA TECH
           </Text>
         </View>
         <View
@@ -76,7 +87,7 @@ const Dashboard = ({navigation}) => {
             flexDirection: 'row',
             width: width * 0.22,
             justifyContent: 'space-around',
-            right: -10,
+            right: -30,
           }}>
           <TouchableOpacity>
             <Avatar.Image
@@ -99,110 +110,113 @@ const Dashboard = ({navigation}) => {
       </View>
 
       <ScrollView>
-        <ReanimatedCarousel />
-        <View style={{justifyContent: 'space-between', alignItems: 'center'}}>
-          <View style={styles.services}>
-            <Text
-              style={{
-                color: 'black',
-                fontSize: 20,
-                fontWeight: '500',
-                marginLeft: 15,
-              }}>
-              हाम्रा सेवाहरू
-            </Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-around',
-              }}>
-              {ServicesData.map(item => {
-                return (
-                  <TouchableOpacity
-                    style={styles.serviceContainer}
-                    key={item.id}
-                    onPress={() => navigation.navigate(item.navigationPath)}>
-                    <View>
-                      <View style={styles.serviceImage}>
-                        <Image
-                          source={item.image}
-                          resizeMode="contain"
-                          style={[
-                            {
-                              width: 45,
-                              height: 45,
-                              tintColor: global.SecondaryColor,
-                              fontWeight: 'bold',
-                            },
-                          ]}
-                        />
+        <View style={{marginBottom: 150}}>
+          <ReanimatedCarousel />
+          <View style={{justifyContent: 'space-between', alignItems: 'center'}}>
+            <DataCards />
+            <View style={styles.services}>
+              <Text
+                style={{
+                  color: 'black',
+                  fontSize: 20,
+                  fontWeight: '500',
+                  marginLeft: 15,
+                }}>
+                हाम्रा सेवाहरू
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
+                }}>
+                {ServicesData.map(item => {
+                  return (
+                    <TouchableOpacity
+                      style={styles.serviceContainer}
+                      key={item.id}
+                      onPress={() => navigation.navigate(item.navigationPath)}>
+                      <View>
+                        <View style={styles.serviceImage}>
+                          <Image
+                            source={item.image}
+                            resizeMode="contain"
+                            style={[
+                              {
+                                width: 45,
+                                height: 45,
+                                tintColor: global.SecondaryColor,
+                                fontWeight: 'bold',
+                              },
+                            ]}
+                          />
+                        </View>
+                        <Text
+                          style={{
+                            color: 'black',
+                            fontSize: 16,
+                            marginTop: 10,
+                            textAlign: 'center',
+                          }}>
+                          {item.title}
+                        </Text>
                       </View>
-                      <Text
-                        style={{
-                          color: 'black',
-                          fontSize: 16,
-                          marginTop: 10,
-                          textAlign: 'center',
-                        }}>
-                        {item.title}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                );
-              })}
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
             </View>
           </View>
-        </View>
-        <View style={{justifyContent: 'space-between', alignItems: 'center'}}>
-          <View style={styles.services}>
-            <Text
-              style={{
-                color: 'black',
-                fontSize: 20,
-                fontWeight: '500',
-                marginLeft: 15,
-              }}>
-              हाम्रा सेवाहरू
-            </Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-around',
-              }}>
-              {ServicesData.map(item => {
-                return (
-                  <TouchableOpacity
-                    style={styles.serviceContainer}
-                    key={item.id}
-                    onPress={() => navigation.navigate(item.navigationPath)}>
-                    <View>
-                      <View style={styles.serviceImage}>
-                        <Image
-                          source={item.image}
-                          resizeMode="contain"
-                          style={[
-                            {
-                              width: 45,
-                              height: 45,
-                              tintColor: global.SecondaryColor,
-                              fontWeight: 'bold',
-                            },
-                          ]}
-                        />
+          <View style={{justifyContent: 'space-between', alignItems: 'center'}}>
+            <View style={styles.services}>
+              <Text
+                style={{
+                  color: 'black',
+                  fontSize: 20,
+                  fontWeight: '500',
+                  marginLeft: 15,
+                }}>
+                हाम्रा सेवाहरू
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
+                }}>
+                {ServicesData.map(item => {
+                  return (
+                    <TouchableOpacity
+                      style={styles.serviceContainer}
+                      key={item.id}
+                      onPress={() => navigation.navigate(item.navigationPath)}>
+                      <View>
+                        <View style={styles.serviceImage}>
+                          <Image
+                            source={item.image}
+                            resizeMode="contain"
+                            style={[
+                              {
+                                width: 45,
+                                height: 45,
+                                tintColor: global.SecondaryColor,
+                                fontWeight: 'bold',
+                              },
+                            ]}
+                          />
+                        </View>
+                        <Text
+                          style={{
+                            color: 'black',
+                            fontSize: 16,
+                            marginTop: 10,
+                            textAlign: 'center',
+                          }}>
+                          {item.title}
+                        </Text>
                       </View>
-                      <Text
-                        style={{
-                          color: 'black',
-                          fontSize: 16,
-                          marginTop: 10,
-                          textAlign: 'center',
-                        }}>
-                        {item.title}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                );
-              })}
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
             </View>
           </View>
         </View>
