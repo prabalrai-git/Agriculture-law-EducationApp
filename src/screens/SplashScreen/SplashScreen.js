@@ -69,12 +69,12 @@ const SplashScreen = ({navigation}) => {
         <View style={styles.container}>
           {/* <Image source={require('../../Assets/Images/logo1.png')} resizeMode="cover" styles={styles.logo} /> */}
 
-          <Text style={{color: 'black', fontSize: 15, fontWeight: '500'}}>
+          <Text style={{color: 'black', fontSize: 12, fontWeight: '400'}}>
             Powered By{`\n`}Luniva Technology
           </Text>
           <Image
             source={require('../../Assets/Images/logo1.png')}
-            style={{width: 40, height: 30}}
+            style={{width: 30, height: 24, marginTop: 14, margin: 5}}
           />
         </View>
       </View>
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    bottom: -140,
+    bottom: -150,
     // marginBottom: 20,
   },
   logo: {

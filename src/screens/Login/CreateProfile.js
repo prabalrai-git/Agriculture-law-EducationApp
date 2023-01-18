@@ -23,10 +23,12 @@ import {
   getListOfStatesApi,
   getListOfVDCByDistrictIdApi,
 } from '../../Services/appServices/geographyService';
-import NepaliDatePicker from '../../components/NepaliDatePicker';
 import DatePicker from '../../components/DatePicker';
 import {InsertUpdatePersonalInfoApi} from '../../Services/appServices/loginService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Feather from 'react-native-vector-icons/Feather';
+import {showMessage} from 'react-native-flash-message';
+Feather.loadFont();
 const width = Dimensions.get('window').width;
 
 const CreateProfile = ({navigation}) => {
@@ -73,6 +75,10 @@ const CreateProfile = ({navigation}) => {
       handleValidation('please enter password', 'password');
       isValid = false;
     }
+    // if (password !== reEnteredPassword) {
+    //   handleValidation('पासवर्डहरू मेल खाँदैनन्', 'validatePassword');
+    //   isValid = false;
+    // }
     if (!gender) {
       handleValidation('कृपया लिङ्ग प्रविष्ट गर्नुहोस्', 'gender');
       isValid = false;
@@ -218,7 +224,7 @@ const CreateProfile = ({navigation}) => {
 
   const onFormSubmit = () => {
     let validation = validate();
-    console.log(errors.fullname, ';;;;;;;;;;;;;;;;;;;;');
+    // console.log(errors.fullname, ';;;;;;;;;;;;;;;;;;;;');
     let data = {
       PId: 0,
       PCode: 'e35db3d0-7de6-4231-a6b8-21f568e988c3',
@@ -248,6 +254,27 @@ const CreateProfile = ({navigation}) => {
             console.log(res.GuId[0].PCode);
             storeDataToAsyncStorage(res.GuId[0].PCode);
             navigation.navigate('BottomNavigation');
+            showMessage({
+              message: 'सफल',
+              description: 'प्रोफाइल सिर्जना गरियो',
+              type: 'success',
+              color: 'white',
+              position: 'bottom',
+              icon: props => (
+                <Image
+                  source={require('../../Assets/flashMessage/check.png')}
+                  {...props}
+                  style={{
+                    tintColor: 'white',
+                    width: 20,
+                    height: 20,
+                    marginRight: 10,
+                  }}
+                />
+              ),
+              // titleStyle: {textAlign: 'center'},
+              // textStyle: {textAlign: 'center'},
+            });
           }
         } catch (error) {
           console.log(error);
@@ -306,20 +333,28 @@ const CreateProfile = ({navigation}) => {
         </View>
         <View style={styles.eachContainer}>
           <Text style={styles.label}>पुन: पासवर्ड:</Text>
+
           <TextInput
             style={styles.input}
             onChangeText={text => setReEnteredPassword(text)}
             value={reEnteredPassword}
-            placeholder="पुन: पासवर्ड राख्नुहोस्"
-            placeholderTextColor="grey"
+            placeholder={
+              errors.validatePassword
+                ? 'पासवर्डहरू मेल खाँदैनन्'
+                : 'पुन: पासवर्ड राख्नुहोस्'
+            }
+            placeholderTextColor={errors.validatePassword ? 'red' : 'grey'}
             secureTextEntry={true}
           />
         </View>
         <View style={styles.eachContainer}>
           <Text style={styles.label}>लिङ्ग:</Text>
-          <View>
+          <View style={[Platform.select({android: {zIndex: 10}})]}>
             <AutocompleteDropdown
               onSelectItem={text => setGender(text?.title)}
+              ChevronIconComponent={
+                <Feather name="chevron-down" size={25} color="black" />
+              }
               dataSet={[
                 {id: 1, title: 'पुरुष'},
                 {id: 2, title: 'महिला'},
@@ -329,9 +364,24 @@ const CreateProfile = ({navigation}) => {
                 style: {
                   color: 'black',
                   paddingLeft: 18,
+                  // backgroundColor: 'white',
+                  borderRadius: 5,
                 },
               }}
-              containerStyle={{width: width * 0.73, marginBottom: 8}}
+              containerStyle={{
+                width: width * 0.73,
+                marginBottom: 8,
+                borderWidth: 0.8,
+                borderColor: 'black',
+                borderRadius: 5,
+              }}
+              rightButtonsContainerStyle={{
+                right: 8,
+                height: 30,
+                // backgroundColor: 'white',
+
+                alignSelf: 'center',
+              }}
             />
             {errors.gender && (
               <Text style={styles.errorTxt}>{errors.gender}</Text>
@@ -351,7 +401,7 @@ const CreateProfile = ({navigation}) => {
                 paddingRight: 0,
                 paddingBottom: 10,
                 paddingLeft: 10,
-                width: width * 0.5,
+                width: width * 0.65,
                 borderColor: errors.DOB ? 'red' : 'black',
               },
             ]}
@@ -362,18 +412,19 @@ const CreateProfile = ({navigation}) => {
           <TouchableOpacity
             style={{
               alignSelf: 'center',
-              marginLeft: 15,
+              marginLeft: 5,
               padding: 4,
               borderColor: 'black',
               borderWidth: 1,
               borderRadius: 6,
+              marginTop: -8,
             }}
             onPress={() => setDatePickerVisibility(true)}>
             <Image
-              source={require('../../Assets/FarmImages/calendarClick.png')}
+              source={require('../../Assets/FarmImages/calendar1.png')}
               style={{
-                width: 30,
-                height: 30,
+                width: 23,
+                height: 23,
               }}
             />
           </TouchableOpacity>
@@ -421,8 +472,11 @@ const CreateProfile = ({navigation}) => {
         <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
           <View style={{flexDirection: 'column', flexWrap: 'wrap'}}>
             <Text style={styles.label}>प्रदेश:</Text>
-            <View>
+            <View style={[Platform.select({android: {zIndex: 9}})]}>
               <AutocompleteDropdown
+                ChevronIconComponent={
+                  <Feather name="chevron-down" size={25} color="black" />
+                }
                 onSelectItem={text => onSelectState(text)}
                 dataSet={stateList}
                 textInputProps={{
@@ -431,7 +485,13 @@ const CreateProfile = ({navigation}) => {
                     paddingLeft: 18,
                   },
                 }}
-                containerStyle={{width: width * 0.458, margin: 8}}
+                containerStyle={{
+                  width: width * 0.458,
+                  margin: 8,
+                  borderWidth: 0.8,
+                  borderColor: 'black',
+                  borderRadius: 5,
+                }}
               />
               {errors.state && (
                 <Text style={styles.errorTxt}>{errors.state}</Text>
@@ -448,8 +508,11 @@ const CreateProfile = ({navigation}) => {
                             placeholderTextColor="grey"
 
                         /> */}
-            <View>
+            <View style={[Platform.select({android: {zIndex: 9}})]}>
               <AutocompleteDropdown
+                ChevronIconComponent={
+                  <Feather name="chevron-down" size={25} color="black" />
+                }
                 onSelectItem={item => onSelectDistrict(item)}
                 dataSet={districtsList}
                 textInputProps={{
@@ -461,6 +524,9 @@ const CreateProfile = ({navigation}) => {
                 containerStyle={{
                   width: width * 0.458,
                   margin: 8,
+                  borderWidth: 0.8,
+                  borderColor: 'black',
+                  borderRadius: 5,
                 }}
               />
               {errors.district && (
@@ -477,8 +543,11 @@ const CreateProfile = ({navigation}) => {
               ]}>
               नगरपालिका/ गाउँपालिका:
             </Text>
-            <View>
+            <View style={[Platform.select({android: {zIndex: 8}})]}>
               <AutocompleteDropdown
+                ChevronIconComponent={
+                  <Feather name="chevron-down" size={25} color="black" />
+                }
                 onSelectItem={text => setMunicipality(text?.title)}
                 dataSet={municipalityList}
                 textInputProps={{
@@ -491,6 +560,9 @@ const CreateProfile = ({navigation}) => {
                 containerStyle={{
                   width: width * 0.458,
                   margin: 8,
+                  borderWidth: 0.8,
+                  borderColor: 'black',
+                  borderRadius: 5,
                 }}
               />
               {errors.municipality && (
@@ -515,7 +587,8 @@ const CreateProfile = ({navigation}) => {
                     marginTop: 3,
                     borderRadius: 5,
                     backgroundColor: '#e5ecf2',
-                    borderWidth: 0,
+                    borderWidth: 0.8,
+                    borderColor: 'black',
                   },
                 ]}
                 onChangeText={text => setWard(text)}
@@ -541,8 +614,11 @@ const CreateProfile = ({navigation}) => {
         </View>
         <View style={styles.eachContainer}>
           <Text style={styles.label}>पेशाको प्रकार:</Text>
-          <View>
+          <View style={[Platform.select({android: {zIndex: 7}})]}>
             <AutocompleteDropdown
+              ChevronIconComponent={
+                <Feather name="chevron-down" size={25} color="black" />
+              }
               onSelectItem={text => setSelectedProfession(text?.id)}
               dataSet={professionType}
               textInputProps={{
@@ -551,10 +627,18 @@ const CreateProfile = ({navigation}) => {
                   paddingLeft: 18,
                 },
               }}
-              containerStyle={{width: width * 0.73, marginBottom: 8}}
+              containerStyle={{
+                width: width * 0.73,
+                marginBottom: 8,
+                borderWidth: 0.8,
+                borderColor: 'black',
+                borderRadius: 5,
+              }}
             />
             {errors.selectedProfession && (
-              <Text style={styles.errorTxt}>{errors.selectedProfession}</Text>
+              <View style={{zIndex: 1}}>
+                <Text style={styles.errorTxt}>{errors.selectedProfession}</Text>
+              </View>
             )}
           </View>
         </View>
@@ -622,10 +706,10 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     marginBottom: 8,
-    borderWidth: 0.5,
+    borderWidth: 0.8,
     padding: 10,
     color: 'black',
-    borderRadius: 10,
+    borderRadius: 5,
     width: width * 0.73,
   },
   label: {
@@ -663,6 +747,7 @@ const styles = StyleSheet.create({
   errorTxt: {
     color: 'red',
     fontSize: 10,
-    textAlign: 'center',
+    // textAlign: 'center',
+    marginLeft: 10,
   },
 });

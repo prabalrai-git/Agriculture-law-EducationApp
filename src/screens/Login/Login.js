@@ -58,34 +58,47 @@ const Login = ({navigation}) => {
     setErrors(prevState => ({...prevState, [inputFieldName]: errorMsg}));
   };
 
+  const validateEmail = email => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      );
+  };
+
   const validate = () => {
     Keyboard.dismiss();
+    const emailValidationValue = validateEmail(email);
     let isValid = true;
     if (userMobileNumber === null) {
       handleValidation('कृपया मान्य फोन नम्बर राख्नुहोस्', 'userMobileNumber');
       isValid = false;
     }
-    if (email === null) {
+    // if (email === null) {
+    //   handleValidation('कृपया मान्य इमेल राख्नुहोस्', 'email');
+    //   isValid = false;
+    // }
+    if (!emailValidationValue) {
       handleValidation('कृपया मान्य इमेल राख्नुहोस्', 'email');
       isValid = false;
     }
-    if (userMobileNumber === null || userMobileNumber.length < 10) {
+    if (userMobileNumber === null || userMobileNumber?.length < 10) {
       handleValidation('कृपया मान्य फोन नम्बर राख्नुहोस्', 'userMobileNumber');
       isValid = false;
     }
     // email validation
-    if (
-      ![
-        email
-          ?.toLowerCase()
-          .match(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-          ),
-      ]
-    ) {
-      handleValidation('कृपया मान्य इमेल राख्नुहोस्', 'email');
-      isValid = false;
-    }
+    // if (
+    //   ![
+    //     email
+    //       ?.toLowerCase()
+    //       .match(
+    //         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+    //       ),
+    //   ]
+    // ) {
+    //   handleValidation('कृपया मान्य इमेल राख्नुहोस्', 'email');
+    //   isValid = false;
+    // }
     return isValid;
   };
 
@@ -103,32 +116,46 @@ const Login = ({navigation}) => {
       OTP: 10,
       IsDelivered: true,
       IsUsed: true,
-      EntryDate: currentDateTime,
+      EntryDate: new Date().toDateString(),
     };
 
+    console.log(data);
+
     if (isValidated) {
+      // console.log('hello world', isValidated);
       InsertUserInfoApi(data, res => {
         // setOpenOTPScreen(true)
         // console.log("This is data", data);
 
-        // console.log("This is the resfsdf", res);
+        console.log('This is the resfsdf', res);
 
-        if (res?.SuccessMsg === true) {
+        if (res?.SuccessMsg == true) {
           setOpenOTPScreen(true);
           setRegistrationId(res.CreatedId);
         } else {
-          setOpenOTPScreen(true);
-
-          //   Alert.alert('Alert Title', 'Email and Mobile Number Already in Use', [
-          //     {
-          //       text: 'Cancel',
-          //       onPress: () => console.log('Cancel Pressed'),
-          //       style: 'cancel',
-          //     },
-          //     {text: 'OK', onPress: () => console.log('OK Pressed')},
-          //   ]);
+          // setOpenOTPScreen(true);
+          Alert.alert(
+            'अलर्ट',
+            'इमेल र मोबाइल नम्बर पहिले नै प्रणालीमा अवस्थित छ !!',
+            [
+              // {
+              //   text: 'Cancel',
+              //   onPress: () => console.log('Cancel Pressed'),
+              //   style: 'cancel',
+              // },
+              {
+                text: 'ठिक छ',
+                onPress: () => {
+                  setEmail();
+                  // setUserMobileNumber();
+                },
+              },
+            ],
+          );
         }
       });
+    } else {
+      console.log('enter');
     }
   };
 
@@ -140,11 +167,14 @@ const Login = ({navigation}) => {
 
     ValidateOTPApi(data, res => {
       if (res?.length > 0) {
+        navigation.navigate('CreateProfile');
         setOpenOTPScreen(false);
-        navigation.navigate('CreateProfile');
+        setRegistrationId();
+        setOtp();
+        setOtpError();
       } else {
-        setOtpError('कृपया सही otp राख्नुहोस्');
-        navigation.navigate('CreateProfile');
+        setOtpError('कृपया सही OTP राख्नुहोस् !');
+        // navigation.navigate('CreateProfile');
       }
     });
   };
@@ -319,12 +349,14 @@ const Login = ({navigation}) => {
               {otpError && (
                 <Text
                   style={{
-                    fontSize: 12,
+                    fontSize: 13,
                     color: 'red',
-                    textAlign: 'center',
+                    // textAlign: 'center',
                     width: width * 0.85,
-                    marginRight: 'auto',
-                    marginLeft: 'auto',
+                    marginLeft: width * 0.1,
+                    marginBottom: -15,
+                    // marginRight: 'auto',
+                    // marginLeft: 'auto',
                   }}>
                   {otpError}
                 </Text>

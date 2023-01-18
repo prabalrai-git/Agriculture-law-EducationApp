@@ -53,6 +53,24 @@ const Dashboard = ({navigation}) => {
       title: 'कानुन',
       navigationPath: 'Law',
     },
+    {
+      id: 4,
+      image: require('../../Assets/FarmImages/Soil.png'),
+      title: 'माटो परीक्षण',
+      navigationPath: 'Dashboard',
+    },
+    {
+      id: 5,
+      image: require('../../Assets/FarmImages/JTA.png'),
+      title: 'JTA संचार',
+      navigationPath: 'Dashboard',
+    },
+    {
+      id: 6,
+      image: require('../../Assets/FarmImages/Expenses.png'),
+      title: 'खर्च ट्र्याकिङ',
+      navigationPath: 'Dashboard',
+    },
   ];
 
   return (
@@ -128,6 +146,8 @@ const Dashboard = ({navigation}) => {
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'space-around',
+                  flexWrap: 'wrap',
+                  width: width * 0.95,
                 }}>
                 {ServicesData.map(item => {
                   return (
@@ -166,7 +186,7 @@ const Dashboard = ({navigation}) => {
               </View>
             </View>
           </View>
-          <View style={{justifyContent: 'space-between', alignItems: 'center'}}>
+          {/* <View style={{justifyContent: 'space-between', alignItems: 'center'}}>
             <View style={styles.services}>
               <Text
                 style={{
@@ -218,7 +238,7 @@ const Dashboard = ({navigation}) => {
                 })}
               </View>
             </View>
-          </View>
+          </View> */}
         </View>
       </ScrollView>
       {/* End of Body */}
@@ -249,6 +269,7 @@ const styles = StyleSheet.create({
   },
   services: {
     width: width * 0.95,
+    flexWrap: 'wrap',
     padding: 6,
     backgroundColor: 'white',
     borderRadius: 6,
@@ -256,7 +277,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   serviceContainer: {
-    // width: width * 0.23,
+    width: width * 0.23,
     margin: 15,
     // backgroundColor: '#f5f5f5',
     justifyContent: 'center',

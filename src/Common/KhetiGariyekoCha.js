@@ -19,14 +19,14 @@ const styles = StyleSheet.create({
   isCultivatedTrue: {
     backgroundColor: 'green',
     padding: 6,
-    borderRadius: 6,
+    borderRadius: 20,
     width: 110,
     marginTop: 3,
   },
   isCultivatedFalse: {
     backgroundColor: '#fca120',
     padding: 6,
-    borderRadius: 6,
+    borderRadius: 20,
     width: 110,
     marginTop: 3,
   },
