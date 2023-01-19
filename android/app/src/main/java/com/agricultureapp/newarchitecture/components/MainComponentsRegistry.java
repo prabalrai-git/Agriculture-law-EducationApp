@@ -1,4 +1,4 @@
-package com.agrinepal.newarchitecture.components;
+package com.agricultureapp.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

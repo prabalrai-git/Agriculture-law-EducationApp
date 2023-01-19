@@ -1,4 +1,4 @@
-package com.agrinepal.newarchitecture.modules;
+package com.agricultureapp.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

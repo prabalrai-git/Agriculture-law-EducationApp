@@ -32,7 +32,7 @@ import EmptyFarmAfterFetch from '../../Common/EmptyFarmAfterFetch';
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
-const FarmRegistration = () => {
+const FarmRegistration = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isCultivated, setIsCultivated] = useState(true);
   const [locationDetails, setLocationDetails] = useState();
@@ -177,7 +177,7 @@ const FarmRegistration = () => {
       LandOwner: editingFarm ? editingFarm.LandOwner : fieldOwner,
       IsCultivated: isCultivated,
     };
-    // console.log('This is the data', formData, validation);
+    console.log('This is the data', formData, validation);
 
     if (validation) {
       try {
@@ -219,6 +219,7 @@ const FarmRegistration = () => {
               // textStyle: {textAlign: 'center'},
             });
           }
+          console.log(res, 'res from post...');
         });
       } catch (error) {
         console.log(error);
@@ -273,126 +274,131 @@ const FarmRegistration = () => {
             <View style={{marginBottom: 100}}>
               {farmList?.map(item => {
                 return (
-                  <View style={styles.farmContainer} key={item.frmID}>
-                    <View style={styles.farmInfo}>
-                      <Text style={styles.farmName}>{item.frmName}</Text>
-                      <View style={{flexDirection: 'row', marginBottom: 10}}>
-                        <Image
-                          source={require('../../Assets/FarmImages/land.png')}
-                          style={styles.infoImage}
-                        />
-                        <Text
-                          style={{
-                            color: 'black',
-                            alignSelf: 'center',
-                            fontSize: 14,
-                            marginLeft: 8,
-                          }}>
-                          <Text style={{fontWeight: '600'}}>
-                            कुल क्षेत्रफल:
-                          </Text>{' '}
-                          {item.frmEstArea} {item.frmAreaUnit}
-                        </Text>
+                  <TouchableOpacity onPress={() => navigation.navigate('Bali')}>
+                    <View style={styles.farmContainer} key={item.frmID}>
+                      <View style={styles.farmInfo}>
+                        <Text style={styles.farmName}>{item.frmName}</Text>
+                        <View style={{flexDirection: 'row', marginBottom: 10}}>
+                          <Image
+                            source={require('../../Assets/FarmImages/land.png')}
+                            style={styles.infoImage}
+                          />
+                          <Text
+                            style={{
+                              color: 'black',
+                              alignSelf: 'center',
+                              fontSize: 14,
+                              marginLeft: 8,
+                            }}>
+                            <Text style={{fontWeight: '600'}}>
+                              कुल क्षेत्रफल:
+                            </Text>{' '}
+                            {item.frmEstArea} {item.frmAreaUnit}
+                          </Text>
+                        </View>
+                        <View style={{flexDirection: 'row', marginBottom: 10}}>
+                          <Image
+                            source={require('../../Assets/FarmImages/location1.png')}
+                            style={styles.infoImage}
+                          />
+                          <Text
+                            style={{
+                              color: 'black',
+                              alignSelf: 'center',
+                              fontSize: 14,
+                              marginLeft: 8,
+                            }}>
+                            <Text style={{fontWeight: '600'}}>स्थान:</Text>{' '}
+                            {item.frmLocation}
+                          </Text>
+                        </View>
+                        <View style={{flexDirection: 'row', marginBottom: 10}}>
+                          <Image
+                            source={require('../../Assets/FarmImages/calendar1.png')}
+                            style={styles.infoImage}
+                          />
+                          <Text
+                            style={{
+                              color: 'black',
+                              alignSelf: 'center',
+                              fontSize: 14,
+                              marginLeft: 8,
+                            }}>
+                            <Text style={{fontWeight: '600'}}>
+                              {' '}
+                              थपिएको मिति:
+                            </Text>{' '}
+                            {item.frmAddedDate}
+                          </Text>
+                        </View>
+                        <View style={{flexDirection: 'row', marginBottom: 10}}>
+                          <Image
+                            source={require('../../Assets/Images/businessman.png')}
+                            style={styles.infoImage}
+                          />
+                          <Text
+                            style={{
+                              color: 'black',
+                              alignSelf: 'center',
+                              fontSize: 14,
+                              marginLeft: 8,
+                            }}>
+                            <Text style={{fontWeight: '600'}}> जग्गा धनी:</Text>{' '}
+                            {item.LandOwner}
+                          </Text>
+                        </View>
+                        <View style={{flexDirection: 'row', marginBottom: 10}}>
+                          <Image
+                            source={require('../../Assets/Images/kitta.png')}
+                            style={styles.infoImage}
+                          />
+                          <Text
+                            style={{
+                              color: 'black',
+                              alignSelf: 'center',
+                              fontSize: 14,
+                              marginLeft: 8,
+                            }}>
+                            <Text style={{fontWeight: '600'}}>
+                              {' '}
+                              कित्ता नम्बर:
+                            </Text>{' '}
+                            {item.KittaNumber}
+                          </Text>
+                        </View>
+                        <KhetiGariyekoCha isCultivated={item.IsCultivated} />
                       </View>
-                      <View style={{flexDirection: 'row', marginBottom: 10}}>
-                        <Image
-                          source={require('../../Assets/FarmImages/location1.png')}
-                          style={styles.infoImage}
-                        />
-                        <Text
-                          style={{
-                            color: 'black',
-                            alignSelf: 'center',
-                            fontSize: 14,
-                            marginLeft: 8,
+                      <View style={styles.actionIconContainer}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            setEditingFarmId(item.frmID);
+                            setModalVisible(true);
                           }}>
-                          <Text style={{fontWeight: '600'}}>स्थान:</Text>{' '}
-                          {item.frmLocation}
-                        </Text>
+                          <Image
+                            source={require('../../Assets/FarmImages/writing.png')}
+                            style={{width: 28, height: 28, tintColor: 'green'}}
+                          />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={() => setDialogBoxVisible(true)}>
+                          <Image
+                            source={require('../../Assets/FarmImages/garbage.png')}
+                            style={{
+                              width: 28,
+                              height: 28,
+                              tintColor: 'red',
+                              marginLeft: 15,
+                            }}
+                          />
+                        </TouchableOpacity>
                       </View>
-                      <View style={{flexDirection: 'row', marginBottom: 10}}>
-                        <Image
-                          source={require('../../Assets/FarmImages/calendar1.png')}
-                          style={styles.infoImage}
-                        />
-                        <Text
-                          style={{
-                            color: 'black',
-                            alignSelf: 'center',
-                            fontSize: 14,
-                            marginLeft: 8,
-                          }}>
-                          <Text style={{fontWeight: '600'}}> थपिएको मिति:</Text>{' '}
-                          {item.frmAddedDate}
-                        </Text>
-                      </View>
-                      <View style={{flexDirection: 'row', marginBottom: 10}}>
-                        <Image
-                          source={require('../../Assets/Images/businessman.png')}
-                          style={styles.infoImage}
-                        />
-                        <Text
-                          style={{
-                            color: 'black',
-                            alignSelf: 'center',
-                            fontSize: 14,
-                            marginLeft: 8,
-                          }}>
-                          <Text style={{fontWeight: '600'}}> जग्गा धनी:</Text>{' '}
-                          {item.LandOwner}
-                        </Text>
-                      </View>
-                      <View style={{flexDirection: 'row', marginBottom: 10}}>
-                        <Image
-                          source={require('../../Assets/Images/kitta.png')}
-                          style={styles.infoImage}
-                        />
-                        <Text
-                          style={{
-                            color: 'black',
-                            alignSelf: 'center',
-                            fontSize: 14,
-                            marginLeft: 8,
-                          }}>
-                          <Text style={{fontWeight: '600'}}>
-                            {' '}
-                            कित्ता नम्बर:
-                          </Text>{' '}
-                          {item.KittaNumber}
-                        </Text>
-                      </View>
-                      <KhetiGariyekoCha isCultivated={item.IsCultivated} />
+                      <DialogBox
+                        deletingFarm={item}
+                        dialogBoxVisible={dialogBoxVisible}
+                        setDialogBoxVisible={setDialogBoxVisible}
+                      />
                     </View>
-                    <View style={styles.actionIconContainer}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          setEditingFarmId(item.frmID);
-                          setModalVisible(true);
-                        }}>
-                        <Image
-                          source={require('../../Assets/FarmImages/writing.png')}
-                          style={{width: 28, height: 28, tintColor: 'green'}}
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() => setDialogBoxVisible(true)}>
-                        <Image
-                          source={require('../../Assets/FarmImages/garbage.png')}
-                          style={{
-                            width: 28,
-                            height: 28,
-                            tintColor: 'red',
-                            marginLeft: 15,
-                          }}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                    <DialogBox
-                      deletingFarm={item}
-                      dialogBoxVisible={dialogBoxVisible}
-                      setDialogBoxVisible={setDialogBoxVisible}
-                    />
-                  </View>
+                  </TouchableOpacity>
                 );
               })}
             </View>

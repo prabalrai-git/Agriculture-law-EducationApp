@@ -32,4 +32,10 @@ export const GetListofUserTypes = 'GetListofUserTypes';
 export const GetFarmListByUserCode = 'GetFarmListByUserCode';
 
 export const GetFarmListByFarmId = 'GetFarmListByFarmId';
+
+export const GetAgriType = 'GetAgriType';
+
+export const GetListOfAgroProductByAgriType = 'GetListOfAgroProductByAgriType';
+
+export const InsertUpdateBaaliOfUser = 'InsertUpdateBaaliOfUser';
 // End of Agriculture constants

@@ -12,6 +12,7 @@ import Education from '../screens/Education/Education';
 import Law from '../screens/Law/Law';
 import FarmRegistration from '../screens/Agriculture/FarmRegistration';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Bali from '../screens/Agriculture/Bali';
 
 const Stack = createNativeStackNavigator();
 
@@ -75,6 +76,7 @@ function StackNavigation() {
         <Stack.Screen name="Education" component={Education} />
         <Stack.Screen name="Law" component={Law} />
         <Stack.Screen name="Notification" component={Notification} />
+        <Stack.Screen name="Bali" component={Bali} options={{title: 'बाली'}} />
       </Stack.Navigator>
     </NavigationContainer>
   );

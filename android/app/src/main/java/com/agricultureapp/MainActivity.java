@@ -1,4 +1,4 @@
-package com.agrinepal;
+package com.agricultureapp;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
