@@ -12,12 +12,8 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {RadioButton, SegmentedButtons} from 'react-native-paper';
-import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
-import {
-  getListOfDistricts,
-  GetListofUserTypesApi,
-} from '../../Services/appServices/agricultureService';
+import {SegmentedButtons} from 'react-native-paper';
+import {GetListofUserTypesApi} from '../../Services/appServices/agricultureService';
 import {
   getlistofDisctrictByStateIdApi,
   getListOfStatesApi,
@@ -28,6 +24,7 @@ import {InsertUpdatePersonalInfoApi} from '../../Services/appServices/loginServi
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Feather from 'react-native-vector-icons/Feather';
 import {showMessage} from 'react-native-flash-message';
+import DropdownComponent from '../../Common/DropdownComponent';
 Feather.loadFont();
 const width = Dimensions.get('window').width;
 
@@ -79,7 +76,7 @@ const CreateProfile = ({navigation}) => {
     //   handleValidation('पासवर्डहरू मेल खाँदैनन्', 'validatePassword');
     //   isValid = false;
     // }
-    if (!gender) {
+    if (gender === null || undefined) {
       handleValidation('कृपया लिङ्ग प्रविष्ट गर्नुहोस्', 'gender');
       isValid = false;
     }
@@ -103,7 +100,7 @@ const CreateProfile = ({navigation}) => {
       handleValidation('कृपया वार्ड नम्बर प्रविष्ट गर्नुहोस्', 'ward');
       isValid = false;
     }
-    if (!selectedProfession) {
+    if (selectedProfession === null || undefined) {
       handleValidation(
         'कृपया पेशा प्रकार प्रविष्ट गर्नुहोस्',
         'selectedProfession',
@@ -129,8 +126,8 @@ const CreateProfile = ({navigation}) => {
     getListOfStatesApi(res => {
       if (res) {
         const data = res.map(item => ({
-          id: item.StateId,
-          title: item.StateName,
+          value: item.StateId,
+          label: item.StateName,
         }));
         setStateList(data);
       }
@@ -139,8 +136,8 @@ const CreateProfile = ({navigation}) => {
       console.log('This is profession tp', res);
       if (res) {
         const data = res.map(item => ({
-          id: item.MId,
-          title: item.MemType,
+          value: item.MId,
+          label: item.MemType,
         }));
         setProfessionType(data);
       }
@@ -155,36 +152,37 @@ const CreateProfile = ({navigation}) => {
     if (item) {
       setDistrictsList();
       const data = {
-        stateId: item.id,
+        stateId: item.value,
       };
       getlistofDisctrictByStateIdApi(data, res => {
         if (res) {
           const data = res.map(item => ({
-            id: item.DId,
-            title: item.District,
+            value: item.DId,
+            label: item.District,
           }));
           setDistrictsList(data);
+          // console.log('this is the district data', data);
         }
       });
-      setState(item.title);
+      setState(item.label);
     }
   };
   const onSelectDistrict = item => {
     if (item) {
       setMunicipalityList();
       const data = {
-        districtId: item.id,
+        districtId: item.value,
       };
       getListOfVDCByDistrictIdApi(data, res => {
         if (res) {
           const data = res.map(item => ({
-            id: item.VdcID,
-            title: item.Name,
+            value: item.VdcID,
+            label: item.Name,
           }));
           setMunicipalityList(data);
         }
       });
-      setDistrict(item.title);
+      setDistrict(item.label);
     }
   };
 
@@ -233,7 +231,7 @@ const CreateProfile = ({navigation}) => {
       Age: 10,
       DateofBirth: DOB,
       MobileNo: 9818158171,
-      EmailId: 'praalrai17@gmail.com',
+      EmailId: 'pdsf17@gmail.com',
       District: district,
       VDCMun: municipality,
       WardNo: ward,
@@ -247,6 +245,7 @@ const CreateProfile = ({navigation}) => {
       NationalId: citizenshipNumber,
       UsrPassword: password,
     };
+    console.log(data);
     if (validation) {
       InsertUpdatePersonalInfoApi(data, res => {
         try {
@@ -291,7 +290,7 @@ const CreateProfile = ({navigation}) => {
             textAlign: 'center',
             color: 'black',
             margin: 18,
-            fontSize: 24,
+            fontSize: 18,
             fontWeight: 'bold',
           }}>
           प्रोफाइल सिर्जना{' '}
@@ -349,44 +348,19 @@ const CreateProfile = ({navigation}) => {
         </View>
         <View style={styles.eachContainer}>
           <Text style={styles.label}>लिङ्ग:</Text>
-          <View style={[Platform.select({android: {zIndex: 10}})]}>
-            <AutocompleteDropdown
-              onSelectItem={text => setGender(text?.title)}
-              ChevronIconComponent={
-                <Feather name="chevron-down" size={25} color="black" />
-              }
-              dataSet={[
-                {id: 1, title: 'पुरुष'},
-                {id: 2, title: 'महिला'},
-                {id: 3, title: 'अन्य'},
-              ]}
-              textInputProps={{
-                style: {
-                  color: 'black',
-                  paddingLeft: 18,
-                  // backgroundColor: 'white',
-                  borderRadius: 5,
-                },
-              }}
-              containerStyle={{
-                width: width * 0.73,
-                marginBottom: 8,
-                borderWidth: 0.8,
-                borderColor: 'black',
-                borderRadius: 5,
-              }}
-              rightButtonsContainerStyle={{
-                right: 8,
-                height: 30,
-                // backgroundColor: 'white',
 
-                alignSelf: 'center',
-              }}
-            />
-            {errors.gender && (
-              <Text style={styles.errorTxt}>{errors.gender}</Text>
-            )}
-          </View>
+          <DropdownComponent
+            GenderType={[
+              {value: 1, label: 'पुरुष'},
+              {value: 2, label: 'महिला'},
+              {value: 3, label: 'अन्य'},
+            ]}
+            setGender={setGender}
+            createUser={'createUser'}
+          />
+          {errors.gender && (
+            <Text style={styles.errorTxt}>{errors.gender}</Text>
+          )}
         </View>
         <View style={styles.eachContainer}>
           <Text style={styles.label}>जन्म मिति:</Text>
@@ -472,7 +446,7 @@ const CreateProfile = ({navigation}) => {
         <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
           <View style={{flexDirection: 'column', flexWrap: 'wrap'}}>
             <Text style={styles.label}>प्रदेश:</Text>
-            <View style={[Platform.select({android: {zIndex: 9}})]}>
+            {/* <View style={[Platform.select({android: {zIndex: 9}})]}>
               <AutocompleteDropdown
                 ChevronIconComponent={
                   <Feather name="chevron-down" size={25} color="black" />
@@ -493,10 +467,16 @@ const CreateProfile = ({navigation}) => {
                   borderRadius: 5,
                 }}
               />
-              {errors.state && (
-                <Text style={styles.errorTxt}>{errors.state}</Text>
-              )}
-            </View>
+           
+            </View> */}
+            <DropdownComponent
+              stateList={stateList}
+              AddressForm
+              onSelectState={onSelectState}
+            />
+            {errors.state && (
+              <Text style={styles.errorTxt}>{errors.state}</Text>
+            )}
           </View>
 
           <View style={{flexDirection: 'column', flexWrap: 'wrap'}}>
@@ -508,8 +488,7 @@ const CreateProfile = ({navigation}) => {
                             placeholderTextColor="grey"
 
                         /> */}
-            <View style={[Platform.select({android: {zIndex: 9}})]}>
-              <AutocompleteDropdown
+            {/* <AutocompleteDropdown
                 ChevronIconComponent={
                   <Feather name="chevron-down" size={25} color="black" />
                 }
@@ -528,11 +507,15 @@ const CreateProfile = ({navigation}) => {
                   borderColor: 'black',
                   borderRadius: 5,
                 }}
-              />
-              {errors.district && (
-                <Text style={styles.errorTxt}>{errors.district}</Text>
-              )}
-            </View>
+              /> */}
+            <DropdownComponent
+              AddressForm
+              districtsList={districtsList}
+              onSelectDistrict={onSelectDistrict}
+            />
+            {errors.district && (
+              <Text style={styles.errorTxt}>{errors.district}</Text>
+            )}
           </View>
 
           <View style={{flexDirection: 'column', flexWrap: 'wrap'}}>
@@ -543,7 +526,7 @@ const CreateProfile = ({navigation}) => {
               ]}>
               नगरपालिका/ गाउँपालिका:
             </Text>
-            <View style={[Platform.select({android: {zIndex: 8}})]}>
+            {/* <View style={[Platform.select({android: {zIndex: 8}})]}>
               <AutocompleteDropdown
                 ChevronIconComponent={
                   <Feather name="chevron-down" size={25} color="black" />
@@ -565,10 +548,16 @@ const CreateProfile = ({navigation}) => {
                   borderRadius: 5,
                 }}
               />
-              {errors.municipality && (
-                <Text style={styles.errorTxt}>{errors.municipality}</Text>
-              )}
-            </View>
+            
+            </View> */}
+            <DropdownComponent
+              AddressForm
+              municipalityList={municipalityList}
+              setMunicipality={setMunicipality}
+            />
+            {errors.municipality && (
+              <Text style={styles.errorTxt}>{errors.municipality}</Text>
+            )}
           </View>
 
           <View
@@ -584,10 +573,10 @@ const CreateProfile = ({navigation}) => {
                   styles.input,
                   {
                     width: width * 0.458,
-                    marginTop: 3,
+                    marginTop: 6,
                     borderRadius: 5,
-                    backgroundColor: '#e5ecf2',
-                    borderWidth: 0.8,
+                    backgroundColor: 'white',
+                    borderWidth: 0.5,
                     borderColor: 'black',
                   },
                 ]}
@@ -614,7 +603,7 @@ const CreateProfile = ({navigation}) => {
         </View>
         <View style={styles.eachContainer}>
           <Text style={styles.label}>पेशाको प्रकार:</Text>
-          <View style={[Platform.select({android: {zIndex: 7}})]}>
+          {/* <View style={[Platform.select({android: {zIndex: 7}})]}>
             <AutocompleteDropdown
               ChevronIconComponent={
                 <Feather name="chevron-down" size={25} color="black" />
@@ -635,12 +624,18 @@ const CreateProfile = ({navigation}) => {
                 borderRadius: 5,
               }}
             />
-            {errors.selectedProfession && (
-              <View style={{zIndex: 1}}>
-                <Text style={styles.errorTxt}>{errors.selectedProfession}</Text>
-              </View>
-            )}
-          </View>
+           
+          </View> */}
+          <DropdownComponent
+            ProfessionForm
+            professionType={professionType}
+            setSelectedProfession={setSelectedProfession}
+          />
+          {errors.selectedProfession && (
+            <View style={{zIndex: 1}}>
+              <Text style={styles.errorTxt}>{errors.selectedProfession}</Text>
+            </View>
+          )}
         </View>
         <View style={styles.eachContainer}>
           <Text style={styles.label}>नागरिकता नम्बर:</Text>

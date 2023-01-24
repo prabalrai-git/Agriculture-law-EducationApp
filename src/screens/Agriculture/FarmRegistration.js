@@ -28,6 +28,7 @@ import KhetiGariyekoCha from '../../Common/KhetiGariyekoCha';
 import DialogBox from '../../Common/DialogBox';
 import {showMessage} from 'react-native-flash-message';
 import EmptyFarmAfterFetch from '../../Common/EmptyFarmAfterFetch';
+import DropdownComponent from '../../Common/DropdownComponent';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -57,6 +58,13 @@ const FarmRegistration = ({navigation}) => {
   const [editingFarm, setEditingFarm] = useState();
   const [dialogBoxVisible, setDialogBoxVisible] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
+  const [deletingFarm, setDeletingFarm] = useState();
+
+  //useEffect for debugging
+
+  // useEffect(() => {
+  //   console.log(areaType, 'area type selected');
+  // }, [areaType]);
 
   useEffect(() => {
     getData();
@@ -79,7 +87,7 @@ const FarmRegistration = ({navigation}) => {
       handleValidation('क्षेत्रफल राख्नुहोस्', 'area');
       isValid = false;
     }
-    if (!areaType) {
+    if (!areaType && !editingFarm) {
       handleValidation('क्षेत्र एकाइ छान्नुहोस्', 'areaType');
       isValid = false;
     }
@@ -120,10 +128,10 @@ const FarmRegistration = ({navigation}) => {
   const data = [1, 1, 1];
 
   const AreaType = [
-    {id: 1, title: 'कठ्ठा'},
-    {id: 2, title: 'धुर'},
-    {id: 3, title: 'रोपनी'},
-    {id: 4, title: 'आना'},
+    {value: 1, label: 'कठ्ठा'},
+    {value: 2, label: 'धुर'},
+    {value: 3, label: 'रोपनी'},
+    {value: 4, label: 'आना'},
   ];
 
   const onToggleCultivationSwitch = () => {
@@ -171,7 +179,7 @@ const FarmRegistration = ({navigation}) => {
       frmAddedDate: editingFarm ? editingFarm.frmAddedDate : new Date(),
       frmName: editingFarm ? editingFarm.frmName : fieldName,
       SqId: editingFarm ? editingFarm.SqId : 9,
-      frmAreaUnit: areaType?.title,
+      frmAreaUnit: editingFarm ? editingFarm.frmAreaUnit : areaType,
       IsDeleted: false,
       KittaNumber: editingFarm ? editingFarm.KittaNumber : kittaNumber,
       LandOwner: editingFarm ? editingFarm.LandOwner : fieldOwner,
@@ -250,6 +258,7 @@ const FarmRegistration = ({navigation}) => {
     setModalVisible(false);
     setEditingFarm();
     setEditingFarmId();
+    setErrors({});
   };
 
   return (
@@ -274,8 +283,14 @@ const FarmRegistration = ({navigation}) => {
             <View style={{marginBottom: 100}}>
               {farmList?.map(item => {
                 return (
-                  <TouchableOpacity onPress={() => navigation.navigate('Bali')}>
-                    <View style={styles.farmContainer} key={item.frmID}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate('Bali', {
+                        FarmId: item.frmID,
+                      })
+                    }
+                    key={item.frmID}>
+                    <View style={styles.farmContainer}>
                       <View style={styles.farmInfo}>
                         <Text style={styles.farmName}>{item.frmName}</Text>
                         <View style={{flexDirection: 'row', marginBottom: 10}}>
@@ -328,7 +343,7 @@ const FarmRegistration = ({navigation}) => {
                               {' '}
                               थपिएको मिति:
                             </Text>{' '}
-                            {item.frmAddedDate}
+                            {item.frmAddedDate.split('T')[0]}
                           </Text>
                         </View>
                         <View style={{flexDirection: 'row', marginBottom: 10}}>
@@ -370,6 +385,7 @@ const FarmRegistration = ({navigation}) => {
                       </View>
                       <View style={styles.actionIconContainer}>
                         <TouchableOpacity
+                          style={{height: 40}}
                           onPress={() => {
                             setEditingFarmId(item.frmID);
                             setModalVisible(true);
@@ -380,7 +396,11 @@ const FarmRegistration = ({navigation}) => {
                           />
                         </TouchableOpacity>
                         <TouchableOpacity
-                          onPress={() => setDialogBoxVisible(true)}>
+                          style={{height: 40}}
+                          onPress={() => {
+                            setDialogBoxVisible(true);
+                            setDeletingFarm(item);
+                          }}>
                           <Image
                             source={require('../../Assets/FarmImages/garbage.png')}
                             style={{
@@ -393,7 +413,8 @@ const FarmRegistration = ({navigation}) => {
                         </TouchableOpacity>
                       </View>
                       <DialogBox
-                        deletingFarm={item}
+                        deletingFarm={deletingFarm}
+                        setDeletingFarm={setDeletingFarm}
                         dialogBoxVisible={dialogBoxVisible}
                         setDialogBoxVisible={setDialogBoxVisible}
                       />
@@ -505,16 +526,16 @@ const FarmRegistration = ({navigation}) => {
                       ]}>
                       <Text style={styles.label}>क्षेत्र एकाइ:</Text>
                       <View>
-                        <AutocompleteDropdown
+                        {/* <AutocompleteDropdown
                           onSelectItem={text => setAreaType(text)}
                           initialValue={{
                             id: editingFarm
                               ? AreaType.map(item => {
                                   if (editingFarm.frmAreaUnit === item.title) {
-                                    return console.log(item.id, 'this the id');
+                                    return item.id;
                                   }
                                 })
-                              : null,
+                              : 1,
                           }}
                           dataSet={AreaType}
                           textInputProps={{
@@ -533,6 +554,13 @@ const FarmRegistration = ({navigation}) => {
                             borderColor: 'black',
                             borderRadius: 6,
                           }}
+                        /> */}
+                        <DropdownComponent
+                          areaUnits={AreaType}
+                          setAreaType={setAreaType}
+                          editingFarm={editingFarm}
+                          setEditingFarm={setEditingFarm}
+                          editingFarmId={editingFarmId}
                         />
                         {errors.areaType && (
                           <Text

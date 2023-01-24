@@ -129,29 +129,30 @@ const Login = ({navigation}) => {
 
         console.log('This is the resfsdf', res);
 
-        if (res?.SuccessMsg == true) {
+        if (res) {
           setOpenOTPScreen(true);
           setRegistrationId(res.CreatedId);
         } else {
           // setOpenOTPScreen(true);
-          Alert.alert(
-            'अलर्ट',
-            'इमेल र मोबाइल नम्बर पहिले नै प्रणालीमा अवस्थित छ !!',
-            [
-              // {
-              //   text: 'Cancel',
-              //   onPress: () => console.log('Cancel Pressed'),
-              //   style: 'cancel',
-              // },
-              {
-                text: 'ठिक छ',
-                onPress: () => {
-                  setEmail();
-                  // setUserMobileNumber();
-                },
-              },
-            ],
-          );
+          // Alert.alert(
+          //   'अलर्ट',
+          //   'इमेल र मोबाइल नम्बर पहिले नै प्रणालीमा अवस्थित छ !!',
+          //   [
+          //     // {
+          //     //   text: 'Cancel',
+          //     //   onPress: () => console.log('Cancel Pressed'),
+          //     //   style: 'cancel',
+          //     // },
+          //     {
+          //       text: 'ठिक छ',
+          //       onPress: () => {
+          //         setEmail();
+          //         // setUserMobileNumber();
+          //       },
+          //     },
+          //   ],
+          // );
+          setOpenOTPScreen(true);
         }
       });
     } else {
@@ -174,7 +175,7 @@ const Login = ({navigation}) => {
         setOtpError();
       } else {
         setOtpError('कृपया सही OTP राख्नुहोस् !');
-        // navigation.navigate('CreateProfile');
+        navigation.navigate('CreateProfile');
       }
     });
   };

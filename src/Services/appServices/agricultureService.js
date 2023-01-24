@@ -1,8 +1,10 @@
 import {generateUrlEncodedData} from '../../Helpers/GenerateUrlEncodedData';
 import {
   GetAgriType,
+  GetBreedOfAgroByAgroId,
   GetFarmListByFarmId,
   GetFarmListByUserCode,
+  GetFarmProductionDetailsByFarmId,
   GetListOfAgroProductByAgriType,
   GetListOfDistricts,
   GetListofUserTypes,
@@ -76,7 +78,7 @@ export const GetFarmListByFarmIdApi = async (data, successCallback) => {
 };
 export const GetAgriTypeApi = async (data, successCallback) => {
   try {
-    const response = await fetch(`${GetAgriType}?aId=${data.aId}`);
+    const response = await store(`${GetAgriType}?aId=${data.aId}`);
     if (response?.status === 200) {
       successCallback(response?.data?.AgriTypes);
     } else successCallback([]);
@@ -89,7 +91,7 @@ export const GetListOfAgroProductByAgriTypeApi = async (
   successCallback,
 ) => {
   try {
-    const response = await fetch(
+    const response = await store(
       `${GetListOfAgroProductByAgriType}?agritypeId=${data.agritypeId}`,
     );
     if (response?.status === 200) {
@@ -112,6 +114,34 @@ export const InsertUpdateBaaliOfUserApi = async (data, successCallback) => {
     } else successCallback([]);
   } catch (error) {
     // console.log('errorsssssssssssssssssssssss', error);
+    successCallback([]);
+  }
+};
+
+export const GetBreedOfAgroByAgroIdApi = async (data, successCallback) => {
+  try {
+    const response = await fetch(`${GetBreedOfAgroByAgroId}?BId=${data.BId}`);
+
+    if (response?.status === 200) {
+      successCallback(response?.data?.BreedType);
+    } else successCallback([]);
+  } catch (error) {
+    successCallback([]);
+  }
+};
+export const GetFarmProductionDetailsByFarmIdApi = async (
+  data,
+  successCallback,
+) => {
+  try {
+    const response = await fetch(
+      `${GetFarmProductionDetailsByFarmId}?farmId=${data.farmId}`,
+    );
+
+    if (response?.status === 200) {
+      successCallback(response?.data?.FarmList);
+    } else successCallback([]);
+  } catch (error) {
     successCallback([]);
   }
 };

@@ -9,74 +9,345 @@ import {
   ScrollView,
   TextInput,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {FAB, Portal, Provider} from 'react-native-paper';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import DatePicker from '../../components/DatePicker';
+import {
+  GetAgriTypeApi,
+  GetBreedOfAgroByAgroIdApi,
+  GetListOfAgroProductByAgriTypeApi,
+  InsertUpdateBaaliOfUserApi,
+} from '../../Services/appServices/agricultureService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {showMessage} from 'react-native-flash-message';
+import BaliList from './BaliList';
+import DropdownComponent from '../../Common/DropdownComponent';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
-const Bali = () => {
+const Bali = ({route, navigation}) => {
+  const {FarmId} = route.params;
+
   const [state, setState] = React.useState({open: false});
-  const [DOB, setDOB] = useState(null);
-  const [datePickerVisibility, setDatePickerVisibility] = useState(false);
+  const [datePickerVisibilityStart, setDatePickerVisibilityStart] =
+    useState(false);
+  const [datePickerVisibilityEnd, setDatePickerVisibilityEnd] = useState(false);
   const [modalVisibility, setModalVisiblitiy] = useState(false);
+  const [userCode, setUserCode] = useState();
+  const [errors, setErrors] = useState({});
+  const [reloadList, setReloadList] = useState(false);
+  const [editingProduct, setEditingProduct] = useState();
+  const [reloadForEdit, setReloadForEdit] = useState(false);
+
+  // Dropdown state
+
+  const [agriType, setAgriType] = useState();
+  const [baliType, setBaliType] = useState();
+  const [breedType, setBreedType] = useState();
+
+  // Dropdown state on editingProduct
+
+  // const [editAgriType, setEditAgriType] = useState();
+  const [editBaliType, setEditBaliType] = useState();
+  const [editBreedType, setEditBreedType] = useState();
+  const [newState, setNewState] = useState([]);
+
+  // form states
+  const [farmTypeId, setFarmTypeId] = useState(); // As Bali prakar in the form
+  const [cropId, setCropId] = useState();
+  const [breedId, setBreedId] = useState();
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
 
   const onStateChange = ({open}) => setState({open});
-
   const {open} = state;
+
+  useEffect(() => {
+    const data = {
+      aId: 0,
+    };
+
+    GetAgriTypeApi(data, res => {
+      // console.log(res.length, 'this is res');
+      if (res.length > 0) {
+        const data = res.map(item => ({
+          value: item.CtypID,
+          label: item.CTypName,
+        }));
+        setAgriType(data);
+      }
+    });
+    getData();
+  }, [modalVisibility]);
+
+  const handleValidation = (errorText, inputFieldName) => {
+    setErrors(preState => ({...preState, [inputFieldName]: errorText}));
+  };
+
+  const validate = () => {
+    let isValid = true;
+    if (!farmTypeId) {
+      handleValidation('बालीको प्रकार राख्नुहोस्', 'AgriType');
+      isValid = false;
+    }
+    if (!cropId) {
+      handleValidation('बालीको नाम राख्नुहोस्', 'AgriName');
+      isValid = false;
+    }
+    if (!breedId) {
+      handleValidation('बालीको जाति छान्नुहोस्', 'AgriBreed');
+      isValid = false;
+    }
+    if (!endDate) {
+      handleValidation('मिति राख्नुहोस्', 'AgriDate');
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
+  const onSelectAgriType = text => {
+    setFarmTypeId(text?.value);
+    const data = {
+      agritypeId: text?.value,
+    };
+    GetListOfAgroProductByAgriTypeApi(data, res => {
+      setBaliType();
+      if (res?.length > 0) {
+        const data = res.map(item => ({
+          value: item.cropID,
+          label: item.cropName,
+        }));
+        console.log(data, 'this ist he agri type');
+        setBaliType(data);
+      }
+    });
+  };
+
+  const onSelectBaliType = text => {
+    setCropId(text?.value);
+    const data = {
+      BId: text?.value,
+    };
+    GetBreedOfAgroByAgroIdApi(data, res => {
+      setBreedType();
+      if (res?.length > 0) {
+        const data = res.map(item => ({
+          value: item.BId,
+          label: item.BreedType,
+        }));
+        setBreedType(data);
+        console.log(data, 'this is the data');
+      }
+    });
+  };
+
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('userCode');
+      if (value !== null) {
+        // value previously stored
+        // console.log(value, 'this is the value form async storage');
+        setUserCode(value);
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+
+  // useEffect(() => {
+  //   console.log(
+  //     editBreedType,
+  //     'editBalitType1111111111111111111111111111111111111111',
+  //     editBaliType,
+  //     'Theses are edit b ali type and breed ttpevcxvxcvxcvx',
+  //     newState,
+  //   );
+  // }, [modalVisibility]);
+
+  const onSelectAgriTypeForEdit = editingProduct => {
+    const data = {
+      agritypeId: editingProduct?.ProdFarmTypeID,
+    };
+    GetListOfAgroProductByAgriTypeApi(data, res => {
+      setEditBaliType();
+      if (res?.length > 0) {
+        const data = res.map(item => ({
+          value: item.cropID,
+          label: item.cropName,
+        }));
+        setEditBaliType(data);
+      }
+    });
+  };
+  const onSelectBaliTypeForEdit = editingProduct => {
+    // console.log(editingProduct, 'editingProduct form the function');
+    const data = {
+      BId: editingProduct?.ProdCropID,
+    };
+    // console.log('this is BId', data);
+    GetBreedOfAgroByAgroIdApi(data, res => {
+      // setEditBreedType();
+      // console.log(res, 'resssss form the function');
+      if (res?.length > 0) {
+        const data = res.map(item => ({
+          value: item.BId,
+          label: item.BreedType,
+        }));
+        console.log(data, 'data form teh function............');
+        setEditBreedType(data);
+        setNewState(data);
+      }
+    });
+  };
+
+  useEffect(() => {
+    // onSelectBaliTypeForEdit(editingProduct);
+    // onSelectAgriTypeForEdit(editingProduct);
+    // console.log(editingProduct, 'This is the editing product details');
+  }, [reloadForEdit]);
+
+  // post the from data
+
+  const onSubmit = () => {
+    let isValidated = validate();
+    const data = {
+      prodId: editingProduct ? editingProduct.ProdID : 0,
+      prodFarmID: editingProduct ? editingProduct.ProdFarmID : FarmId,
+      prodCropID: editingProduct ? editingProduct.ProdCropID : cropId,
+      prodFarmTypeId: editingProduct
+        ? editingProduct.ProdFarmTypeID
+        : farmTypeId,
+      prodStartDate: editingProduct
+        ? editingProduct.ProdStartDate
+        : new Date().toDateString(),
+      prodEndDate: editingProduct
+        ? editingProduct.ProdEndDate
+        : endDate?.toDateString(),
+      prodStatus: editingProduct ? editingProduct.ProdStatus : 7,
+      SqId: 8,
+      BreedId: editingProduct ? editingProduct.BreedId : breedId,
+      PuserId: editingProduct ? editingProduct.Puserid : userCode,
+      IsDeleted: false,
+    };
+
+    console.log(data, 'editingData');
+    if (isValidated) {
+      InsertUpdateBaaliOfUserApi(data, res => {
+        if (res.SuccessMsg === true) {
+          setReloadList(!reloadList);
+          setBreedId();
+          setCropId();
+          setEndDate();
+          setFarmTypeId();
+          setErrors({});
+          showMessage({
+            message: 'सफल',
+            description: 'नयाँ बाली थपिएको छ',
+            type: 'success',
+            color: 'white',
+            position: 'bottom',
+            statusBarHeight: 40,
+            style: {height: 81},
+            icon: props => (
+              <Image
+                source={require('../../Assets/flashMessage/check.png')}
+                {...props}
+                style={{
+                  tintColor: 'white',
+                  width: 20,
+                  height: 20,
+                  marginRight: 10,
+                }}
+              />
+            ),
+            // titleStyle: {textAlign: 'center'},
+            // textStyle: {textAlign: 'center'},
+          });
+          setModalVisiblitiy(false);
+        }
+      });
+    }
+  };
+
   return (
     <View style={{flex: 1}}>
       <Provider>
         <Text
-          style={{color: 'black', margin: 10, fontSize: 18, fontWeight: '500'}}>
-          थपिएको बलिहारु:
+          style={{
+            color: 'black',
+            margin: 10,
+            fontSize: 18,
+            fontWeight: '500',
+          }}>
+          थपिएको बलिहरु:
         </Text>
-        <Portal>
-          <FAB.Group
-            fabStyle={{backgroundColor: '#4cbb17'}}
-            open={open}
-            visible
-            backdropColor="rgba(0,0,0,0.3)"
-            icon={open ? 'close' : 'menu'}
-            actions={[
-              {
-                icon: 'plus',
-                color: 'white',
-                style: {backgroundColor: 'green'},
-                labelTextColor: 'white',
-                label: 'नयाँ बलि',
-                onPress: () => setModalVisiblitiy(true),
-              },
-              {
-                icon: 'test-tube',
-                style: {backgroundColor: 'green'},
-
-                label: 'माटो परीक्षण',
-                color: 'white',
-                labelTextColor: 'white',
-
-                onPress: () => console.log('Pressed star'),
-              },
-            ]}
-            onStateChange={onStateChange}
-            onPress={() => {
-              if (open) {
-                // do something if the speed dial is open
-              }
-            }}
+        <ScrollView>
+          <BaliList
+            FarmId={FarmId}
+            reloadList={reloadList}
+            setModalVisiblitiy={setModalVisiblitiy}
+            setEditingProduct={setEditingProduct}
+            setReloadForEdit={setReloadForEdit}
+            reloadForEdit={reloadForEdit}
           />
-        </Portal>
+        </ScrollView>
+
+        <View
+          style={{
+            position: 'absolute',
+
+            right: 0,
+            bottom: 0,
+            zIndex: 10,
+            margin: 0,
+            padding: 0,
+          }}>
+          <Portal>
+            <FAB.Group
+              fabStyle={{
+                backgroundColor: '#4cbb17',
+              }}
+              open={open}
+              visible
+              backdropColor="rgba(0,0,0,0.3)"
+              icon={open ? 'close' : 'menu'}
+              actions={[
+                {
+                  icon: 'plus',
+                  color: 'white',
+                  style: {backgroundColor: 'green'},
+                  labelTextColor: 'white',
+                  label: 'नयाँ बलि',
+                  onPress: () => setModalVisiblitiy(true),
+                },
+                {
+                  icon: 'test-tube',
+                  style: {backgroundColor: 'green'},
+
+                  label: 'माटो परीक्षण',
+                  color: 'white',
+                  labelTextColor: 'white',
+
+                  onPress: () => console.log('Pressed star'),
+                },
+              ]}
+              onStateChange={onStateChange}
+              onPress={() => {
+                if (open) {
+                  // do something if the speed dial is open
+                }
+              }}
+            />
+          </Portal>
+        </View>
       </Provider>
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
         <Modal
           animationType="fade"
           transparent={true}
-          visible={modalVisibility}
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
-            setModalVisible(!modalVisible);
-          }}>
+          visible={modalVisibility}>
           <View style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.6)'}}>
             <View style={styles.centeredView}>
               <View
@@ -96,9 +367,14 @@ const Bali = () => {
                     fontWeight: '500',
                     marginTop: 10,
                   }}>
-                  बलि थप्नुहोस्:
+                  {editingProduct ? 'बलि सम्पादन' : 'बलि थप्नुहोस्:'}
                 </Text>
-                <TouchableOpacity onPress={() => setModalVisiblitiy(false)}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setModalVisiblitiy(false);
+                    setErrors({});
+                    setEditingProduct();
+                  }}>
                   <Image
                     source={require('../../Assets/FarmImages/close.png')}
                     style={{
@@ -120,16 +396,15 @@ const Bali = () => {
                   }}>
                   <View style={{flexDirection: 'column'}}>
                     <Text style={styles.label}>बलिको प्रकार:</Text>
-                    <View style={[Platform.select({android: {zIndex: 7}})]}>
-                      <AutocompleteDropdown
-                        onSelectItem={text => console.log(text)}
+                    <View style={[Platform.select({android: {zIndex: 10}})]}>
+                      {/* <AutocompleteDropdown
+                        onSelectItem={text => onSelectAgriType(text)}
                         initialValue={{
-                          id: 1,
+                          id: editingProduct
+                            ? editingProduct.ProdFarmTypeID
+                            : '',
                         }}
-                        dataSet={[
-                          {id: 1, title: 'agri'},
-                          {id: 2, title: 'animals'},
-                        ]}
+                        dataSet={agriType}
                         textInputProps={{
                           style: {
                             color: 'black',
@@ -146,38 +421,115 @@ const Bali = () => {
                           borderColor: 'black',
                           borderRadius: 6,
                         }}
+                      /> */}
+                      <DropdownComponent
+                        agriType={agriType}
+                        onSelectAgriType={onSelectAgriType}
+                        editingProduct={editingProduct}
+                        setEditingProduct={setEditingProduct}
                       />
+
+                      {errors.AgriType && (
+                        <Text
+                          style={{
+                            color: 'red',
+                            fontSize: 10,
+                            marginLeft: 15,
+                            marginBottom: 5,
+                          }}>
+                          {errors.AgriType}
+                        </Text>
+                      )}
                     </View>
                   </View>
+
                   <Text style={styles.label}>बलिको नाम:</Text>
-                  <TextInput
-                    style={[styles.input]}
-                    onChangeText={text =>
-                      editingFarm
-                        ? setEditingFarm(prev => {
-                            return {...prev, frmName: text};
-                          })
-                        : setFieldName(text)
-                    }
-                    value={'hello'}
-                    placeholder="खेतको नाम राख्नुहोस्"
-                    placeholderTextColor="grey"
-                  />
+                  <View style={[Platform.select({android: {zIndex: 7}})]}>
+                    {/* <AutocompleteDropdown
+                      onSelectItem={text => onSelectBaliType(text)}
+                      initialValue={{
+                        id: editingProduct ? 1 : '',
+                      }}
+                      dataSet={editBaliType ? editBaliType : baliType}
+                      textInputProps={{
+                        style: {
+                          color: 'black',
+                          paddingLeft: 18,
+
+                          // borderRadius: 10,
+                        },
+                      }}
+                      containerStyle={{
+                        width: width * 0.78,
+                        marginLeft: 8,
+                        marginTop: 6,
+                        borderWidth: 0.7,
+                        borderColor: 'black',
+                        borderRadius: 6,
+                      }}
+                    /> */}
+                    <DropdownComponent
+                      baliType={baliType}
+                      onSelectBaliType={onSelectBaliType}
+                      setBreedId={setBreedId}
+                      editingProduct={editingProduct}
+                      setEditingProduct={setEditingProduct}
+                    />
+                    {errors.AgriName && (
+                      <Text
+                        style={{
+                          color: 'red',
+                          fontSize: 10,
+                          marginLeft: 15,
+                          marginBottom: 5,
+                        }}>
+                        {errors.AgriName}
+                      </Text>
+                    )}
+                  </View>
                   <Text style={styles.label}>बलिको जाति:</Text>
-                  <TextInput
-                    style={[styles.input]}
-                    onChangeText={text =>
-                      editingFarm
-                        ? setEditingFarm(prev => {
-                            return {...prev, frmName: text};
-                          })
-                        : setFieldName(text)
-                    }
-                    value={'hello'}
-                    placeholder="खेतको नाम राख्नुहोस्"
-                    placeholderTextColor="grey"
-                  />
-                  <Text style={styles.label}>मिति:</Text>
+                  <View style={[Platform.select({android: {zIndex: 6}})]}>
+                    {/* <AutocompleteDropdown
+                      onSelectItem={text => setBreedId(text?.id)}
+                      initialValue={{
+                        id: editingProduct ? editingProduct.BreedId : '',
+                      }}
+                      dataSet={editBreedType ? editBreedType : breedType}
+                      textInputProps={{
+                        style: {
+                          color: 'black',
+                          paddingLeft: 18,
+
+                          // borderRadius: 10,
+                        },
+                      }}
+                      containerStyle={{
+                        width: width * 0.78,
+                        marginLeft: 8,
+                        marginTop: 6,
+                        borderWidth: 0.7,
+                        borderColor: 'black',
+                        borderRadius: 6,
+                      }}
+                    /> */}
+                    <DropdownComponent
+                      breedType={breedType}
+                      editingProduct={editingProduct}
+                      setEditingProduct={setEditingProduct}
+                    />
+                    {errors.AgriBreed && (
+                      <Text
+                        style={{
+                          color: 'red',
+                          fontSize: 10,
+                          marginLeft: 15,
+                          marginBottom: 5,
+                        }}>
+                        {errors.AgriBreed}
+                      </Text>
+                    )}
+                  </View>
+                  {/* <Text style={styles.label}>उत्पादन सुरु मिति:</Text>
                   <View style={{width: width * 0.84, flexDirection: 'row'}}>
                     <TextInput
                       editable={false}
@@ -193,8 +545,8 @@ const Bali = () => {
                           borderColor: 'black',
                         },
                       ]}
-                      value={DOB?.toString()}
-                      placeholder="जन्ममिति राख्नुहोस्"
+                      value={startDate?.toString()}
+                      placeholder="उत्पादन सुरु मिति राख्नुहोस्"
                       placeholderTextColor="grey"
                     />
                     <TouchableOpacity
@@ -207,7 +559,7 @@ const Bali = () => {
                         borderRadius: 6,
                         // marginTop: -8,
                       }}
-                      onPress={() => setDatePickerVisibility(true)}>
+                      onPress={() => setDatePickerVisibilityStart(true)}>
                       <Image
                         source={require('../../Assets/FarmImages/calendar1.png')}
                         style={{
@@ -217,16 +569,81 @@ const Bali = () => {
                       />
                     </TouchableOpacity>
                   </View>
-                  {datePickerVisibility && (
+                  {datePickerVisibilityStart && (
                     <DatePicker
-                      setDOB={setDOB}
-                      setDatePickerVisibility={setDatePickerVisibility}
+                      setStartDate={setStartDate}
+                      setDatePickerVisibilityStart={
+                        setDatePickerVisibilityStart
+                      }
                     />
+                  )} */}
+                  <Text style={styles.label}>उत्पादन समाप्ति मिति:</Text>
+                  <View style={{width: width * 0.84, flexDirection: 'row'}}>
+                    <TextInput
+                      editable={false}
+                      selectTextOnFocus={false}
+                      style={[
+                        styles.input,
+                        {
+                          paddingTop: 10,
+                          paddingRight: 0,
+                          paddingBottom: 10,
+                          paddingLeft: 10,
+                          width: width * 0.69,
+                          borderColor: 'black',
+                        },
+                      ]}
+                      value={
+                        editingProduct
+                          ? editingProduct.ProdEndDate
+                          : endDate?.toDateString()
+                      }
+                      placeholder="उत्पादन समाप्ति मिति राख्नुहोस्"
+                      placeholderTextColor="grey"
+                    />
+                    <TouchableOpacity
+                      style={{
+                        alignSelf: 'center',
+                        marginLeft: -4,
+                        padding: 4,
+                        borderColor: 'black',
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        // marginTop: -8,
+                      }}
+                      onPress={() => setDatePickerVisibilityEnd(true)}>
+                      <Image
+                        source={require('../../Assets/FarmImages/calendar1.png')}
+                        style={{
+                          width: 23,
+                          height: 23,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  {datePickerVisibilityEnd && (
+                    <DatePicker
+                      setEndDate={setEndDate}
+                      setDatePickerVisibilityEnd={setDatePickerVisibilityEnd}
+                    />
+                  )}
+                  {errors.AgriDate && (
+                    <Text
+                      style={{
+                        color: 'red',
+                        fontSize: 10,
+                        marginLeft: 15,
+                        marginBottom: 5,
+                      }}>
+                      {errors.AgriDate}
+                    </Text>
                   )}
                 </View>
 
-                <TouchableOpacity style={styles.btnSave}>
-                  <Text style={styles.btnTxt}>थप्नुहोस</Text>
+                <TouchableOpacity style={styles.btnSave} onPress={onSubmit}>
+                  <Text style={styles.btnTxt}>
+                    {editingProduct ? 'सम्पादन' : 'थप्नुहोस'}
+                  </Text>
                 </TouchableOpacity>
               </ScrollView>
             </View>

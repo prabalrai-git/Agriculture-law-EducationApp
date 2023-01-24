@@ -53,24 +53,24 @@ const Dashboard = ({navigation}) => {
       title: 'कानुन',
       navigationPath: 'Law',
     },
-    {
-      id: 4,
-      image: require('../../Assets/FarmImages/Soil.png'),
-      title: 'माटो परीक्षण',
-      navigationPath: 'Dashboard',
-    },
-    {
-      id: 5,
-      image: require('../../Assets/FarmImages/JTA.png'),
-      title: 'JTA संचार',
-      navigationPath: 'Dashboard',
-    },
-    {
-      id: 6,
-      image: require('../../Assets/FarmImages/Expenses.png'),
-      title: 'खर्च ट्र्याकिङ',
-      navigationPath: 'Dashboard',
-    },
+    // {
+    //   id: 4,
+    //   image: require('../../Assets/FarmImages/Soil.png'),
+    //   title: 'माटो परीक्षण',
+    //   navigationPath: 'Dashboard',
+    // },
+    // {
+    //   id: 5,
+    //   image: require('../../Assets/FarmImages/JTA.png'),
+    //   title: 'JTA संचार',
+    //   navigationPath: 'Dashboard',
+    // },
+    // {
+    //   id: 6,
+    //   image: require('../../Assets/FarmImages/Expenses.png'),
+    //   title: 'खर्च ट्र्याकिङ',
+    //   navigationPath: 'Dashboard',
+    // },
   ];
 
   return (

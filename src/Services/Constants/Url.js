@@ -38,4 +38,10 @@ export const GetAgriType = 'GetAgriType';
 export const GetListOfAgroProductByAgriType = 'GetListOfAgroProductByAgriType';
 
 export const InsertUpdateBaaliOfUser = 'InsertUpdateBaaliOfUser';
+
+export const GetBreedOfAgroByAgroId = 'GetBreedOfAgroByAgroId';
+
+export const GetFarmProductionDetailsByFarmId =
+  'GetFarmProductionDetailsByFarmId';
+
 // End of Agriculture constants

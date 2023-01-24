@@ -11,58 +11,119 @@ import {
 } from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 
-import {InsertUpdateFarmApi} from '../Services/appServices/agricultureService';
+import {
+  InsertUpdateBaaliOfUserApi,
+  InsertUpdateFarmApi,
+} from '../Services/appServices/agricultureService';
 
-const DialogBox = ({deletingFarm, dialogBoxVisible, setDialogBoxVisible}) => {
-  //   console.log( deletingFarm);
+const DialogBox = ({
+  deletingFarm,
+  dialogBoxVisible,
+  setDialogBoxVisible,
+  deletingProduct,
+  setDeletingProduct,
+  setDeletingFarm,
+}) => {
+  // console.log(deletingProduct, 'This is deleting product');
 
   const onDelete = () => {
     const deletingFarmData = () => {
       return {...deletingFarm, IsDeleted: true};
     };
 
-    const formData = deletingFarmData();
+    const deletingProductData = () => {
+      return {...deletingProduct, IsDeleted: true};
+    };
+
+    if (deletingFarm) {
+      var formData = deletingFarmData();
+    }
+    if (deletingProduct) {
+      var productformData = deletingProductData();
+      console.log(productformData, 'this is deletinf product data');
+    }
     // console.log('This is the data', formData, validation);
+    if (deletingFarm) {
+      InsertUpdateFarmApi(formData, res => {
+        if (res) {
+          setDeletingFarm();
+          setDialogBoxVisible(false);
+          showMessage({
+            message: 'सफल',
+            description: 'हटाइएको छ',
+            type: 'danger',
+            color: 'white',
+            position: 'bottom',
+            style: {height: 81},
 
-    InsertUpdateFarmApi(formData, res => {
-      if (res) {
-        setDialogBoxVisible(false);
-        showMessage({
-          message: 'सफल',
-          description: 'फार्म हटाइएको छ',
-          type: 'danger',
-          color: 'white',
-          position: 'bottom',
-          style: {height: 81},
+            icon: props => (
+              <Image
+                source={require('../Assets/flashMessage/x-mark.png')}
+                {...props}
+                style={{
+                  tintColor: 'white',
+                  width: 20,
+                  height: 20,
+                  marginRight: 10,
+                }}
+              />
+            ),
+            // titleStyle: {textAlign: 'center'},
+            // textStyle: {textAlign: 'center'},
+          });
+        }
+      });
+    }
+    if (deletingProduct) {
+      InsertUpdateBaaliOfUserApi(productformData, res => {
+        if (res) {
+          setDialogBoxVisible(false);
+          setDeletingProduct();
+          showMessage({
+            message: 'सफल',
+            description: 'हटाइएको छ',
+            type: 'danger',
+            color: 'white',
+            position: 'bottom',
+            style: {height: 81},
 
-          icon: props => (
-            <Image
-              source={require('../Assets/flashMessage/x-mark.png')}
-              {...props}
-              style={{
-                tintColor: 'white',
-                width: 20,
-                height: 20,
-                marginRight: 10,
-              }}
-            />
-          ),
-          // titleStyle: {textAlign: 'center'},
-          // textStyle: {textAlign: 'center'},
-        });
-      }
-    });
+            icon: props => (
+              <Image
+                source={require('../Assets/flashMessage/x-mark.png')}
+                {...props}
+                style={{
+                  tintColor: 'white',
+                  width: 20,
+                  height: 20,
+                  marginRight: 10,
+                }}
+              />
+            ),
+            // titleStyle: {textAlign: 'center'},
+            // textStyle: {textAlign: 'center'},
+          });
+        }
+      });
+    }
   };
 
   return (
     <Modal animationType="fade" transparent={true} visible={dialogBoxVisible}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>तपाईं यो फार्म हटाउन चाहनुहुन्छ?</Text>
+          <Text style={styles.modalText}>तपाईं हटाउन चाहनुहुन्छ?</Text>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => setDialogBoxVisible(false)}>
+              onPress={() => {
+                setDialogBoxVisible(false);
+                if (deletingProduct) {
+                  setDeletingProduct();
+                }
+                if (deletingFarm) {
+                  setDeletingFarm();
+                }
+              }}>
               <Text style={styles.textStyle}>चाहन्न</Text>
             </Pressable>
             <Pressable

@@ -9,18 +9,18 @@ const Agriculture = ({navigation}) => {
       image: require('../../Assets/FarmImages/Farm.png'),
       navigateTo: 'FarmRegistration',
     },
-    {
-      id: 2,
-      name: 'माटो परीक्षण रेकर्ड',
-      image: require('../../Assets/FarmImages/Soil.png'),
-      navigateTo: 'Agriculture',
-    },
-    {
-      id: 3,
-      name: 'फसल / पशु दर्ता',
-      image: require('../../Assets/FarmImages/Crop-animal.png'),
-      navigateTo: 'Agriculture',
-    },
+    // {
+    //   id: 2,
+    //   name: 'माटो परीक्षण रेकर्ड',
+    //   image: require('../../Assets/FarmImages/Soil.png'),
+    //   navigateTo: 'Agriculture',
+    // },
+    // {
+    //   id: 3,
+    //   name: 'फसल / पशु दर्ता',
+    //   image: require('../../Assets/FarmImages/Crop-animal.png'),
+    //   navigateTo: 'Agriculture',
+    // },
     {
       id: 4,
       name: 'खर्च / बिक्री ट्र्याकिंग',
