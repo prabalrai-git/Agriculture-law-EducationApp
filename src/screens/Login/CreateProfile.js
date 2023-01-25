@@ -133,7 +133,7 @@ const CreateProfile = ({navigation}) => {
       }
     });
     GetListofUserTypesApi(res => {
-      console.log('This is profession tp', res);
+      // console.log('This is profession tp', res);
       if (res) {
         const data = res.map(item => ({
           value: item.MId,
@@ -245,12 +245,12 @@ const CreateProfile = ({navigation}) => {
       NationalId: citizenshipNumber,
       UsrPassword: password,
     };
-    console.log(data);
+    // console.log(data);
     if (validation) {
       InsertUpdatePersonalInfoApi(data, res => {
         try {
           if (res?.GuId[0]?.PCode) {
-            console.log(res.GuId[0].PCode);
+            // console.log(res.GuId[0].PCode);
             storeDataToAsyncStorage(res.GuId[0].PCode);
             navigation.navigate('BottomNavigation');
             showMessage({

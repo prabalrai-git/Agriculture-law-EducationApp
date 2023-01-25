@@ -29,6 +29,7 @@ import DialogBox from '../../Common/DialogBox';
 import {showMessage} from 'react-native-flash-message';
 import EmptyFarmAfterFetch from '../../Common/EmptyFarmAfterFetch';
 import DropdownComponent from '../../Common/DropdownComponent';
+import {Dropdown} from 'react-native-element-dropdown';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -59,6 +60,7 @@ const FarmRegistration = ({navigation}) => {
   const [dialogBoxVisible, setDialogBoxVisible] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
   const [deletingFarm, setDeletingFarm] = useState();
+  const [isFocus, setIsFocus] = useState(false);
 
   //useEffect for debugging
 
@@ -108,7 +110,7 @@ const FarmRegistration = ({navigation}) => {
       handleValidation('स्थान विवरण प्राप्त गर्नुहोस्', 'locationDetails');
       isValid = false;
     }
-    console.log(errors, 'These are the errors');
+    // console.log(errors, 'These are the errors');
     return isValid;
   };
 
@@ -127,7 +129,7 @@ const FarmRegistration = ({navigation}) => {
 
   const data = [1, 1, 1];
 
-  const AreaType = [
+  const AreaTypeData = [
     {value: 1, label: 'कठ्ठा'},
     {value: 2, label: 'धुर'},
     {value: 3, label: 'रोपनी'},
@@ -147,7 +149,7 @@ const FarmRegistration = ({navigation}) => {
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         Geolocation.getCurrentPosition(
           position => {
-            console.log(position);
+            // console.log(position);
             setLocationDetails(position);
           },
           error => {
@@ -179,13 +181,13 @@ const FarmRegistration = ({navigation}) => {
       frmAddedDate: editingFarm ? editingFarm.frmAddedDate : new Date(),
       frmName: editingFarm ? editingFarm.frmName : fieldName,
       SqId: editingFarm ? editingFarm.SqId : 9,
-      frmAreaUnit: editingFarm ? editingFarm.frmAreaUnit : areaType,
+      frmAreaUnit: editingFarm ? editingFarm.frmAreaUnit : areaType?.label,
       IsDeleted: false,
       KittaNumber: editingFarm ? editingFarm.KittaNumber : kittaNumber,
       LandOwner: editingFarm ? editingFarm.LandOwner : fieldOwner,
       IsCultivated: isCultivated,
     };
-    console.log('This is the data', formData, validation);
+    // console.log('This is the data', formData, validation);
 
     if (validation) {
       try {
@@ -227,7 +229,7 @@ const FarmRegistration = ({navigation}) => {
               // textStyle: {textAlign: 'center'},
             });
           }
-          console.log(res, 'res from post...');
+          // console.log(res, 'res from post...');
         });
       } catch (error) {
         console.log(error);
@@ -259,6 +261,13 @@ const FarmRegistration = ({navigation}) => {
     setEditingFarm();
     setEditingFarmId();
     setErrors({});
+    setFieldName();
+    setArea();
+    setAreaType();
+    setKittaNumber();
+    setPlace();
+    setFieldOwner();
+    setLocationDetails();
   };
 
   return (
@@ -436,8 +445,12 @@ const FarmRegistration = ({navigation}) => {
             Alert.alert('Modal has been closed.');
             setModalVisible(!modalVisible);
           }}>
-          <View style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.6)'}}>
-            <View style={styles.centeredView}>
+          <View style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.1)'}}>
+            <View
+              style={[
+                styles.centeredView,
+                editingFarm && {height: height * 0.65},
+              ]}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -555,13 +568,57 @@ const FarmRegistration = ({navigation}) => {
                             borderRadius: 6,
                           }}
                         /> */}
-                        <DropdownComponent
-                          areaUnits={AreaType}
-                          setAreaType={setAreaType}
-                          editingFarm={editingFarm}
-                          setEditingFarm={setEditingFarm}
-                          editingFarmId={editingFarmId}
-                        />
+                        {editingFarm ? (
+                          <DropdownComponent
+                            areaUnits={AreaTypeData}
+                            setAreaType={setAreaType}
+                            editingFarm={editingFarm ? editingFarm : null}
+                            setEditingFarm={setEditingFarm}
+                            editingFarmId={editingFarmId}
+                          />
+                        ) : (
+                          <Dropdown
+                            style={{
+                              width: width * 0.4,
+                              margin: 6,
+                              marginTop: 8,
+                              borderColor: 'black',
+                              borderWidth: 0.6,
+                              borderRadius: 5,
+                              height: 40,
+                            }}
+                            placeholderStyle={{
+                              color: 'grey',
+                              fontSize: 14,
+                              paddingLeft: 10,
+                            }}
+                            selectedTextStyle={{
+                              color: 'black',
+                              paddingLeft: 10,
+                            }}
+                            inputSearchStyle={{
+                              height: 44,
+                              fontSize: 16,
+                              color: 'black',
+                            }}
+                            itemTextStyle={{color: 'black'}}
+                            data={AreaTypeData}
+                            search
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder={!isFocus ? 'चयन गर्नुहोस्' : '...'}
+                            searchPlaceholder="कृपया खोज्नुहोस्..."
+                            value={areaType}
+                            onFocus={() => setIsFocus(true)}
+                            onBlur={() => setIsFocus(false)}
+                            onChange={item => {
+                              setAreaType(item);
+                              setIsFocus(false);
+                            }}
+                          />
+                        )}
+
                         {errors.areaType && (
                           <Text
                             style={{
@@ -861,4 +918,51 @@ const styles = StyleSheet.create({
   actionIconContainer: {
     flexDirection: 'row',
   },
+  container: {
+    backgroundColor: 'white',
+    marginLeft: -1,
+
+    // padding: 16,
+    margin: 8,
+    color: 'black',
+    width: '100%',
+  },
+  dropdown: {
+    height: 40,
+    borderColor: 'black',
+    borderWidth: 0.5,
+    borderRadius: 5,
+    // paddingHorizontal: 8,
+    color: 'black',
+  },
+  // icon: {
+  //   marginRight: 5,
+  //   color: 'black',
+  // },
+  // label: {
+  //   position: 'absolute',
+  //   backgroundColor: 'white',
+  //   left: 22,
+  //   top: 8,
+  //   zIndex: 999,
+  //   paddingHorizontal: 8,
+  //   fontSize: 14,
+  //   color: 'black',
+  // },
+  // placeholderStyle: {
+  //   fontSize: 14,
+  //   color: 'grey',
+  //   paddingLeft: 10,
+  // },
+  // selectedTextStyle: {
+  //   fontSize: 14,
+  //   color: 'black',
+  //   paddingLeft: 10,
+  // },
+
+  // inputSearchStyle: {
+  //   height: 40,
+  //   fontSize: 16,
+  //   color: 'black',
+  // },
 });

@@ -9,6 +9,8 @@ const DatePicker = ({
   setDOB,
   setEndDate,
   setStartDate,
+  setEditingProduct,
+  editingProduct,
 }) => {
   const onDateChange = (e, date) => {
     // console.log(date);
@@ -19,10 +21,16 @@ const DatePicker = ({
     if (setEndDate) {
       setEndDate(date);
       setDatePickerVisibilityEnd(false);
+      console.log('This also ran');
     }
     if (setStartDate) {
       setStartDate(date);
       setDatePickerVisibilityStart(false);
+    }
+    if (setEditingProduct && editingProduct) {
+      console.log(date, 'running');
+      setEditingProduct(prev => ({...prev, ProdEndDate: date}));
+      setDatePickerVisibilityEnd(false);
     }
   };
 

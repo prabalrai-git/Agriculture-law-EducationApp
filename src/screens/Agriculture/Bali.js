@@ -39,6 +39,7 @@ const Bali = ({route, navigation}) => {
   const [reloadList, setReloadList] = useState(false);
   const [editingProduct, setEditingProduct] = useState();
   const [reloadForEdit, setReloadForEdit] = useState(false);
+  const [editChecker, setEditChecker] = useState(false);
 
   // Dropdown state
 
@@ -59,6 +60,42 @@ const Bali = ({route, navigation}) => {
   const [breedId, setBreedId] = useState();
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
+  // edit states
+
+  useEffect(() => {
+    console.log(editingProduct);
+
+    if (editingProduct) {
+      const Productdata = {
+        agritypeId: editingProduct?.ProdFarmTypeID,
+      };
+      GetListOfAgroProductByAgriTypeApi(Productdata, res => {
+        setEditBaliType();
+        if (res?.length > 0) {
+          const data = res.map(item => ({
+            value: item.cropID,
+            label: item.cropName,
+          }));
+          setEditBaliType(data);
+          console.log(data, 'this is bali type');
+        }
+      });
+      const Breeddata = {
+        BId: editingProduct?.ProdCropID,
+      };
+      GetBreedOfAgroByAgroIdApi(Breeddata, res => {
+        setBreedType();
+        if (res?.length > 0) {
+          const data = res.map(item => ({
+            value: item.BId,
+            label: item.BreedType,
+          }));
+          setEditBreedType(data);
+          console.log(data, 'this is bree type');
+        }
+      });
+    }
+  }, [editingProduct]);
 
   const onStateChange = ({open}) => setState({open});
   const {open} = state;
@@ -87,19 +124,19 @@ const Bali = ({route, navigation}) => {
 
   const validate = () => {
     let isValid = true;
-    if (!farmTypeId) {
+    if (!farmTypeId && !editingProduct) {
       handleValidation('बालीको प्रकार राख्नुहोस्', 'AgriType');
       isValid = false;
     }
-    if (!cropId) {
+    if (!cropId && !editingProduct) {
       handleValidation('बालीको नाम राख्नुहोस्', 'AgriName');
       isValid = false;
     }
-    if (!breedId) {
+    if (!breedId && !editingProduct) {
       handleValidation('बालीको जाति छान्नुहोस्', 'AgriBreed');
       isValid = false;
     }
-    if (!endDate) {
+    if (!endDate && !editingProduct) {
       handleValidation('मिति राख्नुहोस्', 'AgriDate');
       isValid = false;
     }
@@ -237,11 +274,16 @@ const Bali = ({route, navigation}) => {
       InsertUpdateBaaliOfUserApi(data, res => {
         if (res.SuccessMsg === true) {
           setReloadList(!reloadList);
+          setEditingProduct();
+          setEditBaliType();
+          setEditBreedType();
           setBreedId();
           setCropId();
           setEndDate();
+          setAgriType();
           setFarmTypeId();
           setErrors({});
+          setEditChecker(false);
           showMessage({
             message: 'सफल',
             description: 'नयाँ बाली थपिएको छ',
@@ -291,6 +333,7 @@ const Bali = ({route, navigation}) => {
             setEditingProduct={setEditingProduct}
             setReloadForEdit={setReloadForEdit}
             reloadForEdit={reloadForEdit}
+            setEditChecker={setEditChecker}
           />
         </ScrollView>
 
@@ -374,6 +417,10 @@ const Bali = ({route, navigation}) => {
                     setModalVisiblitiy(false);
                     setErrors({});
                     setEditingProduct();
+                    setEditChecker(false);
+                    setEditBaliType();
+                    setEditBreedType();
+                    setAgriType();
                   }}>
                   <Image
                     source={require('../../Assets/FarmImages/close.png')}
@@ -471,9 +518,10 @@ const Bali = ({route, navigation}) => {
                     <DropdownComponent
                       baliType={baliType}
                       onSelectBaliType={onSelectBaliType}
-                      setBreedId={setBreedId}
                       editingProduct={editingProduct}
                       setEditingProduct={setEditingProduct}
+                      editBaliType={editBaliType}
+                      editChecker={editChecker}
                     />
                     {errors.AgriName && (
                       <Text
@@ -516,6 +564,9 @@ const Bali = ({route, navigation}) => {
                       breedType={breedType}
                       editingProduct={editingProduct}
                       setEditingProduct={setEditingProduct}
+                      editBreedType={editBreedType}
+                      setBreedId={setBreedId}
+                      editChecker={editChecker}
                     />
                     {errors.AgriBreed && (
                       <Text
@@ -623,7 +674,9 @@ const Bali = ({route, navigation}) => {
                   </View>
                   {datePickerVisibilityEnd && (
                     <DatePicker
-                      setEndDate={setEndDate}
+                      editingProduct={editingProduct}
+                      setEditingProduct={setEditingProduct}
+                      setEndDate={editingProduct ? null : setEndDate}
                       setDatePickerVisibilityEnd={setDatePickerVisibilityEnd}
                     />
                   )}

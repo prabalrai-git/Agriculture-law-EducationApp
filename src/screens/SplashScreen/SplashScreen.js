@@ -21,7 +21,7 @@ const SplashScreen = ({navigation}) => {
         // remove error
       }
 
-      console.log('Done.');
+      // console.log('Done.');
     };
     // removeValue();
     getData();

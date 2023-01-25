@@ -40,7 +40,7 @@ const DialogBox = ({
     }
     if (deletingProduct) {
       var productformData = deletingProductData();
-      console.log(productformData, 'this is deletinf product data');
+      // console.log(productformData, 'this is deletinf product data');
     }
     // console.log('This is the data', formData, validation);
     if (deletingFarm) {

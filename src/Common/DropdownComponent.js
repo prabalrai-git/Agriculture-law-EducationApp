@@ -22,6 +22,7 @@ const DropdownComponent = props => {
   const [editingProductValue, setEditingProductValue] = useState();
 
   const [valueOnDropDown, setValueOnDropDown] = useState();
+  const [selectedItem, setSelectedItem] = useState();
 
   const {
     editingFarm,
@@ -50,6 +51,9 @@ const DropdownComponent = props => {
     setSelectedProfession,
     setMunicipality,
     editingFarmId,
+    editBreedType,
+    editBaliType,
+    editChecker,
   } = props;
 
   // useEffect(() => {
@@ -61,13 +65,14 @@ const DropdownComponent = props => {
     // console.log('This is props', props);
   }, [
     areaUnits,
-    agriType,
     baliType,
     breedType,
     stateList,
     professionType,
     districtsList,
     municipalityList,
+    editBreedType,
+    editBaliType,
   ]);
   const dropDownData = () => {
     setData();
@@ -83,13 +88,13 @@ const DropdownComponent = props => {
       setData(newData);
       return;
     }
-    if (baliType) {
+    if (baliType && !editBaliType) {
       const newData = data.concat(baliType);
       // console.log(baliType, 'thi 1010101010');
       setData(newData);
       return;
     }
-    if (breedType) {
+    if (breedType && !editBreedType) {
       const newData = data.concat(breedType);
       setData(newData);
       return;
@@ -114,17 +119,40 @@ const DropdownComponent = props => {
       const newData = data.concat(municipalityList);
       setData(newData);
     }
+    if (editBaliType) {
+      setData(editBaliType);
+    }
+    if (editBreedType) {
+      setData(editBreedType);
+    }
   };
 
   const onSelect = item => {
-    console.log('running again');
+    console.log('running again', item);
     if (setAreaType) {
-      setAreaType(item?.label);
+      console.log('hello ', item);
+      setAreaType(item);
     }
     if (setEditingFarm && editingFarmId) {
       setEditingFarm(prev => {
         return {...prev, frmAreaUnit: item?.label};
       });
+    }
+    if (setEditingProduct && editBaliType) {
+      if (editChecker) {
+        setEditingProduct(prev => {
+          return {...prev, cropName: item.label, ProdCropID: item.value};
+        });
+      }
+    }
+    if (setEditingProduct && editBreedType) {
+      if (editChecker) {
+        console.log('this ran');
+
+        setEditingProduct(prev => {
+          return {...prev, BreedId: item.value};
+        });
+      }
     }
     if (onSelectAgriType) {
       onSelectAgriType(item);
@@ -133,11 +161,12 @@ const DropdownComponent = props => {
       onSelectBaliType(item);
     }
     if (setBreedId) {
+      console.log(item?.value, 'breed id');
       setBreedId(item?.value);
     }
-    if (editingProduct && onSelectAgriType) {
-      setEditingProduct(prev => ({...prev}));
-    }
+    // if (editingProduct && onSelectAgriType) {
+    //   setEditingProduct(prev => ({...prev, ProdFarmTypeID:}));
+    // }
     if (setGender) {
       setGender(item?.label);
     }
@@ -175,6 +204,7 @@ const DropdownComponent = props => {
 
   useEffect(() => {
     setEditingValueMethod();
+    console.log('hello');
 
     // console.log(editingFarm);
   }, [editingFarm, editingProduct]);
@@ -182,22 +212,25 @@ const DropdownComponent = props => {
     returnDropDownValue();
 
     // console.log(editingFarm);
-  }, [editingProduct]);
+  }, [editingProduct, editingValue, data, editBreedType]);
 
   const returnDropDownValue = () => {
+    // if (areaType) {
+    //   setSelectedItem(agriType);
+    //   // return areaType;
+    //   console.log('selected this', areaType);
+    // }
     if (editingValue) {
       return editingValue[0].value;
     }
     if (editingProduct && agriType) {
       return editingProduct.ProdFarmTypeID;
     }
-    if (editingProduct && baliType) {
+    if (editingProduct && editBaliType) {
       return editingProduct.ProdCropID;
     }
-    if (editingProduct && breedType) {
+    if (editingProduct && editBreedType) {
       return editingProduct.BreedId;
-    } else {
-      return value;
     }
   };
 
@@ -238,7 +271,6 @@ const DropdownComponent = props => {
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={item => {
-          // setValue(item.value);
           onSelect(item);
           setIsFocus(false);
         }}

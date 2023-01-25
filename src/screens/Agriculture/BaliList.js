@@ -21,6 +21,7 @@ const BaliList = ({
   FarmId,
   setReloadForEdit,
   reloadForEdit,
+  setEditChecker,
 }) => {
   const [productionList, setProductionList] = useState();
   const [dialogBoxVisible, setDialogBoxVisible] = useState(false);
@@ -43,9 +44,7 @@ const BaliList = ({
     <View style={styles.mainContainer}>
       {productionList?.map(item => {
         return (
-          <TouchableOpacity
-            key={item.ProdID}
-            onPress={() => console.log(item, 'this is selected item')}>
+          <View key={item.ProdID}>
             <View style={styles.eachContainer}>
               <View>
                 <Text style={styles.itemName}>{item.cropName}</Text>
@@ -90,6 +89,7 @@ const BaliList = ({
                     setEditingProduct(item);
                     setReloadForEdit(!reloadForEdit);
                     setModalVisiblitiy(true);
+                    setEditChecker(true);
                   }}>
                   <Image
                     source={require('../../Assets/FarmImages/writing.png')}
@@ -122,7 +122,7 @@ const BaliList = ({
                 )}
               </View>
             </View>
-          </TouchableOpacity>
+          </View>
         );
       })}
     </View>

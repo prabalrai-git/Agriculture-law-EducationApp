@@ -27,7 +27,7 @@ function StackNavigation() {
       const value = await AsyncStorage.getItem('userCode');
       if (value !== null) {
         // value previously stored
-        console.log(value, 'this is the value form async storage');
+        // console.log(value, 'this is the value form async storage');
         setUserCode(value);
       }
     } catch (e) {
@@ -39,13 +39,13 @@ function StackNavigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
-          options={{headerShown: false}}
-          name="SplashScreen"
-          component={SplashScreen}
-        />
         {userCode == null && (
           <>
+            <Stack.Screen
+              options={{headerShown: false}}
+              name="SplashScreen"
+              component={SplashScreen}
+            />
             <Stack.Screen
               options={{headerShown: false}}
               name="Login"
