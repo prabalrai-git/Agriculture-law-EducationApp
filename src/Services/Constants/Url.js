@@ -44,4 +44,8 @@ export const GetBreedOfAgroByAgroId = 'GetBreedOfAgroByAgroId';
 export const GetFarmProductionDetailsByFarmId =
   'GetFarmProductionDetailsByFarmId';
 
+export const InsertUpdateSoilValuesByUserId = 'InsertUpdateSoilValuesByUserId';
+
+export const GetSoilValuesByFarmIdAndUserId = 'GetSoilValuesByFarmIdAndUserId';
+
 // End of Agriculture constants

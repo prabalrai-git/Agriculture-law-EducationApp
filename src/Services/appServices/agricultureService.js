@@ -8,8 +8,10 @@ import {
   GetListOfAgroProductByAgriType,
   GetListOfDistricts,
   GetListofUserTypes,
+  GetSoilValuesByFarmIdAndUserId,
   InsertUpdateBaaliOfUser,
   InsertUpdateFarm,
+  InsertUpdateSoilValuesByUserId,
 } from '../Constants/Url';
 import {fetch, store} from '../Utils/httpUtil';
 
@@ -117,6 +119,24 @@ export const InsertUpdateBaaliOfUserApi = async (data, successCallback) => {
     successCallback([]);
   }
 };
+export const InsertUpdateSoilValuesByUserIdApi = async (
+  data,
+  successCallback,
+) => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+    // console.log('This is the data', data);
+    let response = await store(InsertUpdateSoilValuesByUserId, data);
+
+    if (response?.status === 200) {
+      // console.log('hello guys');
+      successCallback(response?.data);
+    } else successCallback([]);
+  } catch (error) {
+    // console.log('errorsssssssssssssssssssssss', error);
+    successCallback([]);
+  }
+};
 
 export const GetBreedOfAgroByAgroIdApi = async (data, successCallback) => {
   try {
@@ -140,6 +160,23 @@ export const GetFarmProductionDetailsByFarmIdApi = async (
 
     if (response?.status === 200) {
       successCallback(response?.data?.FarmList);
+    } else successCallback([]);
+  } catch (error) {
+    successCallback([]);
+  }
+};
+
+export const GetSoilValuesByFarmIdAndUserIdApi = async (
+  data,
+  successCallback,
+) => {
+  try {
+    const response = await fetch(
+      `${GetSoilValuesByFarmIdAndUserId}?farmId=${data.farmId}&userCode=${data.userCode}`,
+    );
+
+    if (response?.status === 200) {
+      successCallback(response?.data?.SoilValue);
     } else successCallback([]);
   } catch (error) {
     successCallback([]);

@@ -27,7 +27,9 @@ import DropdownComponent from '../../Common/DropdownComponent';
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 const Bali = ({route, navigation}) => {
-  const {FarmId} = route.params;
+  const {FarmId, FarmName} = route.params;
+
+  // console.log('this is farm name', FarmName);
 
   const [state, setState] = React.useState({open: false});
   const [datePickerVisibilityStart, setDatePickerVisibilityStart] =
@@ -63,7 +65,7 @@ const Bali = ({route, navigation}) => {
   // edit states
 
   useEffect(() => {
-    console.log(editingProduct);
+    // console.log(editingProduct);
 
     if (editingProduct) {
       const Productdata = {
@@ -77,7 +79,7 @@ const Bali = ({route, navigation}) => {
             label: item.cropName,
           }));
           setEditBaliType(data);
-          console.log(data, 'this is bali type');
+          // console.log(data, 'this is bali type');
         }
       });
       const Breeddata = {
@@ -91,7 +93,7 @@ const Bali = ({route, navigation}) => {
             label: item.BreedType,
           }));
           setEditBreedType(data);
-          console.log(data, 'this is bree type');
+          // console.log(data, 'this is bree type');
         }
       });
     }
@@ -156,7 +158,7 @@ const Bali = ({route, navigation}) => {
           value: item.cropID,
           label: item.cropName,
         }));
-        console.log(data, 'this ist he agri type');
+        // console.log(data, 'this ist he agri type');
         setBaliType(data);
       }
     });
@@ -175,7 +177,7 @@ const Bali = ({route, navigation}) => {
           label: item.BreedType,
         }));
         setBreedType(data);
-        console.log(data, 'this is the data');
+        // console.log(data, 'this is the data');
       }
     });
   };
@@ -232,7 +234,7 @@ const Bali = ({route, navigation}) => {
           value: item.BId,
           label: item.BreedType,
         }));
-        console.log(data, 'data form teh function............');
+        // console.log(data, 'data form teh function............');
         setEditBreedType(data);
         setNewState(data);
       }
@@ -269,7 +271,7 @@ const Bali = ({route, navigation}) => {
       IsDeleted: false,
     };
 
-    console.log(data, 'editingData');
+    // console.log(data, 'editingData');
     if (isValidated) {
       InsertUpdateBaaliOfUserApi(data, res => {
         if (res.SuccessMsg === true) {
@@ -318,12 +320,30 @@ const Bali = ({route, navigation}) => {
       <Provider>
         <Text
           style={{
+            color: 'white',
+            // margin: 10,
+            marginBottom: 10,
+            fontSize: 16,
+            fontWeight: '500',
+            backgroundColor: '#4cbb17',
+            width: width,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            padding: 10,
+            // textAlign: 'center',
+            // borderRadius: 5,
+          }}>
+          खेतको नाम: {FarmName}
+        </Text>
+        <Text
+          style={{
             color: 'black',
             margin: 10,
+            marginTop: 0,
             fontSize: 18,
             fontWeight: '500',
           }}>
-          थपिएको बलिहरु:
+          थपिएको बालीहरु:
         </Text>
         <ScrollView>
           <BaliList
@@ -334,6 +354,7 @@ const Bali = ({route, navigation}) => {
             setReloadForEdit={setReloadForEdit}
             reloadForEdit={reloadForEdit}
             setEditChecker={setEditChecker}
+            FarmName={FarmName}
           />
         </ScrollView>
 
@@ -373,7 +394,11 @@ const Bali = ({route, navigation}) => {
                   color: 'white',
                   labelTextColor: 'white',
 
-                  onPress: () => console.log('Pressed star'),
+                  onPress: () =>
+                    navigation.navigate('SoilTesting', {
+                      FarmId: FarmId,
+                      FarmName: FarmName,
+                    }),
                 },
               ]}
               onStateChange={onStateChange}

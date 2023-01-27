@@ -17,48 +17,34 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import ReanimatedCarousel from '../../components/ReanimatedCarousel';
 import '../../../global';
 import DataCards from '../../Common/DataCards';
-import {useRoute} from '@react-navigation/native';
+import {StackActions, useFocusEffect, useRoute} from '@react-navigation/native';
 
 const width = Dimensions.get('window').width;
 
 const Dashboard = ({navigation}) => {
-  const [routeName, setRouteName] = useState();
+  // const [routeName, setRouteName] = useState();
 
-  const route = useRoute();
-  // setTimeout(() => {
-  //     navigation.reset({
-  //         index: 1,
-  //         routes: [{ name: 'Dashboard' }],
-  //     });
-  // }, );
+  // const route = useRoute();
 
+  useFocusEffect(
+    React.useCallback(() => {
+      const backAction = () => {
+        return BackHandler.exitApp();
+      };
+      console.log('hello');
+
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        backAction,
+      );
+
+      return () => backHandler.remove();
+    }, []),
+  );
   useEffect(() => {
-    setRouteName(route.name);
-
     navigation.addListener('beforeRemove', e => {
       e.preventDefault();
-      // navigation.pop(1);
-      if (routeName === 'Dashboard') {
-        const backAction = () => {
-          console.log(route.name, 'helloe');
-          Alert.alert('', 'एपबाट बाहिर निस्कन चाहनुहुन्छ?', [
-            {
-              text: 'चाहन्न',
-              onPress: () => null,
-              style: 'cancel',
-            },
-            {text: 'चाहन्छु', onPress: () => BackHandler.exitApp()},
-          ]);
-          return true;
-        };
-        const backHandler = BackHandler.addEventListener(
-          'hardwareBackPress',
-          backAction,
-        );
-        return () => backHandler.remove();
-      }
-      // clear setInterval here and go back
-      console.log('preventing');
+      //clear setInterval here and go back
     });
   }, []);
 
@@ -120,12 +106,12 @@ const Dashboard = ({navigation}) => {
           <Text
             style={{
               textAlign: 'center',
-              fontSize: 18,
+              fontSize: 15,
               fontWeight: 'bold',
               color: 'white',
               alignSelf: 'center',
             }}>
-            LUNIVA TECH
+            Luniva Technology
           </Text>
         </View>
         <View

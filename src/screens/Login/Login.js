@@ -119,7 +119,7 @@ const Login = ({navigation}) => {
       EntryDate: new Date().toDateString(),
     };
 
-    console.log(data);
+    // console.log(data);
 
     if (isValidated) {
       // console.log('hello world', isValidated);
@@ -127,7 +127,7 @@ const Login = ({navigation}) => {
         // setOpenOTPScreen(true)
         // console.log("This is data", data);
 
-        console.log('This is the resfsdf', res);
+        // console.log('This is the resfsdf', res);
 
         if (res) {
           setOpenOTPScreen(true);
@@ -191,7 +191,7 @@ const Login = ({navigation}) => {
 
         if (confirmation) {
           setConfirm(confirmation);
-          console.log(confirmation);
+          // console.log(confirmation);
         }
       } catch (error) {
         console.log(`Cannot send sms code to your phone: ${error}`);

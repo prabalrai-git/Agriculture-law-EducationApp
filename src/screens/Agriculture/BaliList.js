@@ -22,6 +22,7 @@ const BaliList = ({
   setReloadForEdit,
   reloadForEdit,
   setEditChecker,
+  FarmName,
 }) => {
   const [productionList, setProductionList] = useState();
   const [dialogBoxVisible, setDialogBoxVisible] = useState(false);
@@ -48,6 +49,7 @@ const BaliList = ({
             <View style={styles.eachContainer}>
               <View>
                 <Text style={styles.itemName}>{item.cropName}</Text>
+
                 <View style={styles.eachRow}>
                   <Image
                     style={styles.infoImage}
@@ -78,6 +80,15 @@ const BaliList = ({
                       {' '}
                       {item.ProdEndDate.split('T')[0]}
                     </Text>
+                  </Text>
+                </View>
+                <View style={styles.eachRow}>
+                  <Image
+                    style={styles.infoImage}
+                    source={require('../../Assets/FarmImages/land.png')}
+                  />
+                  <Text style={styles.descText}>
+                    खेतको नाम : <Text style={styles.txt}>{FarmName}</Text>
                   </Text>
                 </View>
               </View>

@@ -281,7 +281,7 @@ const FarmRegistration = ({navigation}) => {
       />
       <Text
         style={{color: 'black', margin: 10, fontSize: 18, fontWeight: '500'}}>
-        दर्ता भएका फार्महरू:
+        दर्ता भएका खेतहरू:
       </Text>
 
       <ScrollView>
@@ -296,6 +296,7 @@ const FarmRegistration = ({navigation}) => {
                     onPress={() =>
                       navigation.navigate('Bali', {
                         FarmId: item.frmID,
+                        FarmName: item.frmName,
                       })
                     }
                     key={item.frmID}>
@@ -442,7 +443,6 @@ const FarmRegistration = ({navigation}) => {
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
             setModalVisible(!modalVisible);
           }}>
           <View style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.1)'}}>

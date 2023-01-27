@@ -6,11 +6,13 @@ const DatePicker = ({
   setDatePickerVisibilityStart,
   setDatePickerVisibilityEnd,
   setDatePickerVisibility,
+  setDatePickerVisibilitySoil,
   setDOB,
   setEndDate,
   setStartDate,
   setEditingProduct,
   editingProduct,
+  setTestDate,
 }) => {
   const onDateChange = (e, date) => {
     // console.log(date);
@@ -21,16 +23,20 @@ const DatePicker = ({
     if (setEndDate) {
       setEndDate(date);
       setDatePickerVisibilityEnd(false);
-      console.log('This also ran');
+      // console.log('This also ran');
     }
     if (setStartDate) {
       setStartDate(date);
       setDatePickerVisibilityStart(false);
     }
     if (setEditingProduct && editingProduct) {
-      console.log(date, 'running');
+      // console.log(date, 'running');
       setEditingProduct(prev => ({...prev, ProdEndDate: date}));
       setDatePickerVisibilityEnd(false);
+    }
+    if (setTestDate) {
+      setDatePickerVisibilitySoil(false);
+      setTestDate(date);
     }
   };
 

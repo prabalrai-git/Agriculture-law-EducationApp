@@ -25,6 +25,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Feather from 'react-native-vector-icons/Feather';
 import {showMessage} from 'react-native-flash-message';
 import DropdownComponent from '../../Common/DropdownComponent';
+
 Feather.loadFont();
 const width = Dimensions.get('window').width;
 
@@ -252,28 +253,29 @@ const CreateProfile = ({navigation}) => {
           if (res?.GuId[0]?.PCode) {
             // console.log(res.GuId[0].PCode);
             storeDataToAsyncStorage(res.GuId[0].PCode);
-            navigation.navigate('BottomNavigation');
-            showMessage({
-              message: 'सफल',
-              description: 'प्रोफाइल सिर्जना गरियो',
-              type: 'success',
-              color: 'white',
-              position: 'bottom',
-              icon: props => (
-                <Image
-                  source={require('../../Assets/flashMessage/check.png')}
-                  {...props}
-                  style={{
-                    tintColor: 'white',
-                    width: 20,
-                    height: 20,
-                    marginRight: 10,
-                  }}
-                />
-              ),
-              // titleStyle: {textAlign: 'center'},
-              // textStyle: {textAlign: 'center'},
-            });
+
+            navigation.navigate('BottomNavigation'),
+              showMessage({
+                message: 'सफल',
+                description: 'प्रोफाइल सिर्जना गरियो',
+                type: 'success',
+                color: 'white',
+                position: 'bottom',
+                icon: props => (
+                  <Image
+                    source={require('../../Assets/flashMessage/check.png')}
+                    {...props}
+                    style={{
+                      tintColor: 'white',
+                      width: 20,
+                      height: 20,
+                      marginRight: 10,
+                    }}
+                  />
+                ),
+                // titleStyle: {textAlign: 'center'},
+                // textStyle: {textAlign: 'center'},
+              });
           }
         } catch (error) {
           console.log(error);

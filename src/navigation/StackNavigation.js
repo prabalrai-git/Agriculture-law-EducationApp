@@ -13,6 +13,7 @@ import Law from '../screens/Law/Law';
 import FarmRegistration from '../screens/Agriculture/FarmRegistration';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Bali from '../screens/Agriculture/Bali';
+import SoilTesting from '../screens/Agriculture/Soil/SoilTesting';
 
 const Stack = createNativeStackNavigator();
 
@@ -38,7 +39,17 @@ function StackNavigation() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: 'green',
+          },
+          headerTitleStyle: {
+            fontWeight: '500',
+            color: 'white',
+          },
+          headerTintColor: '#fff',
+        }}>
         {userCode == null && (
           <>
             <Stack.Screen
@@ -73,10 +84,25 @@ function StackNavigation() {
           component={FarmRegistration}
           options={{title: 'खेती दर्ता'}}
         />
-        <Stack.Screen name="Education" component={Education} />
-        <Stack.Screen name="Law" component={Law} />
-        <Stack.Screen name="Notification" component={Notification} />
+        <Stack.Screen
+          name="Education"
+          component={Education}
+          options={{title: 'शिक्षा'}}
+        />
+        <Stack.Screen name="Law" component={Law} options={{title: 'कानुन'}} />
+        <Stack.Screen
+          name="Notification"
+          component={Notification}
+          options={{title: 'सूचना'}}
+        />
         <Stack.Screen name="Bali" component={Bali} options={{title: 'बाली'}} />
+        <Stack.Screen
+          name="SoilTesting"
+          component={SoilTesting}
+          options={{
+            title: 'माटो परीक्षण',
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

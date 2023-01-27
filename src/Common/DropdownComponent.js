@@ -128,9 +128,9 @@ const DropdownComponent = props => {
   };
 
   const onSelect = item => {
-    console.log('running again', item);
+    // console.log('running again', item);
     if (setAreaType) {
-      console.log('hello ', item);
+      // console.log('hello ', item);
       setAreaType(item);
     }
     if (setEditingFarm && editingFarmId) {
@@ -147,7 +147,7 @@ const DropdownComponent = props => {
     }
     if (setEditingProduct && editBreedType) {
       if (editChecker) {
-        console.log('this ran');
+        // console.log('this ran');
 
         setEditingProduct(prev => {
           return {...prev, BreedId: item.value};
@@ -161,7 +161,7 @@ const DropdownComponent = props => {
       onSelectBaliType(item);
     }
     if (setBreedId) {
-      console.log(item?.value, 'breed id');
+      // console.log(item?.value, 'breed id');
       setBreedId(item?.value);
     }
     // if (editingProduct && onSelectAgriType) {
@@ -204,7 +204,7 @@ const DropdownComponent = props => {
 
   useEffect(() => {
     setEditingValueMethod();
-    console.log('hello');
+    // console.log('hello');
 
     // console.log(editingFarm);
   }, [editingFarm, editingProduct]);
