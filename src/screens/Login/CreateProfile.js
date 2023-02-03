@@ -30,8 +30,6 @@ Feather.loadFont();
 const width = Dimensions.get('window').width;
 
 const CreateProfile = ({navigation}) => {
-  const [text, onChangeText] = useState();
-  const [number, onChangeNumber] = useState(null);
   const [cameraImage, setCameraImage] = useState();
   const [galleryImage, setGalleryImage] = useState();
   const [value, setValue] = React.useState('');

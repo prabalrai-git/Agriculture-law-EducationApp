@@ -21,7 +21,9 @@ import Geolocation from 'react-native-geolocation-service';
 import {
   GetFarmListByFarmIdApi,
   GetFarmListByUserCodeApi,
+  GetFarmTypeApi,
   InsertUpdateFarmApi,
+  InsertUpdateFarmNewApi,
 } from '../../Services/appServices/agricultureService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import KhetiGariyekoCha from '../../Common/KhetiGariyekoCha';
@@ -30,6 +32,8 @@ import {showMessage} from 'react-native-flash-message';
 import EmptyFarmAfterFetch from '../../Common/EmptyFarmAfterFetch';
 import DropdownComponent from '../../Common/DropdownComponent';
 import {Dropdown} from 'react-native-element-dropdown';
+import axios from 'axios';
+import ImagePicker from '../../components/ImagePicker';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -42,11 +46,14 @@ const FarmRegistration = ({navigation}) => {
   // form data states
 
   const [fieldName, setFieldName] = useState();
+  const [fieldType, setFieldType] = useState();
+  const [fieldTypeValue, setFieldTypeValue] = useState();
   const [area, setArea] = useState();
   const [areaType, setAreaType] = useState();
   const [kittaNumber, setKittaNumber] = useState();
   const [place, setPlace] = useState();
   const [fieldOwner, setFieldOwner] = useState();
+  const [lalPurjaImage, setLalPurjaImage] = useState();
 
   // end of form data states
 
@@ -64,9 +71,9 @@ const FarmRegistration = ({navigation}) => {
 
   //useEffect for debugging
 
-  // useEffect(() => {
-  //   console.log(areaType, 'area type selected');
-  // }, [areaType]);
+  useEffect(() => {
+    console.log(lalPurjaImage, 'lalPurjaImage type selected');
+  }, [lalPurjaImage]);
 
   useEffect(() => {
     getData();
@@ -119,7 +126,7 @@ const FarmRegistration = ({navigation}) => {
       const value = await AsyncStorage.getItem('userCode');
       if (value !== null) {
         // value previously stored
-        // console.log(value, 'this is the value form async storage');
+        console.log(value, 'this is the value form async storage');
         setUserCode(value);
       }
     } catch (e) {
@@ -128,13 +135,6 @@ const FarmRegistration = ({navigation}) => {
   };
 
   const data = [1, 1, 1];
-
-  const AreaTypeData = [
-    {value: 1, label: 'कठ्ठा'},
-    {value: 2, label: 'धुर'},
-    {value: 3, label: 'रोपनी'},
-    {value: 4, label: 'आना'},
-  ];
 
   const onToggleCultivationSwitch = () => {
     setIsCultivated(!isCultivated);
@@ -164,78 +164,169 @@ const FarmRegistration = ({navigation}) => {
     }
   };
 
-  const onSubmit = () => {
+  const clearAllState = () => {
+    setFieldName();
+    setArea();
+    setAreaType();
+    setFieldTypeValue();
+    setLalPurjaImage();
+    setKittaNumber();
+    setPlace();
+    setFieldOwner();
+    setLocationDetails();
+    setReload(!reload);
+    setErrors({});
+    setEditingFarm();
+    setEditingFarmId();
+  };
+
+  const onSubmit = async () => {
     let validation = validate();
 
-    let formData = {
-      frmId: editingFarmId ? editingFarmId : 0,
-      frmEstArea: editingFarm ? editingFarm.frmEstArea : area,
-      frmLocation: editingFarm ? editingFarm.frmLocation : place,
-      frmLat: editingFarm
-        ? editingFarm.frmLat
-        : locationDetails?.coords.latitude,
-      FrmLong: editingFarm
-        ? editingFarm.frmLong
-        : locationDetails?.coords.longitude,
-      frmUserId: userCode,
-      frmAddedDate: editingFarm ? editingFarm.frmAddedDate : new Date(),
-      frmName: editingFarm ? editingFarm.frmName : fieldName,
-      SqId: editingFarm ? editingFarm.SqId : 9,
-      frmAreaUnit: editingFarm ? editingFarm.frmAreaUnit : areaType?.label,
-      IsDeleted: false,
-      KittaNumber: editingFarm ? editingFarm.KittaNumber : kittaNumber,
-      LandOwner: editingFarm ? editingFarm.LandOwner : fieldOwner,
-      IsCultivated: isCultivated,
-    };
-    // console.log('This is the data', formData, validation);
+    // let formData = {
+    //   frmId: editingFarmId ? editingFarmId : 0,
+    //   frmEstArea: editingFarm ? editingFarm.frmEstArea : area,
+    //   FilePath: {
+    //     uri: imageFarm,
+    //     name: 'test.jpg',
+    //     type: 'image/jpeg',
+    //   },
+    //   frmLat: editingFarm
+    //     ? editingFarm.frmLat
+    //     : locationDetails?.coords.latitude,
+    //   FrmLong: editingFarm
+    //     ? editingFarm.frmLong
+    //     : locationDetails?.coords.longitude,
+    //   frmLocation: editingFarm ? editingFarm.frmLocation : place,
+    //   frmAreaUnit: editingFarm ? editingFarm.frmAreaUnit : areaType?.label,
+    //   frmAddedDate: editingFarm ? editingFarm.frmAddedDate : new Date(),
+    //   frmName: editingFarm ? editingFarm.frmName : fieldName,
+    //   frmUserId: userCode,
+    //   LandOwner: editingFarm ? editingFarm.LandOwner : fieldOwner,
+    //   KittaNumber: editingFarm ? editingFarm.KittaNumber : kittaNumber,
+    //   IsCultivated: isCultivated,
+    //   IsDeleted: false,
+    //   FarmType: 2,
+    //   SqId: editingFarm ? editingFarm.SqId : 9,
+    // };
+
+    var data = new FormData();
+
+    data.append('frmId', editingFarmId ? editingFarmId : 0);
+    data.append('frmEstArea', editingFarm ? editingFarm.frmEstArea : area);
+    data.append('FilePath', {
+      uri: lalPurjaImage.uri,
+      name: lalPurjaImage.fileName,
+      type: lalPurjaImage.type,
+    });
+    data.append(
+      'frmLat',
+      editingFarm ? editingFarm.frmLat : locationDetails?.coords.latitude,
+    );
+    data.append(
+      'FrmLong',
+      editingFarm ? editingFarm.frmLong : locationDetails?.coords.longitude,
+    );
+    data.append('frmLocation', editingFarm ? editingFarm.frmLocation : place);
+    data.append(
+      'frmAreaUnit',
+      editingFarm ? editingFarm.frmAreaUnit : areaType?.label,
+    );
+    data.append(
+      'frmAddedDate',
+      editingFarm ? editingFarm.frmAddedDate : new Date(),
+    );
+    data.append('frmName', editingFarm ? editingFarm.frmName : fieldName);
+    data.append('frmUserId', userCode);
+    data.append('LandOwner', editingFarm ? editingFarm.LandOwner : fieldOwner);
+    data.append(
+      'KittaNumber',
+      editingFarm ? editingFarm.KittaNumber : kittaNumber,
+    );
+    data.append('IsCultivated', isCultivated);
+    data.append('IsDeleted', false);
+    data.append('FarmType', fieldTypeValue?.value);
+    data.append('SqId', 1);
+
+    console.log('This is the data', data);
+    try {
+      const response = await axios.post(
+        'https://lunivacare.ddns.net/Luniva360Agri/api/luniva360agriapp/InsertUpdateFarmWithFile',
+        data,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+      if (response.data) {
+        clearAllState();
+        setModalVisible(false);
+      }
+    } catch (error) {
+      console.error(error, 'yo');
+    }
 
     if (validation) {
-      try {
-        InsertUpdateFarmApi(formData, res => {
-          if (res) {
-            setModalVisible(false);
-            setFieldName();
-            setArea();
-            setAreaType();
-            setKittaNumber();
-            setPlace();
-            setFieldOwner();
-            setLocationDetails();
-            setReload(!reload);
-            setErrors({});
-            setEditingFarm();
-            setEditingFarmId();
-            showMessage({
-              message: 'सफल',
-              description: 'नयाँ फार्म थपिएको छ',
-              type: 'success',
-              color: 'white',
-              position: 'bottom',
-              statusBarHeight: 40,
-              style: {height: 81},
-              icon: props => (
-                <Image
-                  source={require('../../Assets/flashMessage/check.png')}
-                  {...props}
-                  style={{
-                    tintColor: 'white',
-                    width: 20,
-                    height: 20,
-                    marginRight: 10,
-                  }}
-                />
-              ),
-              // titleStyle: {textAlign: 'center'},
-              // textStyle: {textAlign: 'center'},
-            });
-          }
-          // console.log(res, 'res from post...');
-        });
-      } catch (error) {
-        console.log(error);
-      }
+      // try {
+      //   InsertUpdateFarmApi(formData, res => {
+      //     if (res) {
+      //       setModalVisible(false);
+      //       setFieldName();
+      //       setArea();
+      //       setAreaType();
+      //       setKittaNumber();
+      //       setPlace();
+      //       setFieldOwner();
+      //       setLocationDetails();
+      //       setReload(!reload);
+      //       setErrors({});
+      //       setEditingFarm();
+      //       setEditingFarmId();
+      //       showMessage({
+      //         message: 'सफल',
+      //         description: 'नयाँ फार्म थपिएको छ',
+      //         type: 'success',
+      //         color: 'white',
+      //         position: 'bottom',
+      //         statusBarHeight: 40,
+      //         style: {height: 81},
+      //         icon: props => (
+      //           <Image
+      //             source={require('../../Assets/flashMessage/check.png')}
+      //             {...props}
+      //             style={{
+      //               tintColor: 'white',
+      //               width: 20,
+      //               height: 20,
+      //               marginRight: 10,
+      //             }}
+      //           />
+      //         ),
+      //         // titleStyle: {textAlign: 'center'},
+      //         // textStyle: {textAlign: 'center'},
+      //       });
+      //     }
+      //     // console.log(res, 'res from post...');
+      //   });
+      // } catch (error) {
+      //   console.log(error);
+      // }
     }
   };
+
+  const AreaTypeData = [
+    {value: 1, label: 'कठ्ठा'},
+    {value: 2, label: 'धुर'},
+    {value: 3, label: 'रोपनी'},
+    {value: 4, label: 'आना'},
+  ];
+  useEffect(() => {
+    GetFarmTypeApi(res => {
+      const data = res.map(item => ({value: item.FId, label: item.FarmType}));
+      setFieldType(data);
+    });
+  }, []);
 
   useEffect(() => {
     let data = {
@@ -258,16 +349,7 @@ const FarmRegistration = ({navigation}) => {
 
   const onClose = () => {
     setModalVisible(false);
-    setEditingFarm();
-    setEditingFarmId();
-    setErrors({});
-    setFieldName();
-    setArea();
-    setAreaType();
-    setKittaNumber();
-    setPlace();
-    setFieldOwner();
-    setLocationDetails();
+    clearAllState();
   };
 
   return (
@@ -293,17 +375,18 @@ const FarmRegistration = ({navigation}) => {
               {farmList?.map(item => {
                 return (
                   <TouchableOpacity
-                    onPress={() =>
+                    onPress={() => {
+                      // console.log(item);
                       navigation.navigate('Bali', {
                         FarmId: item.frmID,
                         FarmName: item.frmName,
-                      })
-                    }
+                      });
+                    }}
                     key={item.frmID}>
                     <View style={styles.farmContainer}>
                       <View style={styles.farmInfo}>
                         <Text style={styles.farmName}>{item.frmName}</Text>
-                        <View style={{flexDirection: 'row', marginBottom: 10}}>
+                        <View style={{flexDirection: 'row', marginBottom: 2}}>
                           <Image
                             source={require('../../Assets/FarmImages/land.png')}
                             style={styles.infoImage}
@@ -350,7 +433,6 @@ const FarmRegistration = ({navigation}) => {
                               marginLeft: 8,
                             }}>
                             <Text style={{fontWeight: '600'}}>
-                              {' '}
                               थपिएको मिति:
                             </Text>{' '}
                             {item.frmAddedDate.split('T')[0]}
@@ -506,6 +588,47 @@ const FarmRegistration = ({navigation}) => {
                     value={editingFarm ? editingFarm.frmName : fieldName}
                     placeholder="खेतको नाम राख्नुहोस्"
                     placeholderTextColor={errors.area ? 'red' : 'grey'}
+                  />
+                  <Text style={styles.label}>खेतको प्रकार:</Text>
+                  <Dropdown
+                    style={{
+                      width: width * 0.79,
+                      margin: 6,
+                      marginTop: 8,
+                      borderColor: 'black',
+                      borderWidth: 0.6,
+                      borderRadius: 5,
+                      height: 40,
+                    }}
+                    placeholderStyle={{
+                      color: 'grey',
+                      fontSize: 14,
+                      paddingLeft: 10,
+                    }}
+                    selectedTextStyle={{
+                      color: 'black',
+                      paddingLeft: 10,
+                    }}
+                    inputSearchStyle={{
+                      height: 44,
+                      fontSize: 16,
+                      color: 'black',
+                    }}
+                    itemTextStyle={{color: 'black'}}
+                    data={fieldType}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder={!isFocus ? 'चयन गर्नुहोस्' : '...'}
+                    searchPlaceholder="कृपया खोज्नुहोस्..."
+                    value={fieldTypeValue}
+                    onFocus={() => setIsFocus(true)}
+                    onBlur={() => setIsFocus(false)}
+                    onChange={item => {
+                      setFieldTypeValue(item);
+                      setIsFocus(false);
+                    }}
                   />
                   <View style={{flexDirection: 'row', width: width * 0.78}}>
                     <View
@@ -751,6 +874,7 @@ const FarmRegistration = ({navigation}) => {
                     placeholderTextColor={errors.fieldOwner ? 'red' : 'grey'}
                   />
                 </View>
+                <ImagePicker setLalPurjaImage={setLalPurjaImage} />
                 {!editingFarm && (
                   <>
                     <View style={{flexDirection: 'row'}}>
@@ -841,7 +965,7 @@ const styles = StyleSheet.create({
   centeredView: {
     // flex: 1,
     width: width * 0.85,
-    height: height * 0.7,
+    // height: height * 0.7,
     marginTop: 'auto',
     marginBottom: 'auto',
     marginLeft: 'auto',

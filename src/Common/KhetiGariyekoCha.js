@@ -18,21 +18,22 @@ export default KhetiGariyekoCha;
 const styles = StyleSheet.create({
   isCultivatedTrue: {
     backgroundColor: 'green',
-    padding: 6,
-    borderRadius: 20,
-    width: 110,
+    padding: 3,
+    borderRadius: 10,
+    width: 90,
     marginTop: 3,
   },
   isCultivatedFalse: {
     backgroundColor: '#fca120',
-    padding: 6,
-    borderRadius: 20,
-    width: 110,
+    padding: 3,
+    borderRadius: 10,
+    width: 90,
     marginTop: 3,
   },
   text: {
     textAlign: 'center',
     color: 'white',
     fontWeight: 'bold',
+    fontSize: 12,
   },
 });

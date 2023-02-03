@@ -48,4 +48,34 @@ export const InsertUpdateSoilValuesByUserId = 'InsertUpdateSoilValuesByUserId';
 
 export const GetSoilValuesByFarmIdAndUserId = 'GetSoilValuesByFarmIdAndUserId';
 
+export const InsertUpdateBaaliKharcha = 'InsertUpdateBaaliKharcha';
+
+export const InsertUpdateProductionSalesDetails =
+  'InsertUpdateProductionSalesDetails';
+
+export const GetBaaliKharchaDetailsByUserBaaliId =
+  'GetBaaliKharchaDetailsByUserBaaliId';
+
+export const GetAgroKharchHeadByAgriType = 'GetAgroKharchHeadByAgriType';
+
+export const GetSalesDetailsofActiveProductionByUser =
+  'GetSalesDetailsofActiveProductionByUser';
+
+export const GetSalesUnitList = 'GetSalesUnitList';
+
+export const InsertUpdateFarmersQuery = 'InsertUpdateFarmersQuery';
+
+export const GetListOfQueryByUserid = 'GetListOfQueryByUserid';
+
+export const InsertUpdateFarmWithFile = 'InsertUpdateFarmWithFile';
+
+export const InsertUpdateFarmersQueryWithImageFile =
+  'InsertUpdateFarmersQueryWithImageFile';
+
+export const InsertUpdateCommentsOnQuery = 'InsertUpdateCommentsOnQuery';
+
+export const GetListOfCommentsByQId = 'GetListOfCommentsByQId';
+
+export const GetFarmType = 'GetFarmType';
+
 // End of Agriculture constants

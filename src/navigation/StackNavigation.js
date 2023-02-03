@@ -14,6 +14,12 @@ import FarmRegistration from '../screens/Agriculture/FarmRegistration';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Bali from '../screens/Agriculture/Bali';
 import SoilTesting from '../screens/Agriculture/Soil/SoilTesting';
+import TopTabNavigation from './TopTabNavigation';
+import {View, Text, Image, TouchableOpacity, Dimensions} from 'react-native';
+import Queries from '../screens/Agriculture/JTACommunications/Queries/Queries';
+import Comments from '../screens/Agriculture/JTACommunications/Comments/Comments';
+
+const width = Dimensions.get('window').width;
 
 const Stack = createNativeStackNavigator();
 
@@ -35,6 +41,38 @@ function StackNavigation() {
       // error reading value
       console.log('this is error from sync');
     }
+  };
+
+  const CustomReportHeaderKharchaBikri = () => {
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          width: width * 0.75,
+        }}>
+        <Text
+          style={{
+            color: 'white',
+            fontSize: 20,
+            fontWeight: '500',
+            alignSelf: 'center',
+          }}>
+          बाली खर्च र बिक्री
+        </Text>
+        <TouchableOpacity>
+          <Image
+            source={require('../Assets/FarmImages/compare.png')}
+            style={{
+              tintColor: 'white',
+              width: 35,
+              height: 35,
+              // backgroundColor: 'red',
+            }}
+          />
+        </TouchableOpacity>
+      </View>
+    );
   };
 
   return (
@@ -97,10 +135,29 @@ function StackNavigation() {
         />
         <Stack.Screen name="Bali" component={Bali} options={{title: 'बाली'}} />
         <Stack.Screen
+          name="TopTabNavigation"
+          component={TopTabNavigation}
+          options={{headerTitle: () => <CustomReportHeaderKharchaBikri />}}
+        />
+        <Stack.Screen
           name="SoilTesting"
           component={SoilTesting}
           options={{
             title: 'माटो परीक्षण',
+          }}
+        />
+        <Stack.Screen
+          name="Queries"
+          component={Queries}
+          options={{
+            title: 'जिज्ञासाहरू',
+          }}
+        />
+        <Stack.Screen
+          name="Comments"
+          component={Comments}
+          options={{
+            title: 'टिप्पणीहरू',
           }}
         />
       </Stack.Navigator>

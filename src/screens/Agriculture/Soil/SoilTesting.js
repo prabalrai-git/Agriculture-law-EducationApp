@@ -151,7 +151,8 @@ const SoilTesting = ({route}) => {
       SqId: 13,
       IsDeleted: false,
     };
-    console.log(data);
+    // console.log(data);
+
     if (Validation) {
       InsertUpdateSoilValuesByUserIdApi(data, res => {
         if (res.SuccessMsg) {

@@ -13,6 +13,10 @@ const DatePicker = ({
   setEditingProduct,
   editingProduct,
   setTestDate,
+  setEntryDate,
+  setDateVisibilityBikri,
+  setEntryDateKharcha,
+  setDateVisibilityKharcha,
 }) => {
   const onDateChange = (e, date) => {
     // console.log(date);
@@ -37,6 +41,14 @@ const DatePicker = ({
     if (setTestDate) {
       setDatePickerVisibilitySoil(false);
       setTestDate(date);
+    }
+    if (setEntryDate) {
+      setDateVisibilityBikri(false);
+      setEntryDate(date);
+    }
+    if (setEntryDateKharcha) {
+      setEntryDateKharcha(date);
+      setDateVisibilityKharcha(false);
     }
   };
 

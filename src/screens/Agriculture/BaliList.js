@@ -11,6 +11,7 @@ import {GetFarmProductionDetailsByFarmIdApi} from '../../Services/appServices/ag
 import {useEffect} from 'react';
 import {useState} from 'react';
 import DialogBox from '../../Common/DialogBox';
+import {useNavigation} from '@react-navigation/native';
 
 const width = Dimensions.get('window').width;
 
@@ -27,6 +28,8 @@ const BaliList = ({
   const [productionList, setProductionList] = useState();
   const [dialogBoxVisible, setDialogBoxVisible] = useState(false);
   const [deletingProduct, setDeletingProduct] = useState();
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     const data = {
@@ -45,7 +48,15 @@ const BaliList = ({
     <View style={styles.mainContainer}>
       {productionList?.map(item => {
         return (
-          <View key={item.ProdID}>
+          <TouchableOpacity
+            key={item.ProdID}
+            onPress={() => {
+              // console.log(item);
+              navigation.navigate('TopTabNavigation', {
+                baaliId: item?.ProdCropID,
+                ProdCropID: item?.ProdID,
+              });
+            }}>
             <View style={styles.eachContainer}>
               <View>
                 <Text style={styles.itemName}>{item.cropName}</Text>
@@ -82,7 +93,7 @@ const BaliList = ({
                     </Text>
                   </Text>
                 </View>
-                <View style={styles.eachRow}>
+                {/* <View style={styles.eachRow}>
                   <Image
                     style={styles.infoImage}
                     source={require('../../Assets/FarmImages/land.png')}
@@ -90,7 +101,7 @@ const BaliList = ({
                   <Text style={styles.descText}>
                     खेतको नाम : <Text style={styles.txt}>{FarmName}</Text>
                   </Text>
-                </View>
+                </View> */}
               </View>
               <View style={styles.actionIconContainer}>
                 <TouchableOpacity
@@ -133,7 +144,7 @@ const BaliList = ({
                 )}
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
         );
       })}
     </View>

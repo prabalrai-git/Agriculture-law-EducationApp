@@ -1,16 +1,29 @@
 import {generateUrlEncodedData} from '../../Helpers/GenerateUrlEncodedData';
 import {
   GetAgriType,
+  GetAgroKharchHeadByAgriType,
+  GetBaaliKharchaDetailsByUserBaaliId,
   GetBreedOfAgroByAgroId,
   GetFarmListByFarmId,
   GetFarmListByUserCode,
   GetFarmProductionDetailsByFarmId,
+  GetFarmType,
   GetListOfAgroProductByAgriType,
+  GetListOfCommentsByQId,
   GetListOfDistricts,
+  GetListOfQueryByUserid,
   GetListofUserTypes,
+  GetSalesDetailsofActiveProductionByUser,
+  GetSalesUnitList,
   GetSoilValuesByFarmIdAndUserId,
+  InsertUpdateBaaliKharcha,
   InsertUpdateBaaliOfUser,
+  InsertUpdateCommentsOnQuery,
   InsertUpdateFarm,
+  InsertUpdateFarmersQuery,
+  InsertUpdateFarmersQueryWithImageFile,
+  InsertUpdateFarmWithFile,
+  InsertUpdateProductionSalesDetails,
   InsertUpdateSoilValuesByUserId,
 } from '../Constants/Url';
 import {fetch, store} from '../Utils/httpUtil';
@@ -31,6 +44,21 @@ export const InsertUpdateFarmApi = async (data, successCallback) => {
     // let formData = generateUrlEncodedData(data);
     // console.log('This is the data', data);
     let response = await store(InsertUpdateFarm, data);
+
+    if (response?.status === 200) {
+      // console.log('hello guys');
+      successCallback(response?.data);
+    } else successCallback([]);
+  } catch (error) {
+    // console.log('errorsssssssssssssssssssssss', error);
+    successCallback([]);
+  }
+};
+export const InsertUpdateFarmNewApi = async (data, successCallback) => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+    // console.log('This is the data', data);
+    let response = await store(InsertUpdateFarmWithFile, data);
 
     if (response?.status === 200) {
       // console.log('hello guys');
@@ -177,6 +205,201 @@ export const GetSoilValuesByFarmIdAndUserIdApi = async (
 
     if (response?.status === 200) {
       successCallback(response?.data?.SoilValue);
+    } else successCallback([]);
+  } catch (error) {
+    successCallback([]);
+  }
+};
+
+export const InsertUpdateBaaliKharchaApi = async (data, successCallback) => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+    // console.log('This is the data', data);
+    let response = await store(InsertUpdateBaaliKharcha, data);
+
+    if (response?.status === 200) {
+      // console.log('hello guys');
+      successCallback(response?.data);
+    } else successCallback([]);
+  } catch (error) {
+    // console.log('errorsssssssssssssssssssssss', error);
+    successCallback([]);
+  }
+};
+
+export const InsertUpdateProductionSalesDetailsApi = async (
+  data,
+  successCallback,
+) => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+    // console.log('This is the data', data);
+    let response = await store(InsertUpdateProductionSalesDetails, data);
+
+    if (response?.status === 200) {
+      // console.log('hello guys');
+      successCallback(response?.data);
+    } else successCallback([]);
+  } catch (error) {
+    // console.log('errorsssssssssssssssssssssss', error);
+    successCallback([]);
+  }
+};
+
+export const GetBaaliKharchaDetailsByUserBaaliIdApi = async (
+  data,
+  successCallback,
+) => {
+  try {
+    const response = await fetch(
+      `${GetBaaliKharchaDetailsByUserBaaliId}?userId=${data.userId}&prodId=${data.prodId}&baaliId=${data.baaliId}`,
+    );
+    if (response?.status === 200) {
+      successCallback(response?.data?.Kharcha);
+    } else successCallback([]);
+  } catch (error) {
+    successCallback([]);
+  }
+};
+
+export const GetAgroKharchHeadByAgriTypeApi = async (data, successCallback) => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+
+    let response = await fetch(
+      `${GetAgroKharchHeadByAgriType}?typeId=${data.typeId}`,
+    );
+
+    if (response?.status === 200) {
+      successCallback(response?.data.ExpensesList);
+    } else successCallback([]);
+  } catch (error) {
+    successCallback([]);
+  }
+};
+export const GetSalesDetailsofActiveProductionByUserApi = async (
+  data,
+  successCallback,
+) => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+
+    let response = await fetch(
+      `${GetSalesDetailsofActiveProductionByUser}?userId=${data.userId}`,
+    );
+
+    if (response?.status === 200) {
+      successCallback(response?.data.BikriReport);
+    } else successCallback([]);
+  } catch (error) {
+    successCallback([]);
+  }
+};
+export const GetListOfQueryByUseridApi = async (data, successCallback) => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+
+    let response = await fetch(
+      `${GetListOfQueryByUserid}?userId=${data.userId}`,
+    );
+
+    if (response?.status === 200) {
+      successCallback(response?.data.QueryList);
+    } else successCallback([]);
+  } catch (error) {
+    successCallback([]);
+  }
+};
+export const GetSalesUnitListApi = async (data, successCallback) => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+
+    let response = await fetch(`${GetSalesUnitList}`);
+
+    if (response?.status === 200) {
+      successCallback(response?.data.SalesUnit);
+    } else successCallback([]);
+  } catch (error) {
+    successCallback([]);
+  }
+};
+
+export const InsertUpdateFarmersQueryApi = async (data, successCallback) => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+    // console.log('This is the data', data);
+    let response = await store(InsertUpdateFarmersQuery, data);
+    console.log(response);
+
+    if (response?.status === 200) {
+      // console.log('hello guys');
+      successCallback(response?.data);
+    } else successCallback([]);
+  } catch (error) {
+    // console.log('errorsssssssssssssssssssssss', error);
+    successCallback([]);
+  }
+};
+export const InsertUpdateFarmersQueryWithImageFileApi = async (
+  data,
+  successCallback,
+) => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+    // console.log('This is the data', data);
+    let response = await store(InsertUpdateFarmersQueryWithImageFile, data);
+    console.log(response);
+
+    if (response?.status === 200) {
+      // console.log('hello guys');
+      successCallback(response?.data);
+    } else successCallback([]);
+  } catch (error) {
+    // console.log('errorsssssssssssssssssssssss', error);
+    successCallback([]);
+  }
+};
+export const InsertUpdateCommentsOnQueryApi = async (data, successCallback) => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+    // console.log('This is the data', data);
+    let response = await store(InsertUpdateCommentsOnQuery, data);
+    console.log(response);
+
+    if (response?.status === 200) {
+      // console.log('hello guys');
+      successCallback(response?.data);
+    } else successCallback([]);
+  } catch (error) {
+    // console.log('errorsssssssssssssssssssssss', error);
+    successCallback([]);
+  }
+};
+
+export const GetListOfCommentsByQIdApi = async (data, successCallback) => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+
+    let response = await fetch(
+      `${GetListOfCommentsByQId}?queryId=${data.queryId}`,
+    );
+
+    if (response?.status === 200) {
+      successCallback(response?.data.QueryList);
+    } else successCallback([]);
+  } catch (error) {
+    successCallback([]);
+  }
+};
+
+export const GetFarmTypeApi = async successCallback => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+
+    let response = await fetch(`${GetFarmType}`);
+
+    if (response?.status === 200) {
+      successCallback(response?.data.FarmType);
     } else successCallback([]);
   } catch (error) {
     successCallback([]);

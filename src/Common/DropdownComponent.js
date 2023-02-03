@@ -266,7 +266,7 @@ const DropdownComponent = props => {
         labelField="label"
         valueField="value"
         placeholder={!isFocus ? 'चयन गर्नुहोस्' : '...'}
-        searchPlaceholder="कृपया खोज्नुहोस्..."
+        searchPlaceholder="खोज्नुहोस्..."
         value={returnDropDownValue()}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}

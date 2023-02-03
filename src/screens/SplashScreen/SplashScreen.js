@@ -33,7 +33,7 @@ const SplashScreen = ({navigation}) => {
         // value previously stored
         setTimeout(
           () => navigation.navigate('BottomNavigation', {screen: 'Dashboard'}),
-          3000,
+          1000,
         );
       } else {
         setTimeout(() => navigation.navigate('Login'), 3000);

@@ -11,8 +11,8 @@ const Agriculture = ({navigation}) => {
     },
     {
       id: 2,
-      name: 'ऋण सेवाहरू',
-      image: require('../../Assets/FarmImages/loan.png'),
+      name: 'कृषि बजार',
+      image: require('../../Assets/FarmImages/market.png'),
       navigateTo: 'Agriculture',
     },
     {
@@ -21,17 +21,17 @@ const Agriculture = ({navigation}) => {
       image: require('../../Assets/FarmImages/Expenses.png'),
       navigateTo: 'Agriculture',
     },
-    {
-      id: 3,
-      name: 'बीमा सेवाहरू',
-      image: require('../../Assets/FarmImages/healthcare.png'),
-      navigateTo: 'Agriculture',
-    },
+    // {
+    //   id: 3,
+    //   name: 'बीमा सेवाहरू',
+    //   image: require('../../Assets/FarmImages/healthcare.png'),
+    //   navigateTo: 'Agriculture',
+    // },
     {
       id: 5,
       name: 'JTA संचार',
       image: require('../../Assets/FarmImages/JTA.png'),
-      navigateTo: 'Agriculture',
+      navigateTo: 'Queries',
     },
   ];
 
