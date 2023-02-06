@@ -43,6 +43,7 @@ const Queries = ({navigation}) => {
     };
 
     GetListOfQueryByUseridApi(data, res => {
+      // console.log(res, 'this get res');
       setQueryList(res);
     });
   }, [userCode, reloadQueries]);
@@ -76,8 +77,14 @@ const Queries = ({navigation}) => {
       name: imageValueQuery.fileName,
       type: imageValueQuery.type,
     });
+    // console.log(
+    //   imageValueQuery.uri,
+    //   imageValueQuery.fileName,
+    //   imageValueQuery.type,
+    // );
 
     try {
+      console.log(formData);
       const response = await axios.post(
         'https://lunivacare.ddns.net/Luniva360Agri/api/luniva360agriapp/InsertUpdateFarmersQueryWithImageFile',
         formData,
@@ -87,10 +94,14 @@ const Queries = ({navigation}) => {
           },
         },
       );
+      // console.log(response, '13122222223');
       if (response.data) {
+        console.log(response.data);
         clearAllState();
         setModalVisiblity(false);
         setReloadQueries(!reloadQueries);
+      } else {
+        console.log('something went wrong');
       }
     } catch (error) {
       console.error(error);

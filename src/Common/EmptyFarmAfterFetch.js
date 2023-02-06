@@ -1,16 +1,15 @@
 import {View, Text, Image, StyleSheet} from 'react-native';
 import React from 'react';
 
-const EmptyFarmAfterFetch = () => {
+const EmptyFarmAfterFetch = ({message}) => {
+  console.log(message, 'yo');
   return (
-    <View style={{marginTop: 100}}>
+    <View style={{marginTop: 100, alignSelf: 'center'}}>
       <Image
         source={require('../Assets/FarmImages/box.png')}
         style={styles.image}
       />
-      <Text style={styles.txt}>
-        फार्महरू छैनन् !{'\n'} कृपया नयाँ फार्महरू दर्ता गर्नुहोस् !!
-      </Text>
+      <Text style={styles.txt}>{message}</Text>
     </View>
   );
 };

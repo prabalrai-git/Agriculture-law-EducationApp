@@ -665,8 +665,9 @@ const Bali = ({route, navigation}) => {
                           paddingRight: 0,
                           paddingBottom: 10,
                           paddingLeft: 10,
-                          width: width * 0.69,
+                          width: width * 0.7,
                           borderColor: 'black',
+                          marginLeft: -1,
                         },
                       ]}
                       value={

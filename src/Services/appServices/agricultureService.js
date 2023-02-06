@@ -3,6 +3,9 @@ import {
   GetAgriType,
   GetAgroKharchHeadByAgriType,
   GetBaaliKharchaDetailsByUserBaaliId,
+  GetBajarItemByItemType,
+  GetBajarItemByTypeId,
+  GetBajarItemType,
   GetBreedOfAgroByAgroId,
   GetFarmListByFarmId,
   GetFarmListByUserCode,
@@ -391,6 +394,34 @@ export const GetListOfCommentsByQIdApi = async (data, successCallback) => {
     successCallback([]);
   }
 };
+export const GetBajarItemByItemTypeApi = async (data, successCallback) => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+
+    let response = await fetch(
+      `${GetBajarItemByItemType}?itemTypeId=${data.itemTypeId}`,
+    );
+
+    if (response?.status === 200) {
+      successCallback(response?.data.krishiBajarItem);
+    } else successCallback([]);
+  } catch (error) {
+    successCallback([]);
+  }
+};
+export const GetBajarItemByTypeIdApi = async (data, successCallback) => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+
+    let response = await fetch(`${GetBajarItemByTypeId}?typeId=${data.typeId}`);
+
+    if (response?.status === 200) {
+      successCallback(response?.data.krishiBajarItem);
+    } else successCallback([]);
+  } catch (error) {
+    successCallback([]);
+  }
+};
 
 export const GetFarmTypeApi = async successCallback => {
   try {
@@ -400,6 +431,19 @@ export const GetFarmTypeApi = async successCallback => {
 
     if (response?.status === 200) {
       successCallback(response?.data.FarmType);
+    } else successCallback([]);
+  } catch (error) {
+    successCallback([]);
+  }
+};
+export const GetBajarItemTypeApi = async successCallback => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+
+    let response = await fetch(`${GetBajarItemType}`);
+
+    if (response?.status === 200) {
+      successCallback(response?.data.krishiBajarItemType);
     } else successCallback([]);
   } catch (error) {
     successCallback([]);

@@ -34,6 +34,7 @@ import DropdownComponent from '../../Common/DropdownComponent';
 import {Dropdown} from 'react-native-element-dropdown';
 import axios from 'axios';
 import ImagePicker from '../../components/ImagePicker';
+import mime from 'mime';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -71,9 +72,14 @@ const FarmRegistration = ({navigation}) => {
 
   //useEffect for debugging
 
-  useEffect(() => {
-    console.log(lalPurjaImage, 'lalPurjaImage type selected');
-  }, [lalPurjaImage]);
+  // useEffect(() => {
+  //   console.log(
+  //     lalPurjaImage.uri,
+  //     lalPurjaImage.fileName,
+  //     lalPurjaImage.type,
+  //     'lalPurjaImage type selected',
+  //   );
+  // }, [lalPurjaImage]);
 
   useEffect(() => {
     getData();
@@ -181,7 +187,7 @@ const FarmRegistration = ({navigation}) => {
   };
 
   const onSubmit = async () => {
-    let validation = validate();
+    // let validation = validate();
 
     // let formData = {
     //   frmId: editingFarmId ? editingFarmId : 0,
@@ -210,49 +216,65 @@ const FarmRegistration = ({navigation}) => {
     //   SqId: editingFarm ? editingFarm.SqId : 9,
     // };
 
-    var data = new FormData();
+    var formData = new FormData();
 
-    data.append('frmId', editingFarmId ? editingFarmId : 0);
-    data.append('frmEstArea', editingFarm ? editingFarm.frmEstArea : area);
-    data.append('FilePath', {
-      uri: lalPurjaImage.uri,
+    const newImageUri = 'file:/' + lalPurjaImage.uri.split('file:/').join('');
+
+    console.log(newImageUri, mime.getType(newImageUri), 'yes');
+
+    formData.append('frmId', editingFarmId ? editingFarmId : 0);
+    formData.append('frmEstArea', editingFarm ? editingFarm.frmEstArea : area);
+    formData.append('FilePath', {
+      uri: newImageUri,
       name: lalPurjaImage.fileName,
-      type: lalPurjaImage.type,
+      type: mime.getType(lalPurjaImage.uri),
     });
-    data.append(
+    // console.log(
+    //   lalPurjaImage.uri,
+    //   lalPurjaImage.fileName,
+    //   mime.getType(lalPurjaImage.uri),
+    // );
+    formData.append(
       'frmLat',
       editingFarm ? editingFarm.frmLat : locationDetails?.coords.latitude,
     );
-    data.append(
+    formData.append(
       'FrmLong',
       editingFarm ? editingFarm.frmLong : locationDetails?.coords.longitude,
     );
-    data.append('frmLocation', editingFarm ? editingFarm.frmLocation : place);
-    data.append(
+    formData.append(
+      'frmLocation',
+      editingFarm ? editingFarm.frmLocation : place,
+    );
+    formData.append(
       'frmAreaUnit',
       editingFarm ? editingFarm.frmAreaUnit : areaType?.label,
     );
-    data.append(
+    formData.append(
       'frmAddedDate',
       editingFarm ? editingFarm.frmAddedDate : new Date(),
     );
-    data.append('frmName', editingFarm ? editingFarm.frmName : fieldName);
-    data.append('frmUserId', userCode);
-    data.append('LandOwner', editingFarm ? editingFarm.LandOwner : fieldOwner);
-    data.append(
+    formData.append('frmName', editingFarm ? editingFarm.frmName : fieldName);
+    formData.append('frmUserId', userCode);
+    formData.append(
+      'LandOwner',
+      editingFarm ? editingFarm.LandOwner : fieldOwner,
+    );
+    formData.append(
       'KittaNumber',
       editingFarm ? editingFarm.KittaNumber : kittaNumber,
     );
-    data.append('IsCultivated', isCultivated);
-    data.append('IsDeleted', false);
-    data.append('FarmType', fieldTypeValue?.value);
-    data.append('SqId', 1);
+    formData.append('IsCultivated', isCultivated);
+    formData.append('IsDeleted', false);
+    formData.append('FarmType', fieldTypeValue?.value);
+    formData.append('SqId', 1);
 
-    console.log('This is the data', data);
+    // console.log('This is the formData', formData);
     try {
+      console.log('this the responses12121212111111111111111111111111111111');
       const response = await axios.post(
         'https://lunivacare.ddns.net/Luniva360Agri/api/luniva360agriapp/InsertUpdateFarmWithFile',
-        data,
+        formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
@@ -264,55 +286,57 @@ const FarmRegistration = ({navigation}) => {
         setModalVisible(false);
       }
     } catch (error) {
+      clearAllState();
+      setModalVisible(false);
       console.error(error, 'yo');
     }
 
-    if (validation) {
-      // try {
-      //   InsertUpdateFarmApi(formData, res => {
-      //     if (res) {
-      //       setModalVisible(false);
-      //       setFieldName();
-      //       setArea();
-      //       setAreaType();
-      //       setKittaNumber();
-      //       setPlace();
-      //       setFieldOwner();
-      //       setLocationDetails();
-      //       setReload(!reload);
-      //       setErrors({});
-      //       setEditingFarm();
-      //       setEditingFarmId();
-      //       showMessage({
-      //         message: 'सफल',
-      //         description: 'नयाँ फार्म थपिएको छ',
-      //         type: 'success',
-      //         color: 'white',
-      //         position: 'bottom',
-      //         statusBarHeight: 40,
-      //         style: {height: 81},
-      //         icon: props => (
-      //           <Image
-      //             source={require('../../Assets/flashMessage/check.png')}
-      //             {...props}
-      //             style={{
-      //               tintColor: 'white',
-      //               width: 20,
-      //               height: 20,
-      //               marginRight: 10,
-      //             }}
-      //           />
-      //         ),
-      //         // titleStyle: {textAlign: 'center'},
-      //         // textStyle: {textAlign: 'center'},
-      //       });
-      //     }
-      //     // console.log(res, 'res from post...');
-      //   });
-      // } catch (error) {
-      //   console.log(error);
-      // }
-    }
+    // if (validation) {
+    //   // try {
+    //   //   InsertUpdateFarmApi(formData, res => {
+    //   //     if (res) {
+    //   //       setModalVisible(false);
+    //   //       setFieldName();
+    //   //       setArea();
+    //   //       setAreaType();
+    //   //       setKittaNumber();
+    //   //       setPlace();
+    //   //       setFieldOwner();
+    //   //       setLocationDetails();
+    //   //       setReload(!reload);
+    //   //       setErrors({});
+    //   //       setEditingFarm();
+    //   //       setEditingFarmId();
+    //   //       showMessage({
+    //   //         message: 'सफल',
+    //   //         description: 'नयाँ फार्म थपिएको छ',
+    //   //         type: 'success',
+    //   //         color: 'white',
+    //   //         position: 'bottom',
+    //   //         statusBarHeight: 40,
+    //   //         style: {height: 81},
+    //   //         icon: props => (
+    //   //           <Image
+    //   //             source={require('../../Assets/flashMessage/check.png')}
+    //   //             {...props}
+    //   //             style={{
+    //   //               tintColor: 'white',
+    //   //               width: 20,
+    //   //               height: 20,
+    //   //               marginRight: 10,
+    //   //             }}
+    //   //           />
+    //   //         ),
+    //   //         // titleStyle: {textAlign: 'center'},
+    //   //         // textStyle: {textAlign: 'center'},
+    //   //       });
+    //   //     }
+    //   //     // console.log(res, 'res from post...');
+    //   //   });
+    //   // } catch (error) {
+    //   //   console.log(error);
+    //   // }
+    // }
   };
 
   const AreaTypeData = [
@@ -369,7 +393,9 @@ const FarmRegistration = ({navigation}) => {
       <ScrollView>
         <View style={{flex: 1}}>
           {farmList?.length === 0 ? (
-            <EmptyFarmAfterFetch />
+            <EmptyFarmAfterFetch
+              message={` फार्महरू छैनन् !{'\n'} कृपया नयाँ फार्महरू दर्ता गर्नुहोस् !!`}
+            />
           ) : (
             <View style={{marginBottom: 100}}>
               {farmList?.map(item => {

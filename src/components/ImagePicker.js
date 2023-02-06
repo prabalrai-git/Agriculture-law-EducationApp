@@ -14,6 +14,8 @@ const ImagePicker = ({setImageValueQuery, setLalPurjaImage}) => {
   let options = {
     saveToPhotos: true,
     mediaType: 'photo',
+    maxWidth: 1080,
+    maxHeight: 701,
     // includeBase64: true,
   };
 
@@ -50,6 +52,7 @@ const ImagePicker = ({setImageValueQuery, setLalPurjaImage}) => {
         }
         if (setImageValueQuery) {
           setImageValueQuery(result.assets[0]);
+          // console.log(result.assets[0], 'hello world');
         }
         setImage(result.assets[0].uri);
       }
@@ -66,6 +69,10 @@ const ImagePicker = ({setImageValueQuery, setLalPurjaImage}) => {
       clearAllStates();
       console.log('this is the uri', result);
       if (setLalPurjaImage) {
+        // console.log(
+        //   'helllo  from lalprja selection11111111111111111111111',
+        //   result.assets[0],
+        // );
         setLalPurjaImage(result.assets[0]);
       }
       if (setImageValueQuery) {

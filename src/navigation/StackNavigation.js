@@ -18,10 +18,15 @@ import TopTabNavigation from './TopTabNavigation';
 import {View, Text, Image, TouchableOpacity, Dimensions} from 'react-native';
 import Queries from '../screens/Agriculture/JTACommunications/Queries/Queries';
 import Comments from '../screens/Agriculture/JTACommunications/Comments/Comments';
+import FarmMarket from '../screens/Agriculture/FarmMarket.js/FarmMarket';
+import TopNavigationKrishiBazzar from './TopNavigationKrishiBazzar';
+import ItemFullDescription from '../screens/Agriculture/FarmMarket.js/ItemFullDescription';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 
 const width = Dimensions.get('window').width;
 
 const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
 
 function StackNavigation() {
   const [userCode, setUserCode] = React.useState(null);
@@ -71,6 +76,37 @@ function StackNavigation() {
             }}
           />
         </TouchableOpacity>
+      </View>
+    );
+  };
+  const CustomReportHeaderFarmerMarket = ({navigation}) => {
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          width: width * 0.78,
+        }}>
+        <Text
+          style={{
+            color: 'white',
+            fontSize: 20,
+            fontWeight: '500',
+            alignSelf: 'center',
+          }}>
+          कृषि बजार
+        </Text>
+        {/* <TouchableOpacity onPress={() => setVisible(true)}>
+          <Image
+            source={require('../Assets/Images/list.png')}
+            style={{
+              tintColor: 'white',
+              width: 25,
+              height: 25,
+              // backgroundColor: 'red',
+            }}
+          />
+        </TouchableOpacity> */}
       </View>
     );
   };
@@ -158,6 +194,26 @@ function StackNavigation() {
           component={Comments}
           options={{
             title: 'टिप्पणीहरू',
+          }}
+        />
+
+        <Stack.Screen
+          name="ItemFullDescription"
+          component={ItemFullDescription}
+          options={{
+            title: 'विवरण',
+          }}
+        />
+        <Stack.Screen
+          name="TopNavigationKrishiBazzar"
+          component={TopNavigationKrishiBazzar}
+          options={{
+            headerStyle: {
+              backgroundColor: 'green',
+            },
+            headerTintColor: 'white',
+            title: 'कृषि बजार',
+            headerTitle: () => <CustomReportHeaderFarmerMarket />,
           }}
         />
       </Stack.Navigator>

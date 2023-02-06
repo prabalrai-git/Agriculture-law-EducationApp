@@ -13,7 +13,7 @@ const Agriculture = ({navigation}) => {
       id: 2,
       name: 'कृषि बजार',
       image: require('../../Assets/FarmImages/market.png'),
-      navigateTo: 'Agriculture',
+      navigateTo: 'TopNavigationKrishiBazzar',
     },
     {
       id: 4,

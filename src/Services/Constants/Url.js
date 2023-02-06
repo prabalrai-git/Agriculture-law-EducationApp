@@ -78,4 +78,10 @@ export const GetListOfCommentsByQId = 'GetListOfCommentsByQId';
 
 export const GetFarmType = 'GetFarmType';
 
+export const GetBajarItemType = 'GetBajarItemType';
+
+export const GetBajarItemByItemType = 'GetBajarItemByItemType';
+
+export const GetBajarItemByTypeId = 'GetBajarItemByTypeId';
+
 // End of Agriculture constants
