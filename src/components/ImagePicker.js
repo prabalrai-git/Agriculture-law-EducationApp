@@ -7,7 +7,11 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {use} from 'i18next';
 import {useEffect} from 'react';
 
-const ImagePicker = ({setImageValueQuery, setLalPurjaImage}) => {
+const ImagePicker = ({
+  setImageValueQuery,
+  setLalPurjaImage,
+  setImageKrishiBazzar,
+}) => {
   const [image, setImage] = useState();
   const [value, setValue] = useState();
 
@@ -33,6 +37,9 @@ const ImagePicker = ({setImageValueQuery, setLalPurjaImage}) => {
     if (setLalPurjaImage) {
       setLalPurjaImage();
     }
+    if (setImageKrishiBazzar) {
+      setImageKrishiBazzar();
+    }
   };
 
   const OpenCamera = async () => {
@@ -43,7 +50,7 @@ const ImagePicker = ({setImageValueQuery, setLalPurjaImage}) => {
         PermissionsAndroid.PERMISSIONS.CAMERA,
       );
       if (granted == PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('this is the uri', result);
+        // console.log('this is the uri', result);
         clearAllStates();
 
         const result = await launchCamera(options);
@@ -53,6 +60,9 @@ const ImagePicker = ({setImageValueQuery, setLalPurjaImage}) => {
         if (setImageValueQuery) {
           setImageValueQuery(result.assets[0]);
           // console.log(result.assets[0], 'hello world');
+        }
+        if (setImageKrishiBazzar) {
+          setImageKrishiBazzar(result.assets[0]);
         }
         setImage(result.assets[0].uri);
       }
@@ -64,10 +74,10 @@ const ImagePicker = ({setImageValueQuery, setLalPurjaImage}) => {
     // console.log('pressed')
     try {
       const result = await launchImageLibrary(options);
-      console.log('this is the uri', result);
+      // console.log('this is the uri', result);
 
       clearAllStates();
-      console.log('this is the uri', result);
+      // console.log('this is the uri', result);
       if (setLalPurjaImage) {
         // console.log(
         //   'helllo  from lalprja selection11111111111111111111111',
@@ -77,6 +87,9 @@ const ImagePicker = ({setImageValueQuery, setLalPurjaImage}) => {
       }
       if (setImageValueQuery) {
         setImageValueQuery(result.assets[0]);
+      }
+      if (setImageKrishiBazzar) {
+        setImageKrishiBazzar(result.assets[0]);
       }
       setImage(result.assets[0].uri);
     } catch (error) {

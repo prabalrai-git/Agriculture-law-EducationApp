@@ -82,22 +82,22 @@ const Comments = ({route}) => {
 
   return (
     <View style={{flexDirection: 'column'}}>
-      {ImagePath && (
-        <View style={{height: height * 0.3}}>
-          <Image
-            source={{
-              uri: ImagePath,
-            }}
-            resizeMode="stretch"
-            style={{
-              width: '100%',
-              height: height * 0.27,
-              marginLeft: 'auto',
-              marginRight: 'auto',
-            }}
-          />
-        </View>
-      )}
+      <View style={{height: height * 0.3}}>
+        <Image
+          source={{
+            uri: ImagePath,
+          }}
+          resizeMode="contain"
+          style={{
+            width: '90%',
+            height: height * 0.3,
+            marginTop: 10,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            borderRadius: 5,
+          }}
+        />
+      </View>
 
       <View
         style={{
@@ -106,7 +106,7 @@ const Comments = ({route}) => {
           marginLeft: 'auto',
           marginRight: 'auto',
           flexDirection: 'column',
-          // marginTop: -25,
+          marginTop: 20,
           //   backgroundColor: 'red',
           padding: 10,
           borderRadius: 5,
@@ -161,13 +161,17 @@ const Comments = ({route}) => {
             }}
           />
           <Text style={{color: 'grey', fontSize: 14}}>
-            {CommentCount > 1
-              ? CommentCount + ' टिप्पणीहरू हेर्नुहोस्...'
-              : CommentCount + ' टिप्पणी हेर्नुहोस्...'}
+            टिप्पणीहरू हेर्नुहोस्...
           </Text>
         </TouchableOpacity>
       </View>
-      <Modal animationType="fade" transparent={true} visible={modalVisibility}>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisibility}
+        onRequestClose={() => {
+          setModalVisiblity(false);
+        }}>
         <View style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.6)'}}>
           <View
             style={[
@@ -355,6 +359,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'lightgrey',
     elevation: 1,
+    borderBottomEndRadius: 10,
+    borderBottomLeftRadius: 10,
   },
   centeredView: {
     // flex: 1,
@@ -366,7 +372,7 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
     backgroundColor: 'white',
     elevation: 3,
-    // borderRadius: 10,
+    borderRadius: 10,
   },
   input: {
     height: 35,
@@ -407,7 +413,7 @@ const styles = StyleSheet.create({
   },
   titleTxt: {
     color: 'black',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '400',
     // marginBottom: 2,
   },
@@ -415,6 +421,6 @@ const styles = StyleSheet.create({
     color: 'black',
     textAlign: 'justify',
     color: 'grey',
-    fontSize: 12,
+    fontSize: 14,
   },
 });

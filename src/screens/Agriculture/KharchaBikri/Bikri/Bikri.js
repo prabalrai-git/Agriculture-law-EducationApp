@@ -22,6 +22,7 @@ import {
 } from '../../../../Services/appServices/agricultureService';
 import {showMessage} from 'react-native-flash-message';
 import {Dropdown} from 'react-native-element-dropdown';
+import {log} from 'react-native-reanimated';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -98,8 +99,9 @@ const Bikri = ({route}) => {
       IsDeleted: false,
     };
 
-    // console.log(data);
+    console.log(data);
     InsertUpdateProductionSalesDetailsApi(data, res => {
+      console.log(res);
       if (res.SuccessMsg) {
         clearAllState();
         setModalVisiblity(false);
@@ -203,6 +205,7 @@ const Bikri = ({route}) => {
         <Modal
           animationType="fade"
           transparent={true}
+          onRequestClose={() => setModalVisiblity(false)}
           visible={modalVisibility}>
           <View style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.6)'}}>
             <View style={styles.centeredView}>

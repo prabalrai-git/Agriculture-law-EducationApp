@@ -14,16 +14,146 @@ import ImagePicker from '../../../components/ImagePicker';
 import {useEffect} from 'react';
 import {Dropdown} from 'react-native-element-dropdown';
 import {useState} from 'react';
+import {
+  GetBajarItemByTypeIdApi,
+  GetBajarItemTypeApi,
+} from '../../../Services/appServices/agricultureService';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddMarketItemModal = ({
   setModalVisiblity,
   modalVisibility,
-  itemTypeList,
-  itemIdList,
+  setReload,
+  reload,
 }) => {
   const [isFocus, setIsFocus] = useState(false);
+
+  const [itemTypeList, setItemTypeList] = useState();
+  const [itemIdList, setItemIdList] = useState();
+
+  // form states
+
+  const [itemType, setItemType] = useState();
+  const [item, setItem] = useState();
+  const [quantity, setQuantity] = useState();
+  const [price, setPrice] = useState();
+  const [description, setDescription] = useState();
+  const [imageKrishiBazzar, setImageKrishiBazzar] = useState();
+  const [userCode, setUserCode] = useState();
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('userCode');
+      if (value !== null) {
+        // value previously stored
+        // console.log(value, 'this is the value form async storage');
+        setUserCode(value);
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+
+  // useEffect(() => {
+  //   console.log(imageKrishiBazzar);
+  // }, [imageKrishiBazzar]);
+
+  useEffect(() => {
+    GetBajarItemTypeApi(res => {
+      const data = res.map(item => ({label: item.ItemType, value: item.TId}));
+      setItemTypeList(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    const data = {
+      typeId: itemType?.value,
+    };
+
+    setItemIdList();
+
+    GetBajarItemByTypeIdApi(data, res => {
+      if (res.length > 0) {
+        const data = res.map(item => ({
+          label: item.ItemName,
+          value: item.TId,
+        }));
+        setItemIdList(data);
+      }
+    });
+  }, [itemType]);
+
+  const clearAllState = () => {
+    setDescription();
+    setItemType();
+    setItem();
+    setPrice();
+    setQuantity();
+    setImageKrishiBazzar();
+  };
+
+  const onSubmit = async () => {
+    // new service with image upload
+
+    var formData = new FormData();
+
+    formData.append('kid', 0);
+    formData.append('itemtype', itemType?.value);
+    formData.append('itemid', item?.value);
+    formData.append('quantity', quantity);
+    formData.append('price', price);
+    formData.append('itemdescription', description.trim());
+    formData.append('userid', userCode);
+    formData.append('isactive', true);
+    formData.append('issold', true);
+    formData.append('imagefilepath', {
+      uri: imageKrishiBazzar.uri,
+      name: imageKrishiBazzar.fileName,
+      type: imageKrishiBazzar.type,
+    });
+    // console.log(
+    //   imageValueQuery.uri,
+    //   imageValueQuery.fileName,
+    //   imageValueQuery.type,
+    // );
+
+    try {
+      // console.log(formData);
+      const response = await axios.post(
+        'https://lunivacare.ddns.net/Luniva360Agri/api/luniva360agriapp/InsertUpdateKrishiBajarItemsQueryWithImageFile',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+      // console.log(response, '13122222223');
+      if (response.data) {
+        // console.log(response.data);
+        clearAllState();
+        setModalVisiblity(false);
+        setReload(!reload);
+        //  setReloadQueries(!reloadQueries);
+      } else {
+        console.log('something went wrong');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <Modal animationType="fade" transparent={true} visible={modalVisibility}>
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={modalVisibility}
+      onRequestClose={() => setModalVisiblity(false)}>
       <View style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.6)'}}>
         <View style={styles.centeredView}>
           <View
@@ -106,25 +236,9 @@ const AddMarketItemModal = ({
                   onFocus={() => setIsFocus(true)}
                   onBlur={() => setIsFocus(false)}
                   onChange={item => {
-                    console.log(item);
+                    setItemType(item);
                   }}
                 />
-                {/* <TextInput
-                  style={[
-                    styles.input,
-                    {
-                      paddingTop: 10,
-                      paddingRight: 0,
-                      paddingBottom: 10,
-                      paddingLeft: 10,
-                      width: width * 0.78,
-                      borderColor: 'black',
-                    },
-                  ]}
-                  value={'yo'}
-                  onChangeText={text => console.log(text)}
-                  placeholder="शीर्षक राख्नुहोस्"
-                  placeholderTextColor="grey"></TextInput> */}
               </View>
               <View style={{flexDirection: 'column'}}>
                 <Text style={styles.label}>उत्पादन:</Text>
@@ -164,25 +278,9 @@ const AddMarketItemModal = ({
                   onFocus={() => setIsFocus(true)}
                   onBlur={() => setIsFocus(false)}
                   onChange={item => {
-                    console.log(item);
+                    setItem(item);
                   }}
                 />
-                {/* <TextInput
-                  style={[
-                    styles.input,
-                    {
-                      paddingTop: 10,
-                      paddingRight: 0,
-                      paddingBottom: 10,
-                      paddingLeft: 10,
-                      width: width * 0.78,
-                      borderColor: 'black',
-                    },
-                  ]}
-                  value={'yo'}
-                  onChangeText={text => console.log(text)}
-                  placeholder="शीर्षक राख्नुहोस्"
-                  placeholderTextColor="grey"></TextInput> */}
               </View>
               <View style={{flexDirection: 'row'}}>
                 <View style={{flexDirection: 'column'}}>
@@ -199,10 +297,10 @@ const AddMarketItemModal = ({
                         borderColor: 'black',
                       },
                     ]}
-                    value={'yo'}
+                    value={quantity}
                     keyboardType="numeric"
-                    onChangeText={text => console.log(text)}
-                    placeholder="शीर्षक राख्नुहोस्"
+                    onChangeText={text => setQuantity(text)}
+                    placeholder="मात्रा राख्नुहोस्"
                     placeholderTextColor="grey"></TextInput>
                 </View>
                 <View style={{flexDirection: 'column'}}>
@@ -219,9 +317,10 @@ const AddMarketItemModal = ({
                         borderColor: 'black',
                       },
                     ]}
-                    value={'yo'}
-                    onChangeText={text => console.log(text)}
-                    placeholder="शीर्षक राख्नुहोस्"
+                    value={price}
+                    keyboardType="numeric"
+                    onChangeText={text => setPrice(text)}
+                    placeholder="मूल्य राख्नुहोस्"
                     placeholderTextColor="grey"></TextInput>
                 </View>
               </View>
@@ -242,17 +341,15 @@ const AddMarketItemModal = ({
                     },
                   ]}
                   multiline={true}
-                  value={'yo'}
-                  onChangeText={text => console.log(text)}
+                  value={description}
+                  onChangeText={text => setDescription(text)}
                   placeholder="वर्णन राख्नुहोस्..."
                   placeholderTextColor="grey"></TextInput>
               </View>
-              <ImagePicker />
+              <ImagePicker setImageKrishiBazzar={setImageKrishiBazzar} />
             </View>
 
-            <TouchableOpacity
-              style={styles.btnSave}
-              onPress={() => console.log('hello')}>
+            <TouchableOpacity style={styles.btnSave} onPress={() => onSubmit()}>
               <Text style={styles.btnTxt}>थप्नुहोस्</Text>
             </TouchableOpacity>
           </ScrollView>

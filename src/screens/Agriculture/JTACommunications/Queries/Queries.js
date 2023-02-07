@@ -33,9 +33,10 @@ const Queries = ({navigation}) => {
   useEffect(() => {
     getData();
   }, []);
-  useEffect(() => {
-    console.log('log from imagevalue query', imageValueQuery);
-  }, [imageValueQuery]);
+
+  // useEffect(() => {
+  //   console.log('log from imagevalue query', imageValueQuery);
+  // }, [imageValueQuery]);
 
   useEffect(() => {
     const data = {
@@ -168,7 +169,13 @@ const Queries = ({navigation}) => {
           );
         })}
       </ScrollView>
-      <Modal animationType="fade" transparent={true} visible={modalVisibility}>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisibility}
+        onRequestClose={() => {
+          setModalVisiblity(false);
+        }}>
         <View style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.6)'}}>
           <View style={styles.centeredView}>
             <View

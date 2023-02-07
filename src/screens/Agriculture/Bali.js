@@ -415,6 +415,7 @@ const Bali = ({route, navigation}) => {
         <Modal
           animationType="fade"
           transparent={true}
+          onRequestClose={() => setModalVisiblitiy(false)}
           visible={modalVisibility}>
           <View style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.6)'}}>
             <View style={styles.centeredView}>

@@ -204,7 +204,11 @@ const SoilTesting = ({route}) => {
       <TestedSoilDisplay FarmName={FarmName} soilTestLists={soilTestLists} />
 
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Modal animationType="fade" transparent={true} visible={modalVisible}>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}>
           <View style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.6)'}}>
             <View style={[styles.centeredView]}>
               <View

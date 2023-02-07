@@ -1,3 +1,4 @@
+import {log} from 'react-native-reanimated';
 import {generateUrlEncodedData} from '../../Helpers/GenerateUrlEncodedData';
 import {
   GetAgriType,
@@ -5,6 +6,7 @@ import {
   GetBaaliKharchaDetailsByUserBaaliId,
   GetBajarItemByItemType,
   GetBajarItemByTypeId,
+  GetBajarItemByUserId,
   GetBajarItemType,
   GetBreedOfAgroByAgroId,
   GetFarmListByFarmId,
@@ -287,6 +289,9 @@ export const GetSalesDetailsofActiveProductionByUserApi = async (
   try {
     // let formData = generateUrlEncodedData(data);
 
+    console.log(
+      `${GetSalesDetailsofActiveProductionByUser}?userId=${data.userId}`,
+    );
     let response = await fetch(
       `${GetSalesDetailsofActiveProductionByUser}?userId=${data.userId}`,
     );
@@ -399,11 +404,11 @@ export const GetBajarItemByItemTypeApi = async (data, successCallback) => {
     // let formData = generateUrlEncodedData(data);
 
     let response = await fetch(
-      `${GetBajarItemByItemType}?itemTypeId=${data.itemTypeId}`,
+      `${GetBajarItemByItemType}?itemTypeId=${data.itemtypeId}`,
     );
 
     if (response?.status === 200) {
-      successCallback(response?.data.krishiBajarItem);
+      successCallback(response?.data.krishiBajar);
     } else successCallback([]);
   } catch (error) {
     successCallback([]);
@@ -417,6 +422,19 @@ export const GetBajarItemByTypeIdApi = async (data, successCallback) => {
 
     if (response?.status === 200) {
       successCallback(response?.data.krishiBajarItem);
+    } else successCallback([]);
+  } catch (error) {
+    successCallback([]);
+  }
+};
+export const GetBajarItemByUserIdApi = async (data, successCallback) => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+
+    let response = await fetch(`${GetBajarItemByUserId}?userId=${data.userId}`);
+
+    if (response?.status === 200) {
+      successCallback(response?.data.krishiBajar);
     } else successCallback([]);
   } catch (error) {
     successCallback([]);

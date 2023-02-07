@@ -22,6 +22,7 @@ const BikriList = ({userCode, reload}) => {
     };
 
     GetSalesDetailsofActiveProductionByUserApi(data, res => {
+      console.log(res, 'this is res');
       if (res.length > 0) {
         setBikriList(res);
       }

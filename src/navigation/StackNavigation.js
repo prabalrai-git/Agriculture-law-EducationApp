@@ -22,6 +22,7 @@ import FarmMarket from '../screens/Agriculture/FarmMarket.js/FarmMarket';
 import TopNavigationKrishiBazzar from './TopNavigationKrishiBazzar';
 import ItemFullDescription from '../screens/Agriculture/FarmMarket.js/ItemFullDescription';
 import {createDrawerNavigator} from '@react-navigation/drawer';
+import OwnItems from '../screens/Agriculture/FarmMarket.js/OwnItems';
 
 const width = Dimensions.get('window').width;
 
@@ -79,7 +80,7 @@ function StackNavigation() {
       </View>
     );
   };
-  const CustomReportHeaderFarmerMarket = ({navigation}) => {
+  const CustomReportHeaderFarmerMarket = () => {
     return (
       <View
         style={{
@@ -187,6 +188,13 @@ function StackNavigation() {
           component={Queries}
           options={{
             title: 'जिज्ञासाहरू',
+          }}
+        />
+        <Stack.Screen
+          name="OwnItems"
+          component={OwnItems}
+          options={{
+            title: 'मेरो उत्पादनहरु',
           }}
         />
         <Stack.Screen

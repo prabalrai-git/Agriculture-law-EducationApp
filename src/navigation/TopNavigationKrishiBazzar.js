@@ -14,7 +14,6 @@ const TopNavigationKrishiBazzar = () => {
 
   useEffect(() => {
     GetBajarItemTypeApi(res => {
-      console.log(res);
       setOptions(res);
     });
   }, []);

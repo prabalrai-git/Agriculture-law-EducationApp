@@ -5,57 +5,42 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  Button,
 } from 'react-native';
 import React from 'react';
 import {width} from '../../../Common/WidthAndHeight';
-import {
-  Divider,
-  Drawer,
-  FAB,
-  Menu,
-  Portal,
-  Provider,
-  Searchbar,
-} from 'react-native-paper';
+import {FAB, Portal, Provider, Searchbar} from 'react-native-paper';
 import {useState} from 'react';
 import {useEffect} from 'react';
-import {
-  GetBajarItemByTypeIdApi,
-  GetBajarItemTypeApi,
-} from '../../../Services/appServices/agricultureService';
+import {GetBajarItemByItemTypeApi} from '../../../Services/appServices/agricultureService';
 import EmptyFarmAfterFetch from '../../../Common/EmptyFarmAfterFetch';
 import AddMarketItemModal from './AddMarketItemModal';
 
 const AllItems = ({navigation, route}) => {
   const [searchText, setSearchText] = useState();
-  const [items, setItems] = useState();
+  const [itemsList, setItemsList] = useState();
   const [state, setState] = useState({open: false});
   const [modalVisibility, setModalVisiblity] = useState(false);
-  const [itemTypeList, setItemTypeList] = useState();
-  const [itemIdList, setItemIdList] = useState();
-  console.log(route, 'this route params ');
+  const [reload, setReload] = useState(false);
+
+  // form states
 
   useEffect(() => {
-    GetBajarItemTypeApi(res => {
-      const data = res.map(item => ({label: item.ItemType, value: item.TId}));
-      setItemTypeList(data);
-    });
-  }, []);
-
-  useEffect(() => {
+    // setItemsList();
     const data = {
-      typeId: route?.params.typeId,
+      itemtypeId: route?.params.typeId,
     };
-
-    GetBajarItemByTypeIdApi(data, res => {
-      if (res.length > 0) {
-        const data = res.map(item => ({label: item.ItemName, value: item.TId}));
-        setItemIdList(data);
-        setItems(res);
-      }
+    // console.log(data, 'this data');
+    GetBajarItemByItemTypeApi(data, res => {
+      setItemsList(res);
     });
-  }, []);
+
+    // GetBajarItemByTypeIdApi(data, res => {
+    //   if (res.length > 0) {
+    //     const data = res.map(item => ({label: item.ItemName, value: item.TId}));
+    //     setItemsList(res);
+    //   }
+    // });
+  }, [route, reload]);
 
   const [visible, setVisible] = useState(false);
 
@@ -77,8 +62,8 @@ const AllItems = ({navigation, route}) => {
         <AddMarketItemModal
           setModalVisiblity={setModalVisiblity}
           modalVisibility={modalVisibility}
-          itemTypeList={itemTypeList}
-          itemIdList={itemIdList}
+          setReload={setReload}
+          reload={reload}
         />
         <View
           style={{
@@ -117,7 +102,7 @@ const AllItems = ({navigation, route}) => {
                   color: 'white',
                   labelTextColor: 'white',
 
-                  onPress: () => console.log('hello'),
+                  onPress: () => navigation.navigate('OwnItems'),
                 },
               ]}
               onStateChange={onStateChange}
@@ -141,18 +126,19 @@ const AllItems = ({navigation, route}) => {
               // elevation: 10,
             }}>
             <Text style={styles.itemNumberTxt}>
-              {items ? items.length : 0} उत्पादनहरु
+              कुल उत्पादन: {itemsList ? itemsList.length : 0}
             </Text>
             <Searchbar
-              placeholder="खोज.."
+              placeholder="खोज्नुहोस्.."
               placeholderTextColor={'grey'}
               inputStyle={{
-                fontSize: 16,
+                fontSize: 12,
+                color: 'black',
               }}
               onChangeText={text => setSearchText(text)}
               style={{
                 width: width * 0.67,
-                height: 40,
+                height: 35,
                 marginLeft: 10,
                 marginTop: 10,
                 marginRight: 10,
@@ -166,16 +152,20 @@ const AllItems = ({navigation, route}) => {
           <ScrollView>
             <View
               style={
-                items ? styles.itemMainContainer : styles.mainContainerEmpty
+                itemsList ? styles.itemMainContainer : styles.mainContainerEmpty
               }>
-              {!items ? (
+              {!itemsList ? (
                 <EmptyFarmAfterFetch message={'कुनै उत्पादन छैन!!!'} />
               ) : (
-                items?.map(item => {
+                itemsList?.map(item => {
+                  // console.log(
+                  //   'https://lunivacare.ddns.net/Luniva360Agri' +
+                  //     item.ImageFilePath,
+                  // );
                   return (
                     <TouchableOpacity
                       style={styles.eachItem}
-                      key={item.id}
+                      key={item.KId}
                       onPress={() =>
                         navigation.navigate('ItemFullDescription', {
                           item: item.TId,
@@ -184,16 +174,33 @@ const AllItems = ({navigation, route}) => {
                       <View style={styles.imageContainer}>
                         <Image
                           style={styles.image}
-                          source={require('../../../Assets/Carouselimages/carousel1.jpg')}
+                          source={{
+                            uri:
+                              'https://lunivacare.ddns.net/Luniva360Agri' +
+                              item.ImageFilePath,
+                          }}
+                          defaultSource={require('../../../Assets/FarmImages/fallbackMarket.jpg')}
                         />
                       </View>
-                      <View style={{marginLeft: 10, marginTop: 5}}>
+                      <View style={{marginLeft: 10, marginTop: 8}}>
                         <Text style={styles.title}>{item.ItemName}</Text>
                         <Text style={styles.description}>
-                          This is the description
+                          {item.ItemDescription.length > 30
+                            ? item.ItemDescription.slice(0, 30) + '...'
+                            : item.ItemDescription}
                         </Text>
-                        <View style={{flexDirection: 'row'}}>
-                          <Text style={styles.Price}>रु.1500</Text>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            width: width * 0.4,
+                            marginTop: 4,
+                          }}>
+                          <Text style={styles.Price}>रु.{item.Price}</Text>
+
+                          <Text style={styles.Quantity}>
+                            मात्रा: {item.Quantity}
+                          </Text>
                         </View>
                       </View>
                     </TouchableOpacity>
@@ -218,8 +225,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: '#01a16c',
     fontWeight: '600',
-    padding: 10,
-    paddingHorizontal: 11,
+    padding: 7,
+    paddingHorizontal: 8,
     borderRadius: 5,
   },
   itemMainContainer: {
@@ -253,22 +260,24 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 0,
     height: width * 0.3,
     alignSelf: 'center',
-    resizeMode: 'contain',
+    resizeMode: 'cover',
   },
   title: {
-    fontWeight: '500',
-    fontSize: 14,
+    fontWeight: '400',
+    fontSize: 16,
     color: 'black',
     marginBottom: 3,
   },
   description: {
     fontSize: 12,
     color: 'grey',
+    textAlign: 'justify',
+    marginRight: 8,
   },
   Price: {
     color: 'black',
     fontSize: 15,
-    fontWeight: '500',
+    fontWeight: '600',
     left: 0,
   },
   // imageContainer: {
@@ -280,4 +289,11 @@ const styles = StyleSheet.create({
   //   borderTopStartRadius: 8,
   //   borderTopEndRadius: 8,
   // },
+  Quantity: {
+    color: 'white',
+    fontWeight: '500',
+    backgroundColor: '#01a16c',
+    paddingHorizontal: 10,
+    borderRadius: 6,
+  },
 });
