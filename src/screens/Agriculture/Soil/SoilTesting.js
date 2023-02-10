@@ -20,6 +20,7 @@ import {
   InsertUpdateSoilValuesByUserIdApi,
 } from '../../../Services/appServices/agricultureService';
 import TestedSoilDisplay from './TestedSoilDisplay';
+import {showMessage} from 'react-native-flash-message';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -159,6 +160,30 @@ const SoilTesting = ({route}) => {
           clearAllStates();
           setReloadPage(!reloadPage);
           setModalVisible(false);
+
+          showMessage({
+            message: 'सफल',
+            description: 'नयाँ परीक्षण थपिएको छ',
+            type: 'success',
+            color: 'white',
+            position: 'bottom',
+            statusBarHeight: 40,
+            style: {height: 81},
+            icon: props => (
+              <Image
+                source={require('../../../Assets/flashMessage/check.png')}
+                {...props}
+                style={{
+                  tintColor: 'white',
+                  width: 20,
+                  height: 20,
+                  marginRight: 10,
+                }}
+              />
+            ),
+            // titleStyle: {textAlign: 'center'},
+            // textStyle: {textAlign: 'center'},
+          });
         }
       });
     }
@@ -415,6 +440,8 @@ const SoilTesting = ({route}) => {
                       style={[
                         styles.input,
                         {
+                          backgroundColor: 'lightgrey',
+
                           paddingTop: 10,
                           paddingRight: 0,
                           paddingBottom: 10,

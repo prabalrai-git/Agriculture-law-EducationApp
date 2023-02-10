@@ -27,7 +27,7 @@ import {log} from 'react-native-reanimated';
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
-const Bikri = ({route}) => {
+const Bikri = ({route, navigation}) => {
   const {ProdCropID, baaliId} = route.params;
   // const {ProdCropID, ProdFarmID} = route.params;
   const [state, setState] = useState({open: false});
@@ -37,6 +37,36 @@ const Bikri = ({route}) => {
   const [userCode, setUserCode] = useState();
   const [reload, setReload] = useState(false);
   const [isFocus, setIsFocus] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const errorValidation = (title, msg) => {
+    setErrors(prev => ({...prev, [title]: msg}));
+  };
+
+  const validate = () => {
+    let isValid = true;
+    if (!buyerName) {
+      errorValidation('buyer', 'enter buyer');
+      isValid = false;
+    }
+    if (!quantity) {
+      errorValidation('quantity', 'enter buyer');
+      isValid = false;
+    }
+    if (!unit) {
+      errorValidation('unit', 'enter buyer');
+      isValid = false;
+    }
+    if (!rate) {
+      errorValidation('rate', 'enter buyer');
+      isValid = false;
+    }
+    if (!entryDate) {
+      errorValidation('entryDate', 'enter buyer');
+      isValid = false;
+    }
+    return isValid;
+  };
 
   // form states
 
@@ -81,57 +111,62 @@ const Bikri = ({route}) => {
     setUnit();
     setRate();
     setEntryDate();
+    setErrors({});
   };
 
   const onSubmit = () => {
-    let data = {
-      SId: 0,
-      SUserId: userCode,
-      FarmProductionId: ProdCropID,
-      CropId: baaliId,
-      Quantity: quantity,
-      QUnit: unit,
-      TotalAmount: quantity * rate,
-      SalesDate: entryDate.toDateString(),
-      VendorName: buyerName,
-      SqId: 10,
-      Rate: rate,
-      IsDeleted: false,
-    };
+    const validation = validate();
 
-    console.log(data);
-    InsertUpdateProductionSalesDetailsApi(data, res => {
-      console.log(res);
-      if (res.SuccessMsg) {
-        clearAllState();
-        setModalVisiblity(false);
-        setReload(!reload);
+    if (validation) {
+      let data = {
+        SId: 0,
+        SUserId: userCode,
+        FarmProductionId: ProdCropID,
+        CropId: baaliId,
+        Quantity: quantity,
+        QUnit: unit,
+        TotalAmount: quantity * rate,
+        SalesDate: entryDate?.toDateString(),
+        VendorName: buyerName,
+        SqId: 10,
+        Rate: rate,
+        IsDeleted: false,
+      };
 
-        showMessage({
-          message: 'सफल',
-          description: 'नयाँ बिक्री थपिएको छ',
-          type: 'success',
-          color: 'white',
-          position: 'bottom',
-          statusBarHeight: 40,
-          style: {height: 81},
-          icon: props => (
-            <Image
-              source={require('../../../../Assets/flashMessage/check.png')}
-              {...props}
-              style={{
-                tintColor: 'white',
-                width: 20,
-                height: 20,
-                marginRight: 10,
-              }}
-            />
-          ),
-          // titleStyle: {textAlign: 'center'},
-          // textStyle: {textAlign: 'center'},
-        });
-      }
-    });
+      // console.log(data);
+      InsertUpdateProductionSalesDetailsApi(data, res => {
+        console.log(res);
+        if (res.SuccessMsg) {
+          clearAllState();
+          setModalVisiblity(false);
+          setReload(!reload);
+
+          showMessage({
+            message: 'सफल',
+            description: 'बिक्री थपिएको छ',
+            type: 'success',
+            color: 'white',
+            position: 'bottom',
+            statusBarHeight: 40,
+            style: {height: 81},
+            icon: props => (
+              <Image
+                source={require('../../../../Assets/flashMessage/check.png')}
+                {...props}
+                style={{
+                  tintColor: 'white',
+                  width: 20,
+                  height: 20,
+                  marginRight: 10,
+                }}
+              />
+            ),
+            // titleStyle: {textAlign: 'center'},
+            // textStyle: {textAlign: 'center'},
+          });
+        }
+      });
+    }
   };
 
   return (
@@ -184,11 +219,14 @@ const Bikri = ({route}) => {
                   icon: 'notebook-multiple',
                   style: {backgroundColor: 'green'},
 
-                  label: 'रिपोर्टहरू',
+                  label: 'रिपोर्ट',
                   color: 'white',
                   labelTextColor: 'white',
 
-                  onPress: () => console.log('hello'),
+                  onPress: () =>
+                    navigation.navigate('BikriReport', {
+                      userCode: userCode,
+                    }),
                 },
               ]}
               onStateChange={onStateChange}
@@ -263,13 +301,15 @@ const Bikri = ({route}) => {
                           paddingBottom: 10,
                           paddingLeft: 10,
                           width: width * 0.78,
-                          borderColor: 'black',
+                          borderColor: errors.buyer ? 'red' : 'black',
                         },
                       ]}
                       onChangeText={text => setBuyerName(text)}
                       value={buyerName}
                       placeholder="खरिदकर्ताको नाम राख्नुहोस्"
-                      placeholderTextColor="grey"></TextInput>
+                      placeholderTextColor={
+                        errors.buyer ? 'red' : 'grey'
+                      }></TextInput>
                   </View>
                   <View style={{flexDirection: 'row'}}>
                     <View>
@@ -283,14 +323,16 @@ const Bikri = ({route}) => {
                             paddingBottom: 10,
                             paddingLeft: 10,
                             width: width * 0.37,
-                            borderColor: 'black',
+                            borderColor: errors.quantity ? 'red' : 'black',
                           },
                         ]}
                         value={quantity}
                         onChangeText={text => setQuantity(text)}
                         keyboardType="numeric"
                         placeholder="संख्या राख्नुहोस्"
-                        placeholderTextColor="grey"></TextInput>
+                        placeholderTextColor={
+                          errors.quantity ? 'red' : 'grey'
+                        }></TextInput>
                     </View>
                     <View>
                       <Text style={styles.label}>एकाइ:</Text>
@@ -299,13 +341,13 @@ const Bikri = ({route}) => {
                           width: width * 0.37,
                           margin: 6,
                           marginTop: 8,
-                          borderColor: 'black',
+                          borderColor: errors.unit ? 'red' : 'black',
                           borderWidth: 0.6,
                           borderRadius: 5,
                           height: 40,
                         }}
                         placeholderStyle={{
-                          color: 'grey',
+                          color: errors.unit ? 'red' : 'grey',
                           fontSize: 14,
                           paddingLeft: 10,
                         }}
@@ -363,14 +405,16 @@ const Bikri = ({route}) => {
                           paddingBottom: 10,
                           paddingLeft: 10,
                           width: width * 0.78,
-                          borderColor: 'black',
+                          borderColor: errors.rate ? 'red' : 'black',
                         },
                       ]}
                       value={rate}
                       onChangeText={text => setRate(text)}
                       placeholder="दर राख्नुहोस्"
                       keyboardType="numeric"
-                      placeholderTextColor="grey"></TextInput>
+                      placeholderTextColor={
+                        errors.rate ? 'red' : 'grey'
+                      }></TextInput>
                   </View>
 
                   <Text style={styles.label}>मिति:</Text>
@@ -381,18 +425,19 @@ const Bikri = ({route}) => {
                       style={[
                         styles.input,
                         {
+                          backgroundColor: 'lightgrey',
                           paddingTop: 10,
                           paddingRight: 0,
                           paddingBottom: 10,
                           paddingLeft: 10,
                           width: width * 0.69,
-                          borderColor: 'black',
+                          borderColor: errors.entryDate ? 'red' : 'black',
                         },
                       ]}
                       value={entryDate?.toDateString()}
                       onChangeText={text => setEntryDate(text)}
                       placeholder="मिति राख्नुहोस्"
-                      placeholderTextColor="grey"
+                      placeholderTextColor={errors.entryDate ? 'red' : 'grey'}
                     />
                     <TouchableOpacity
                       style={{

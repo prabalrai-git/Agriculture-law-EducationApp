@@ -77,7 +77,7 @@ const BaliList = ({
                     source={require('../../Assets/FarmImages/Farm.png')}
                   />
                   <Text style={styles.descText}>
-                    नस्ल प्रकार:<Text style={styles.txt}>{item.BreedId}</Text>
+                    ब्रिड प्रकार:<Text style={styles.txt}>{item.BreedId}</Text>
                   </Text>
                 </View>
                 <View style={styles.eachRow}>

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import Dashboard from '../screens/Dashboard/Dashboard';
 import Login from '../screens/Login/Login';
 import SplashScreen from '../screens/SplashScreen/SplashScreen';
 import BottomNavigation from './BottomNavigation';
@@ -18,11 +17,12 @@ import TopTabNavigation from './TopTabNavigation';
 import {View, Text, Image, TouchableOpacity, Dimensions} from 'react-native';
 import Queries from '../screens/Agriculture/JTACommunications/Queries/Queries';
 import Comments from '../screens/Agriculture/JTACommunications/Comments/Comments';
-import FarmMarket from '../screens/Agriculture/FarmMarket.js/FarmMarket';
 import TopNavigationKrishiBazzar from './TopNavigationKrishiBazzar';
 import ItemFullDescription from '../screens/Agriculture/FarmMarket.js/ItemFullDescription';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import OwnItems from '../screens/Agriculture/FarmMarket.js/OwnItems';
+import BikriReport from '../screens/Agriculture/KharchaBikri/Reports/BikriReport';
+import KharchReport from '../screens/Agriculture/KharchaBikri/Reports/KharchReport';
 
 const width = Dimensions.get('window').width;
 
@@ -64,7 +64,7 @@ function StackNavigation() {
             fontWeight: '500',
             alignSelf: 'center',
           }}>
-          बाली खर्च र बिक्री
+          खर्च र बिक्री
         </Text>
         <TouchableOpacity>
           <Image
@@ -170,7 +170,11 @@ function StackNavigation() {
           component={Notification}
           options={{title: 'सूचना'}}
         />
-        <Stack.Screen name="Bali" component={Bali} options={{title: 'बाली'}} />
+        <Stack.Screen
+          name="Bali"
+          component={Bali}
+          options={{title: 'बाली/पशु'}}
+        />
         <Stack.Screen
           name="TopTabNavigation"
           component={TopTabNavigation}
@@ -210,6 +214,20 @@ function StackNavigation() {
           component={ItemFullDescription}
           options={{
             title: 'विवरण',
+          }}
+        />
+        <Stack.Screen
+          name="BikriReport"
+          component={BikriReport}
+          options={{
+            title: 'बिक्री रिपोर्ट',
+          }}
+        />
+        <Stack.Screen
+          name="KharchReport"
+          component={KharchReport}
+          options={{
+            title: 'खर्च रिपोर्ट',
           }}
         />
         <Stack.Screen

@@ -20,11 +20,12 @@ import {
   InsertUpdateBaaliKharchaApi,
 } from '../../../../Services/appServices/agricultureService';
 import {Dropdown} from 'react-native-element-dropdown';
+import {showMessage} from 'react-native-flash-message';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
-const Kharcha = ({route}) => {
+const Kharcha = ({route, navigation}) => {
   const {ProdCropID, baaliId} = route.params;
 
   // console.log(ProdFarmID, 'hey oh');
@@ -34,6 +35,7 @@ const Kharcha = ({route}) => {
   const [userCode, setUserCode] = useState();
   const [isFocus, setIsFocus] = useState(false);
   const [expenseList, setExpenseList] = useState();
+  const [errors, setErrors] = useState({});
 
   // form states
   const [expenseTitle, setExpenseTitle] = useState();
@@ -82,6 +84,37 @@ const Kharcha = ({route}) => {
     setUnit();
     setRate();
     setQuantity();
+    setErrors({});
+  };
+
+  const errorValidation = (title, msg) => {
+    setErrors(prev => ({...prev, [title]: msg}));
+  };
+
+  const validate = () => {
+    let isValid = true;
+
+    if (!expenseTitle) {
+      errorValidation('expenseTitle', 'required');
+      isValid = false;
+    }
+    if (!quantity) {
+      errorValidation('quantity', 'required');
+      isValid = false;
+    }
+    if (!unit) {
+      errorValidation('unit', 'required');
+      isValid = false;
+    }
+    if (!rate) {
+      errorValidation('rate', 'required');
+      isValid = false;
+    }
+    if (!entryDateKharcha) {
+      errorValidation('entryDateKharcha', 'required');
+      isValid = false;
+    }
+    return isValid;
   };
 
   const OnSubmit = () => {
@@ -105,34 +138,39 @@ const Kharcha = ({route}) => {
 
     InsertUpdateBaaliKharchaApi(data, res => {
       // console.log(res);
-      if (res.SuccessMsg) {
-        clearAllState();
-        setModalVisiblity(false);
-        setReload(!reload);
 
-        showMessage({
-          message: 'सफल',
-          description: 'नयाँ खर्च थपिएको छ',
-          type: 'success',
-          color: 'white',
-          position: 'bottom',
-          statusBarHeight: 40,
-          style: {height: 81},
-          icon: props => (
-            <Image
-              source={require('../../../../Assets/flashMessage/check.png')}
-              {...props}
-              style={{
-                tintColor: 'white',
-                width: 20,
-                height: 20,
-                marginRight: 10,
-              }}
-            />
-          ),
-          // titleStyle: {textAlign: 'center'},
-          // textStyle: {textAlign: 'center'},
-        });
+      const validation = validate();
+
+      if (validation) {
+        if (res.SuccessMsg) {
+          clearAllState();
+          setModalVisiblity(false);
+          setReload(!reload);
+
+          showMessage({
+            message: 'सफल',
+            description: 'खर्च थपिएको छ',
+            type: 'success',
+            color: 'white',
+            position: 'bottom',
+            statusBarHeight: 40,
+            style: {height: 81},
+            icon: props => (
+              <Image
+                source={require('../../../../Assets/flashMessage/check.png')}
+                {...props}
+                style={{
+                  tintColor: 'white',
+                  width: 20,
+                  height: 20,
+                  marginRight: 10,
+                }}
+              />
+            ),
+            // titleStyle: {textAlign: 'center'},
+            // textStyle: {textAlign: 'center'},
+          });
+        }
       }
     });
   };
@@ -189,11 +227,16 @@ const Kharcha = ({route}) => {
                   icon: 'notebook-multiple',
                   style: {backgroundColor: 'green'},
 
-                  label: 'रिपोर्टहरू',
+                  label: 'रिपोर्ट',
                   color: 'white',
                   labelTextColor: 'white',
 
-                  onPress: () => console.log('hello'),
+                  onPress: () =>
+                    navigation.navigate('KharchReport', {
+                      ProdCropID: ProdCropID,
+                      baaliId: baaliId,
+                      userCode: userCode,
+                    }),
                 },
               ]}
               onStateChange={onStateChange}
@@ -264,13 +307,13 @@ const Kharcha = ({route}) => {
                         width: width * 0.79,
                         margin: 6,
                         marginTop: 8,
-                        borderColor: 'black',
+                        borderColor: errors.expenseTitle ? 'red' : 'black',
                         borderWidth: 0.6,
                         borderRadius: 5,
                         height: 40,
                       }}
                       placeholderStyle={{
-                        color: 'grey',
+                        color: errors.expenseTitle ? 'red' : 'grey',
                         fontSize: 14,
                         paddingLeft: 10,
                       }}
@@ -328,14 +371,16 @@ const Kharcha = ({route}) => {
                             paddingBottom: 10,
                             paddingLeft: 10,
                             width: width * 0.37,
-                            borderColor: 'black',
+                            borderColor: errors.quantity ? 'red' : 'black',
                           },
                         ]}
                         value={quantity}
                         onChangeText={text => setQuantity(text)}
                         keyboardType="numeric"
                         placeholder="संख्या राख्नुहोस्"
-                        placeholderTextColor="grey"></TextInput>
+                        placeholderTextColor={
+                          errors.quantity ? 'red' : 'grey'
+                        }></TextInput>
                     </View>
                     <View>
                       <Text style={styles.label}>एकाइ:</Text>
@@ -348,13 +393,15 @@ const Kharcha = ({route}) => {
                             paddingBottom: 10,
                             paddingLeft: 10,
                             width: width * 0.37,
-                            borderColor: 'black',
+                            borderColor: errors.unit ? 'red' : 'black',
                           },
                         ]}
                         value={unit}
                         onChangeText={text => setUnit(text)}
                         placeholder="एकाइ राख्नुहोस्"
-                        placeholderTextColor="grey"></TextInput>
+                        placeholderTextColor={
+                          errors.unit ? 'red' : 'grey'
+                        }></TextInput>
                     </View>
                   </View>
                   <View style={{flexDirection: 'column'}}>
@@ -368,14 +415,16 @@ const Kharcha = ({route}) => {
                           paddingBottom: 10,
                           paddingLeft: 10,
                           width: width * 0.78,
-                          borderColor: 'black',
+                          borderColor: errors.rate ? 'red' : 'black',
                         },
                       ]}
                       value={rate}
                       onChangeText={text => setRate(text)}
                       placeholder="दर राख्नुहोस्"
                       keyboardType="numeric"
-                      placeholderTextColor="grey"></TextInput>
+                      placeholderTextColor={
+                        errors.rate ? 'red' : 'grey'
+                      }></TextInput>
                   </View>
 
                   <Text style={styles.label}>मिति:</Text>
@@ -389,15 +438,20 @@ const Kharcha = ({route}) => {
                           paddingTop: 10,
                           paddingRight: 0,
                           paddingBottom: 10,
+                          backgroundColor: 'lightgrey',
                           paddingLeft: 10,
                           width: width * 0.69,
-                          borderColor: 'black',
+                          borderColor: errors.entryDateKharcha
+                            ? 'red'
+                            : 'black',
                         },
                       ]}
                       value={entryDateKharcha?.toDateString()}
                       onChangeText={text => setEntryDateKharcha(text)}
                       placeholder="मिति राख्नुहोस्"
-                      placeholderTextColor="grey"
+                      placeholderTextColor={
+                        errors.entryDateKharcha ? 'red' : 'grey'
+                      }
                     />
                     <TouchableOpacity
                       style={{

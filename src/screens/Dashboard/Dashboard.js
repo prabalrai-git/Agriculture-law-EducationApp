@@ -11,13 +11,11 @@ import {
   Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import ChangeLanguage from '../../components/ChangeLanguage';
 import {Avatar} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import ReanimatedCarousel from '../../components/ReanimatedCarousel';
 import '../../../global';
 import DataCards from '../../Common/DataCards';
-import {StackActions, useFocusEffect, useRoute} from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 
 const width = Dimensions.get('window').width;
 
@@ -31,7 +29,7 @@ const Dashboard = ({navigation}) => {
       const backAction = () => {
         return BackHandler.exitApp();
       };
-      console.log('hello');
+      // console.log('hello');
 
       const backHandler = BackHandler.addEventListener(
         'hardwareBackPress',

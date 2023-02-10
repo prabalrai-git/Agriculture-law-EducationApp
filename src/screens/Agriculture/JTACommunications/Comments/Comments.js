@@ -17,14 +17,17 @@ import {useState} from 'react';
 import {useEffect} from 'react';
 import {
   GetListOfCommentsByQIdApi,
+  GetPersonalDetailsByUserIdApi,
   InsertUpdateCommentsOnQueryApi,
 } from '../../../../Services/appServices/agricultureService';
+import {log} from 'react-native-reanimated';
 
 const Comments = ({route}) => {
   const {Description, Title, ImagePath, QId, userCode, CommentCount} =
     route.params;
 
   const [modalVisibility, setModalVisiblity] = useState(false);
+  const [personalDetails, setPersonalDetails] = useState();
 
   const [comment, setComment] = useState();
 
@@ -56,10 +59,21 @@ const Comments = ({route}) => {
 
   useEffect(() => {
     const data = {
+      usercode: userCode,
+    };
+
+    GetPersonalDetailsByUserIdApi(data, res => {
+      setPersonalDetails(res[0]);
+    });
+  }, [userCode]);
+
+  useEffect(() => {
+    const data = {
       queryId: QId,
     };
 
     GetListOfCommentsByQIdApi(data, res => {
+      // console.log(res);
       setCommentList(res);
     });
   }, [reload]);
@@ -74,27 +88,29 @@ const Comments = ({route}) => {
       CIsValid: true,
     };
     setComment();
+    // console.log(data);
 
     InsertUpdateCommentsOnQueryApi(data, res => {
+      // console.log(res, 'this is res');
       setReload(!reload);
     });
   };
 
   return (
     <View style={{flexDirection: 'column'}}>
-      <View style={{height: height * 0.3}}>
+      <View style={{height: height * 0.4}}>
         <Image
           source={{
             uri: ImagePath,
           }}
-          resizeMode="contain"
+          resizeMode="stretch"
           style={{
-            width: '90%',
-            height: height * 0.3,
-            marginTop: 10,
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            borderRadius: 5,
+            width: width,
+            height: height * 0.4,
+            // marginTop: 10,
+            // marginLeft: 'auto',
+            // marginRight: 'auto',
+            // borderRadius: 5,
           }}
         />
       </View>
@@ -106,7 +122,7 @@ const Comments = ({route}) => {
           marginLeft: 'auto',
           marginRight: 'auto',
           flexDirection: 'column',
-          marginTop: 20,
+          marginTop: 10,
           //   backgroundColor: 'red',
           padding: 10,
           borderRadius: 5,
@@ -115,7 +131,7 @@ const Comments = ({route}) => {
         }}>
         <View style={{flexDirection: 'row', marginBottom: 5}}>
           <Avatar.Icon size={20} icon="account" style={{marginRight: 5}} />
-          <Text style={{color: 'grey'}}>प्रयोगकर्ता</Text>
+          <Text style={{color: 'grey'}}>{personalDetails?.FullName}</Text>
         </View>
         <View style={{flexDirection: 'row'}}>
           <Text style={[styles.titleTxt, {fontSize: 16, fontWeight: 'bold'}]}>
@@ -144,12 +160,19 @@ const Comments = ({route}) => {
           {Description}
         </Text>
       </View>
-      <View style={{width: width, marginLeft: 'auto', marginRight: 'auto'}}>
+      <View
+        style={{width: width * 0.95, marginLeft: 'auto', marginRight: 'auto'}}>
         <TouchableOpacity
           onPress={() => {
             setModalVisiblity(true);
           }}
-          style={{backgroundColor: 'white', padding: 14, flexDirection: 'row'}}>
+          style={{
+            backgroundColor: 'white',
+            padding: 14,
+            flexDirection: 'row',
+            borderRadius: 5,
+            elevation: 2,
+          }}>
           <Image
             source={require('../../../../Assets/FarmImages/commentPlain.png')}
             style={{
@@ -161,7 +184,7 @@ const Comments = ({route}) => {
             }}
           />
           <Text style={{color: 'grey', fontSize: 14}}>
-            टिप्पणीहरू हेर्नुहोस्...
+            {commentList?.length} कमेन्ट हेर्नुहोस्...
           </Text>
         </TouchableOpacity>
       </View>
@@ -195,7 +218,7 @@ const Comments = ({route}) => {
                   fontWeight: '500',
                   marginTop: 10,
                 }}>
-                टिप्पणीहरू:
+                कमेन्टहरू:
               </Text>
               <TouchableOpacity
                 style={{paddingLeft: 10}}
@@ -304,7 +327,9 @@ const Comments = ({route}) => {
                                   marginRight: 40,
                                   //   flexWrap: 'wrap',
                                 }}>
-                                <Text style={styles.titleTxt}>प्रयोगकर्ता</Text>
+                                <Text style={styles.titleTxt}>
+                                  {item.CommentorName}
+                                </Text>
                                 <Text style={styles.descTxt}>
                                   {item.Comment}
                                 </Text>
@@ -327,7 +352,7 @@ const Comments = ({route}) => {
                 style={styles.input}
                 onChangeText={text => setComment(text)}
                 value={comment}
-                placeholder="टिप्पणी थप्नुहोस्..."
+                placeholder="कमेन्ट थप्नुहोस्..."
                 placeholderTextColor={'grey'}></TextInput>
               {comment && (
                 <TouchableOpacity
@@ -338,7 +363,7 @@ const Comments = ({route}) => {
                   }}>
                   <Image
                     source={require('../../../../Assets/FarmImages/sendmessage.png')}
-                    style={{width: 30, height: 30}}></Image>
+                    style={{width: 25, height: 25}}></Image>
                 </TouchableOpacity>
               )}
             </KeyboardAvoidingView>

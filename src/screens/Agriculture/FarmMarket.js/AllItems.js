@@ -168,7 +168,7 @@ const AllItems = ({navigation, route}) => {
                       key={item.KId}
                       onPress={() =>
                         navigation.navigate('ItemFullDescription', {
-                          item: item.TId,
+                          krishiSaleId: item.KId,
                         })
                       }>
                       <View style={styles.imageContainer}>

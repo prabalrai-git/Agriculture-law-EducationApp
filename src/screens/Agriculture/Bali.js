@@ -288,7 +288,9 @@ const Bali = ({route, navigation}) => {
           setEditChecker(false);
           showMessage({
             message: 'सफल',
-            description: 'नयाँ बाली थपिएको छ',
+            description: editingProduct
+              ? 'बाली सम्पादन गरिएको छ'
+              : 'नयाँ बाली थपिएको छ',
             type: 'success',
             color: 'white',
             position: 'bottom',
@@ -383,7 +385,7 @@ const Bali = ({route, navigation}) => {
                   color: 'white',
                   style: {backgroundColor: 'green'},
                   labelTextColor: 'white',
-                  label: 'नयाँ बलि',
+                  label: 'नयाँ बलि/पशु',
                   onPress: () => setModalVisiblitiy(true),
                 },
                 {
@@ -436,7 +438,7 @@ const Bali = ({route, navigation}) => {
                     fontWeight: '500',
                     marginTop: 10,
                   }}>
-                  {editingProduct ? 'बलि सम्पादन' : 'बलि थप्नुहोस्:'}
+                  {editingProduct ? 'बलि/पशु सम्पादन' : 'बलि/पशु थप्नुहोस्:'}
                 </Text>
                 <TouchableOpacity
                   onPress={() => {
@@ -468,7 +470,7 @@ const Bali = ({route, navigation}) => {
                     marginTop: 10,
                   }}>
                   <View style={{flexDirection: 'column'}}>
-                    <Text style={styles.label}>बलिको प्रकार:</Text>
+                    <Text style={styles.label}>प्रकार:</Text>
                     <View style={[Platform.select({android: {zIndex: 10}})]}>
                       {/* <AutocompleteDropdown
                         onSelectItem={text => onSelectAgriType(text)}
@@ -507,7 +509,7 @@ const Bali = ({route, navigation}) => {
                           style={{
                             color: 'red',
                             fontSize: 10,
-                            marginLeft: 15,
+                            marginLeft: 5,
                             marginBottom: 5,
                           }}>
                           {errors.AgriType}
@@ -516,7 +518,7 @@ const Bali = ({route, navigation}) => {
                     </View>
                   </View>
 
-                  <Text style={styles.label}>बलिको नाम:</Text>
+                  <Text style={styles.label}>नाम:</Text>
                   <View style={[Platform.select({android: {zIndex: 7}})]}>
                     {/* <AutocompleteDropdown
                       onSelectItem={text => onSelectBaliType(text)}
@@ -554,14 +556,14 @@ const Bali = ({route, navigation}) => {
                         style={{
                           color: 'red',
                           fontSize: 10,
-                          marginLeft: 15,
+                          marginLeft: 5,
                           marginBottom: 5,
                         }}>
                         {errors.AgriName}
                       </Text>
                     )}
                   </View>
-                  <Text style={styles.label}>बलिको जाति:</Text>
+                  <Text style={styles.label}>जाति:</Text>
                   <View style={[Platform.select({android: {zIndex: 6}})]}>
                     {/* <AutocompleteDropdown
                       onSelectItem={text => setBreedId(text?.id)}
@@ -599,7 +601,7 @@ const Bali = ({route, navigation}) => {
                         style={{
                           color: 'red',
                           fontSize: 10,
-                          marginLeft: 15,
+                          marginLeft: 5,
                           marginBottom: 5,
                         }}>
                         {errors.AgriBreed}
@@ -669,6 +671,7 @@ const Bali = ({route, navigation}) => {
                           width: width * 0.7,
                           borderColor: 'black',
                           marginLeft: -1,
+                          backgroundColor: 'lightgrey',
                         },
                       ]}
                       value={
@@ -712,7 +715,7 @@ const Bali = ({route, navigation}) => {
                       style={{
                         color: 'red',
                         fontSize: 10,
-                        marginLeft: 15,
+                        marginLeft: 5,
                         marginBottom: 5,
                       }}>
                       {errors.AgriDate}
@@ -749,7 +752,7 @@ const styles = StyleSheet.create({
   centeredView: {
     // flex: 1,
     width: width * 0.85,
-    height: height * 0.55,
+    height: height * 0.62,
     marginTop: 'auto',
     marginBottom: 'auto',
     marginLeft: 'auto',

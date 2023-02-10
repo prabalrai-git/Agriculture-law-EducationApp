@@ -2,7 +2,7 @@ import {View, Text, Image, StyleSheet} from 'react-native';
 import React from 'react';
 
 const EmptyFarmAfterFetch = ({message}) => {
-  console.log(message, 'yo');
+  // console.log(message, 'yo');
   return (
     <View style={{marginTop: 100, alignSelf: 'center'}}>
       <Image

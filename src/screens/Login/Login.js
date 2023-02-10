@@ -169,10 +169,10 @@ const Login = ({navigation}) => {
     ValidateOTPApi(data, res => {
       if (res?.length > 0) {
         navigation.navigate('CreateProfile');
-        setOpenOTPScreen(false);
         setRegistrationId();
         setOtp();
         setOtpError();
+        // setOpenOTPScreen(false);
       } else {
         setOtpError('कृपया सही OTP राख्नुहोस् !');
         navigation.navigate('CreateProfile');
@@ -343,7 +343,7 @@ const Login = ({navigation}) => {
                 codeInputFieldStyle={styles.underlineStyleBase}
                 codeInputHighlightStyle={styles.underlineStyleHighLighted}
                 onCodeFilled={code => {
-                  console.log(`Code is ${code}, you are good to go!`);
+                  // console.log(`Code is ${code}, you are good to go!`);
                   setOtp(code);
                 }}
               />

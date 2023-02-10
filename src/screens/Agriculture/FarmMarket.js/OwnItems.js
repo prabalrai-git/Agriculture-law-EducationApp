@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useState} from 'react';
 import {GetBajarItemByUserIdApi} from '../../../Services/appServices/agricultureService';
 import {width} from '../../../Common/WidthAndHeight';
+import {log} from 'react-native-reanimated';
 
 const OwnItems = ({navigation}) => {
   const [myItems, setMyItems] = useState();
@@ -52,13 +53,14 @@ const OwnItems = ({navigation}) => {
       <ScrollView>
         <View style={{marginBottom: 40, flexWrap: 'wrap'}}>
           {myItems?.map(item => {
+            // console.log(item);
             return (
               <TouchableOpacity
                 style={styles.eachItem}
                 key={item.KId}
                 onPress={() =>
                   navigation.navigate('ItemFullDescription', {
-                    item: item.TId,
+                    krishiSaleId: item.KId,
                   })
                 }>
                 <View style={styles.imageContainer}>
@@ -188,13 +190,13 @@ const styles = StyleSheet.create({
   //   borderTopEndRadius: 8,
   // },
   Quantity: {
-    marginTop: 4,
+    marginTop: 6,
     color: 'white',
     fontWeight: '500',
     textAlign: 'center',
-    width: width * 0.2,
+    width: width * 0.25,
     backgroundColor: '#01a16c',
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
     borderRadius: 6,
   },
 });

@@ -17,11 +17,13 @@ import {GetListOfQueryByUseridApi} from '../../../../Services/appServices/agricu
 import {useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import {showMessage} from 'react-native-flash-message';
 
 const Queries = ({navigation}) => {
   const [modalVisibility, setModalVisiblity] = useState(false);
   const [queryList, setQueryList] = useState();
   const [reloadQueries, setReloadQueries] = useState(false);
+  const [errors, setErrors] = useState({});
 
   // form states
 
@@ -29,6 +31,27 @@ const Queries = ({navigation}) => {
   const [description, setDescription] = useState();
   const [imageValueQuery, setImageValueQuery] = useState();
   const [userCode, setUserCode] = useState();
+
+  const checkValidation = (title, msg) => {
+    setErrors(prev => ({...prev, [title]: msg}));
+  };
+
+  const validate = () => {
+    let isValid = true;
+    if (!title) {
+      checkValidation('title', 'required');
+      isValid = false;
+    }
+    if (!description) {
+      checkValidation('description', 'required');
+      isValid = false;
+    }
+    if (!imageValueQuery) {
+      checkValidation('imageValueQuery', 'फोटो चयन गर्नुहोस्!');
+      isValid = false;
+    }
+    return isValid;
+  };
 
   useEffect(() => {
     getData();
@@ -66,46 +89,72 @@ const Queries = ({navigation}) => {
 
   const onSubmit = async () => {
     // new service with image upload
+    const validation = validate();
 
-    var formData = new FormData();
+    if (validation) {
+      var formData = new FormData();
 
-    formData.append('qid', 0);
-    formData.append('qtitle', title);
-    formData.append('quserId', userCode);
-    formData.append('qdescription', description);
-    formData.append('filePath', {
-      uri: imageValueQuery.uri,
-      name: imageValueQuery.fileName,
-      type: imageValueQuery.type,
-    });
-    // console.log(
-    //   imageValueQuery.uri,
-    //   imageValueQuery.fileName,
-    //   imageValueQuery.type,
-    // );
+      formData.append('qid', 0);
+      formData.append('qtitle', title);
+      formData.append('quserId', userCode);
+      formData.append('qdescription', description);
+      formData.append('filePath', {
+        uri: imageValueQuery.uri,
+        name: imageValueQuery.fileName,
+        type: imageValueQuery.type,
+      });
+      // console.log(
+      //   imageValueQuery.uri,
+      //   imageValueQuery.fileName,
+      //   imageValueQuery.type,
+      // );
 
-    try {
-      console.log(formData);
-      const response = await axios.post(
-        'https://lunivacare.ddns.net/Luniva360Agri/api/luniva360agriapp/InsertUpdateFarmersQueryWithImageFile',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
+      try {
+        // console.log(formData);
+        const response = await axios.post(
+          'https://lunivacare.ddns.net/Luniva360Agri/api/luniva360agriapp/InsertUpdateFarmersQueryWithImageFile',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
           },
-        },
-      );
-      // console.log(response, '13122222223');
-      if (response.data) {
-        console.log(response.data);
-        clearAllState();
-        setModalVisiblity(false);
-        setReloadQueries(!reloadQueries);
-      } else {
-        console.log('something went wrong');
+        );
+        // console.log(response, '13122222223');
+        if (response.data) {
+          // console.log(response.data);
+          clearAllState();
+          setModalVisiblity(false);
+          setReloadQueries(!reloadQueries);
+          showMessage({
+            message: 'सफल',
+            description: 'जिज्ञासा पोस्ट गारीयो',
+            type: 'success',
+            color: 'white',
+            position: 'bottom',
+            statusBarHeight: 40,
+            style: {height: 81},
+            icon: props => (
+              <Image
+                source={require('../../../../Assets/flashMessage/check.png')}
+                {...props}
+                style={{
+                  tintColor: 'white',
+                  width: 20,
+                  height: 20,
+                  marginRight: 10,
+                }}
+              />
+            ),
+            // titleStyle: {textAlign: 'center'},
+            // textStyle: {textAlign: 'center'},
+          });
+        } else {
+          console.log('something went wrong');
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
     }
   };
 
@@ -130,44 +179,46 @@ const Queries = ({navigation}) => {
         जिज्ञासाहरूको सूची:
       </Text>
       <ScrollView>
-        {queryList?.map(item => {
-          return (
-            <View style={styles.mainContainer} key={item.QId}>
-              <TouchableOpacity
-                style={styles.eachQuery}
-                onPress={() => {
-                  console.log(item);
+        <View style={{marginBottom: 60}}>
+          {queryList?.map(item => {
+            return (
+              <View style={styles.mainContainer} key={item.QId}>
+                <TouchableOpacity
+                  style={styles.eachQuery}
+                  onPress={() => {
+                    // console.log(item);
 
-                  navigation.navigate('Comments', {
-                    Title: item.QTitle,
-                    Description: item.QDescription,
-                    ImagePath: item.FilePath,
-                    QId: item.QId,
-                    userCode: userCode,
-                    CommentCount: item.CommentCount,
-                  });
-                }}>
-                <View>
-                  <Image
-                    source={require('../../../../Assets/FarmImages/commentPlain.png')}
-                    style={styles.img}
-                  />
-                </View>
-                <View
-                  style={{
-                    alignSelf: 'center',
-                    marginLeft: 10,
-                    flexDirection: 'column',
-                    marginRight: 40,
-                    //   flexWrap: 'wrap',
+                    navigation.navigate('Comments', {
+                      Title: item.QTitle,
+                      Description: item.QDescription,
+                      ImagePath: item.FilePath,
+                      QId: item.QId,
+                      userCode: userCode,
+                      CommentCount: item.CommentCount,
+                    });
                   }}>
-                  <Text style={styles.titleTxt}>{item.QTitle} </Text>
-                  <Text style={styles.descTxt}>{item.QDescription}</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          );
-        })}
+                  <View>
+                    <Image
+                      source={require('../../../../Assets/FarmImages/commentPlain.png')}
+                      style={styles.img}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      alignSelf: 'center',
+                      marginLeft: 10,
+                      flexDirection: 'column',
+                      marginRight: 40,
+                      //   flexWrap: 'wrap',
+                    }}>
+                    <Text style={styles.titleTxt}>{item.QTitle} </Text>
+                    <Text style={styles.descTxt}>{item.QDescription}</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            );
+          })}
+        </View>
       </ScrollView>
       <Modal
         animationType="fade"
@@ -232,13 +283,15 @@ const Queries = ({navigation}) => {
                         paddingBottom: 10,
                         paddingLeft: 10,
                         width: width * 0.78,
-                        borderColor: 'black',
+                        borderColor: errors.title ? 'red' : 'black',
                       },
                     ]}
                     value={title}
                     onChangeText={text => setTitle(text)}
                     placeholder="शीर्षक राख्नुहोस्"
-                    placeholderTextColor="grey"></TextInput>
+                    placeholderTextColor={
+                      errors.title ? 'red' : 'grey'
+                    }></TextInput>
                 </View>
                 <View style={{flexDirection: 'column'}}>
                   <Text style={styles.label}>वर्णन:</Text>
@@ -251,7 +304,7 @@ const Queries = ({navigation}) => {
                         paddingBottom: 10,
                         paddingLeft: 10,
                         width: width * 0.78,
-                        borderColor: 'black',
+                        borderColor: errors.description ? 'red' : 'black',
                         height: 90,
                         textAlignVertical: 'top',
                       },
@@ -260,9 +313,16 @@ const Queries = ({navigation}) => {
                     value={description}
                     onChangeText={text => setDescription(text)}
                     placeholder="वर्णन राख्नुहोस्..."
-                    placeholderTextColor="grey"></TextInput>
+                    placeholderTextColor={
+                      errors.description ? 'red' : 'grey'
+                    }></TextInput>
                 </View>
                 <ImagePicker setImageValueQuery={setImageValueQuery} />
+                {errors.imageValueQuery && (
+                  <Text style={{color: 'red', fontSize: 12, marginLeft: 20}}>
+                    {errors.imageValueQuery}
+                  </Text>
+                )}
               </View>
 
               <TouchableOpacity style={styles.btnSave} onPress={onSubmit}>

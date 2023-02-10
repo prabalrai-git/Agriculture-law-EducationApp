@@ -76,7 +76,7 @@ const TopNavigationKrishiBazzar = () => {
             title: 'तरकारी',
             tabBarShowLabel: false,
             tabBarIcon: () => (
-              <View style={{flexDirection: 'row', width: '200%'}}>
+              <View style={{flexDirection: 'row', width: '500%'}}>
                 <Text style={styles.topTabsOptionStyles}>तरकारी</Text>
 
                 {/* <Image
@@ -95,7 +95,7 @@ const TopNavigationKrishiBazzar = () => {
             title: 'फलफुल',
             tabBarShowLabel: false,
             tabBarIcon: () => (
-              <View style={{flexDirection: 'row', width: '200%'}}>
+              <View style={{flexDirection: 'row', width: '500%'}}>
                 <Text style={styles.topTabsOptionStyles}>फलफुल</Text>
 
                 {/* <Image
@@ -114,7 +114,7 @@ const TopNavigationKrishiBazzar = () => {
             title: 'पशु',
             tabBarShowLabel: false,
             tabBarIcon: () => (
-              <View style={{flexDirection: 'row', width: '100%'}}>
+              <View style={{flexDirection: 'row', width: '500%'}}>
                 <Text style={styles.topTabsOptionStyles}>पशु</Text>
                 {/* 
               <Image
@@ -136,7 +136,7 @@ const TopNavigationKrishiBazzar = () => {
               <View
                 style={{
                   flexDirection: 'row',
-                  width: '200%',
+                  width: '500%',
                 }}>
                 <Text style={styles.topTabsOptionStyles}>बिउ/बेर्ना</Text>
 

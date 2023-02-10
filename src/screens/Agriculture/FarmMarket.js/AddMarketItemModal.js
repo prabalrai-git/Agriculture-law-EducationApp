@@ -20,6 +20,7 @@ import {
 } from '../../../Services/appServices/agricultureService';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {showMessage} from 'react-native-flash-message';
 
 const AddMarketItemModal = ({
   setModalVisiblity,
@@ -41,6 +42,41 @@ const AddMarketItemModal = ({
   const [description, setDescription] = useState();
   const [imageKrishiBazzar, setImageKrishiBazzar] = useState();
   const [userCode, setUserCode] = useState();
+
+  const [errors, setErrors] = useState({});
+
+  const handleValidation = (fieldName, error) => {
+    setErrors(prevState => ({...prevState, [fieldName]: error}));
+  };
+
+  const validate = () => {
+    let isValid = true;
+    if (!itemType) {
+      handleValidation('itemType', 'enter field name');
+      isValid = false;
+    }
+    if (!item) {
+      handleValidation('item', 'enter item name');
+      isValid = false;
+    }
+    if (!quantity) {
+      handleValidation('quantity', 'enter quantity');
+      isValid = false;
+    }
+    if (!price) {
+      handleValidation('price', 'enter price');
+      isValid = false;
+    }
+    if (!description) {
+      handleValidation('description', 'enter description');
+      isValid = false;
+    }
+    if (!imageKrishiBazzar) {
+      handleValidation('image', 'फोटो चयन गर्नुहोस्!');
+      isValid = false;
+    }
+    return isValid;
+  };
 
   useEffect(() => {
     getData();
@@ -95,56 +131,84 @@ const AddMarketItemModal = ({
     setPrice();
     setQuantity();
     setImageKrishiBazzar();
+    setErrors({});
   };
 
   const onSubmit = async () => {
     // new service with image upload
+    const validation = validate();
 
-    var formData = new FormData();
+    if (validation) {
+      var formData = new FormData();
 
-    formData.append('kid', 0);
-    formData.append('itemtype', itemType?.value);
-    formData.append('itemid', item?.value);
-    formData.append('quantity', quantity);
-    formData.append('price', price);
-    formData.append('itemdescription', description.trim());
-    formData.append('userid', userCode);
-    formData.append('isactive', true);
-    formData.append('issold', true);
-    formData.append('imagefilepath', {
-      uri: imageKrishiBazzar.uri,
-      name: imageKrishiBazzar.fileName,
-      type: imageKrishiBazzar.type,
-    });
-    // console.log(
-    //   imageValueQuery.uri,
-    //   imageValueQuery.fileName,
-    //   imageValueQuery.type,
-    // );
+      formData.append('kid', 0);
+      formData.append('itemtype', itemType?.value);
+      formData.append('itemid', item?.value);
+      formData.append('quantity', quantity);
+      formData.append('price', price);
+      formData.append('itemdescription', description.trim());
+      formData.append('userid', userCode);
+      formData.append('isactive', true);
+      formData.append('issold', true);
+      formData.append('imagefilepath', {
+        uri: imageKrishiBazzar.uri,
+        name: imageKrishiBazzar.fileName,
+        type: imageKrishiBazzar.type,
+      });
+      // console.log(
+      //   imageValueQuery.uri,
+      //   imageValueQuery.fileName,
+      //   imageValueQuery.type,
+      // );
+      console.log(validation);
 
-    try {
-      // console.log(formData);
-      const response = await axios.post(
-        'https://lunivacare.ddns.net/Luniva360Agri/api/luniva360agriapp/InsertUpdateKrishiBajarItemsQueryWithImageFile',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
+      try {
+        // console.log(formData);
+        const response = await axios.post(
+          'https://lunivacare.ddns.net/Luniva360Agri/api/luniva360agriapp/InsertUpdateKrishiBajarItemsQueryWithImageFile',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
           },
-        },
-      );
-      // console.log(response, '13122222223');
-      if (response.data) {
-        // console.log(response.data);
-        clearAllState();
-        setModalVisiblity(false);
-        setReload(!reload);
-        //  setReloadQueries(!reloadQueries);
-      } else {
-        console.log('something went wrong');
+        );
+        // console.log(response, '13122222223');
+        if (response.data) {
+          // console.log(response.data);
+          clearAllState();
+          setModalVisiblity(false);
+          setReload(!reload);
+          showMessage({
+            message: 'सफल',
+            description: 'उत्पादन बजारमा थपिएको छ',
+            type: 'success',
+            color: 'white',
+            position: 'bottom',
+            statusBarHeight: 40,
+            style: {height: 81},
+            icon: props => (
+              <Image
+                source={require('../../../Assets/flashMessage/check.png')}
+                {...props}
+                style={{
+                  tintColor: 'white',
+                  width: 20,
+                  height: 20,
+                  marginRight: 10,
+                }}
+              />
+            ),
+            // titleStyle: {textAlign: 'center'},
+            // textStyle: {textAlign: 'center'},
+          });
+          //  setReloadQueries(!reloadQueries);
+        } else {
+          console.log('something went wrong');
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
     }
   };
 
@@ -177,6 +241,7 @@ const AddMarketItemModal = ({
             </Text>
             <TouchableOpacity
               onPress={() => {
+                clearAllState();
                 setModalVisiblity(false);
               }}>
               <Image
@@ -205,13 +270,13 @@ const AddMarketItemModal = ({
                     width: width * 0.79,
                     margin: 6,
                     marginTop: 8,
-                    borderColor: 'black',
+                    borderColor: errors.itemType ? 'red' : 'black',
                     borderWidth: 0.6,
                     borderRadius: 5,
                     height: 40,
                   }}
                   placeholderStyle={{
-                    color: 'grey',
+                    color: errors.itemType ? 'red' : 'grey',
                     fontSize: 14,
                     paddingLeft: 10,
                   }}
@@ -247,13 +312,13 @@ const AddMarketItemModal = ({
                     width: width * 0.79,
                     margin: 6,
                     marginTop: 8,
-                    borderColor: 'black',
+                    borderColor: errors.item ? 'red' : 'black',
                     borderWidth: 0.6,
                     borderRadius: 5,
                     height: 40,
                   }}
                   placeholderStyle={{
-                    color: 'grey',
+                    color: errors.item ? 'red' : 'grey',
                     fontSize: 14,
                     paddingLeft: 10,
                   }}
@@ -294,14 +359,16 @@ const AddMarketItemModal = ({
                         paddingBottom: 10,
                         paddingLeft: 10,
                         width: width * 0.366,
-                        borderColor: 'black',
+                        borderColor: errors.quantity ? 'red' : 'black',
                       },
                     ]}
                     value={quantity}
                     keyboardType="numeric"
                     onChangeText={text => setQuantity(text)}
                     placeholder="मात्रा राख्नुहोस्"
-                    placeholderTextColor="grey"></TextInput>
+                    placeholderTextColor={
+                      errors.quantity ? 'red' : 'grey'
+                    }></TextInput>
                 </View>
                 <View style={{flexDirection: 'column'}}>
                   <Text style={styles.label}>मूल्य:</Text>
@@ -314,14 +381,16 @@ const AddMarketItemModal = ({
                         paddingBottom: 10,
                         paddingLeft: 10,
                         width: width * 0.366,
-                        borderColor: 'black',
+                        borderColor: errors.price ? 'red' : 'black',
                       },
                     ]}
                     value={price}
                     keyboardType="numeric"
                     onChangeText={text => setPrice(text)}
                     placeholder="मूल्य राख्नुहोस्"
-                    placeholderTextColor="grey"></TextInput>
+                    placeholderTextColor={
+                      errors.price ? 'red' : 'grey'
+                    }></TextInput>
                 </View>
               </View>
               <View style={{flexDirection: 'column'}}>
@@ -335,7 +404,7 @@ const AddMarketItemModal = ({
                       paddingBottom: 10,
                       paddingLeft: 10,
                       width: width * 0.78,
-                      borderColor: 'black',
+                      borderColor: errors.description ? 'red' : 'black',
                       height: 90,
                       textAlignVertical: 'top',
                     },
@@ -344,9 +413,16 @@ const AddMarketItemModal = ({
                   value={description}
                   onChangeText={text => setDescription(text)}
                   placeholder="वर्णन राख्नुहोस्..."
-                  placeholderTextColor="grey"></TextInput>
+                  placeholderTextColor={
+                    errors.description ? 'red' : 'grey'
+                  }></TextInput>
               </View>
               <ImagePicker setImageKrishiBazzar={setImageKrishiBazzar} />
+              {errors.image && (
+                <Text style={{color: 'red', fontSize: 12, marginLeft: 20}}>
+                  {errors.image}
+                </Text>
+              )}
             </View>
 
             <TouchableOpacity style={styles.btnSave} onPress={() => onSubmit()}>

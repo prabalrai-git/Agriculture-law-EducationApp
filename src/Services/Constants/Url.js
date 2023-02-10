@@ -86,4 +86,13 @@ export const GetBajarItemByTypeId = 'GetBajarItemByTypeId';
 
 export const GetBajarItemByUserId = 'GetBajarItemByUserId';
 
+export const GetUserDetailsWithBajarItemBySaleId =
+  'GetUserDetailsWithBajarItemBySaleId';
+
+export const InsertUpdateSalesComment = 'InsertUpdateSalesComment';
+
+export const GetKrishiSaleCommentBySaleId = 'GetKrishiSaleCommentBySaleId';
+
+export const GetPersonalDetailsByUserId = 'GetPersonalDetailsByUserId';
+
 // End of Agriculture constants

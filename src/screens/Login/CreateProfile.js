@@ -291,7 +291,7 @@ const CreateProfile = ({navigation}) => {
             color: 'black',
             margin: 18,
             fontSize: 18,
-            fontWeight: 'bold',
+            fontWeight: '500',
           }}>
           प्रोफाइल सिर्जना{' '}
         </Text>
@@ -371,15 +371,17 @@ const CreateProfile = ({navigation}) => {
             style={[
               styles.input,
               {
+                backgroundColor: 'lightgrey',
                 paddingTop: 10,
                 paddingRight: 0,
                 paddingBottom: 10,
                 paddingLeft: 10,
                 width: width * 0.65,
+                borderWidth: 0.5,
                 borderColor: errors.DOB ? 'red' : 'black',
               },
             ]}
-            value={DOB?.toString()}
+            value={DOB?.toDateString()}
             placeholder="जन्ममिति राख्नुहोस्"
             placeholderTextColor={errors.DOB ? 'red' : 'grey'}
           />
@@ -422,7 +424,7 @@ const CreateProfile = ({navigation}) => {
           <View
             style={{
               backgroundColor: 'grey',
-              height: 2,
+              height: 1,
               width: width * 0.3,
             }}></View>
           <Text
@@ -438,7 +440,7 @@ const CreateProfile = ({navigation}) => {
           <View
             style={{
               backgroundColor: 'grey',
-              height: 2,
+              height: 1,
               width: width * 0.54,
             }}></View>
         </View>
@@ -593,7 +595,7 @@ const CreateProfile = ({navigation}) => {
           <View
             style={{
               backgroundColor: 'grey',
-              height: 2,
+              height: 1,
               width: width * 0.95,
               marginLeft: 'auto',
               marginRight: 'auto',
@@ -684,7 +686,7 @@ const CreateProfile = ({navigation}) => {
           <Text
             style={{
               color: 'white',
-              fontWeight: 'bold',
+              fontWeight: '500',
               textAlign: 'center',
               fontSize: 18,
             }}>
@@ -701,11 +703,12 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     marginBottom: 8,
-    borderWidth: 0.8,
+    borderWidth: 0.5,
     padding: 10,
     color: 'black',
     borderRadius: 5,
     width: width * 0.73,
+    backgroundColor: 'white',
   },
   label: {
     color: 'black',

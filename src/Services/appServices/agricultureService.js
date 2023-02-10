@@ -13,14 +13,17 @@ import {
   GetFarmListByUserCode,
   GetFarmProductionDetailsByFarmId,
   GetFarmType,
+  GetKrishiSaleCommentBySaleId,
   GetListOfAgroProductByAgriType,
   GetListOfCommentsByQId,
   GetListOfDistricts,
   GetListOfQueryByUserid,
   GetListofUserTypes,
+  GetPersonalDetailsByUserId,
   GetSalesDetailsofActiveProductionByUser,
   GetSalesUnitList,
   GetSoilValuesByFarmIdAndUserId,
+  GetUserDetailsWithBajarItemBySaleId,
   InsertUpdateBaaliKharcha,
   InsertUpdateBaaliOfUser,
   InsertUpdateCommentsOnQuery,
@@ -29,6 +32,7 @@ import {
   InsertUpdateFarmersQueryWithImageFile,
   InsertUpdateFarmWithFile,
   InsertUpdateProductionSalesDetails,
+  InsertUpdateSalesComment,
   InsertUpdateSoilValuesByUserId,
 } from '../Constants/Url';
 import {fetch, store} from '../Utils/httpUtil';
@@ -289,9 +293,9 @@ export const GetSalesDetailsofActiveProductionByUserApi = async (
   try {
     // let formData = generateUrlEncodedData(data);
 
-    console.log(
-      `${GetSalesDetailsofActiveProductionByUser}?userId=${data.userId}`,
-    );
+    // console.log(
+    //   `${GetSalesDetailsofActiveProductionByUser}?userId=${data.userId}`,
+    // );
     let response = await fetch(
       `${GetSalesDetailsofActiveProductionByUser}?userId=${data.userId}`,
     );
@@ -318,6 +322,24 @@ export const GetListOfQueryByUseridApi = async (data, successCallback) => {
     successCallback([]);
   }
 };
+export const GetUserDetailsWithBajarItemBySaleIdApi = async (
+  data,
+  successCallback,
+) => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+
+    let response = await fetch(
+      `${GetUserDetailsWithBajarItemBySaleId}?krishiSaleId=${data.krishiSaleId}`,
+    );
+
+    if (response?.status === 200) {
+      successCallback(response?.data.krishiBajarItemDetails);
+    } else successCallback([]);
+  } catch (error) {
+    successCallback([]);
+  }
+};
 export const GetSalesUnitListApi = async (data, successCallback) => {
   try {
     // let formData = generateUrlEncodedData(data);
@@ -337,7 +359,7 @@ export const InsertUpdateFarmersQueryApi = async (data, successCallback) => {
     // let formData = generateUrlEncodedData(data);
     // console.log('This is the data', data);
     let response = await store(InsertUpdateFarmersQuery, data);
-    console.log(response);
+    // console.log(response);
 
     if (response?.status === 200) {
       // console.log('hello guys');
@@ -356,7 +378,23 @@ export const InsertUpdateFarmersQueryWithImageFileApi = async (
     // let formData = generateUrlEncodedData(data);
     // console.log('This is the data', data);
     let response = await store(InsertUpdateFarmersQueryWithImageFile, data);
-    console.log(response);
+    // console.log(response);
+
+    if (response?.status === 200) {
+      // console.log('hello guys');
+      successCallback(response?.data);
+    } else successCallback([]);
+  } catch (error) {
+    // console.log('errorsssssssssssssssssssssss', error);
+    successCallback([]);
+  }
+};
+export const InsertUpdateSalesCommentApi = async (data, successCallback) => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+    // console.log('This is the data', data);
+    let response = await store(InsertUpdateSalesComment, data);
+    // console.log(response);
 
     if (response?.status === 200) {
       // console.log('hello guys');
@@ -372,7 +410,7 @@ export const InsertUpdateCommentsOnQueryApi = async (data, successCallback) => {
     // let formData = generateUrlEncodedData(data);
     // console.log('This is the data', data);
     let response = await store(InsertUpdateCommentsOnQuery, data);
-    console.log(response);
+    // console.log(response);
 
     if (response?.status === 200) {
       // console.log('hello guys');
@@ -399,6 +437,24 @@ export const GetListOfCommentsByQIdApi = async (data, successCallback) => {
     successCallback([]);
   }
 };
+export const GetKrishiSaleCommentBySaleIdApi = async (
+  data,
+  successCallback,
+) => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+
+    let response = await fetch(
+      `${GetKrishiSaleCommentBySaleId}?KrishiSaleId=${data.KrishiSaleId}`,
+    );
+
+    if (response?.status === 200) {
+      successCallback(response?.data.Comment);
+    } else successCallback([]);
+  } catch (error) {
+    successCallback([]);
+  }
+};
 export const GetBajarItemByItemTypeApi = async (data, successCallback) => {
   try {
     // let formData = generateUrlEncodedData(data);
@@ -409,6 +465,21 @@ export const GetBajarItemByItemTypeApi = async (data, successCallback) => {
 
     if (response?.status === 200) {
       successCallback(response?.data.krishiBajar);
+    } else successCallback([]);
+  } catch (error) {
+    successCallback([]);
+  }
+};
+export const GetPersonalDetailsByUserIdApi = async (data, successCallback) => {
+  try {
+    // let formData = generateUrlEncodedData(data);
+
+    let response = await fetch(
+      `${GetPersonalDetailsByUserId}?usercode=${data.usercode}`,
+    );
+
+    if (response?.status === 200) {
+      successCallback(response?.data.PersonalInfo);
     } else successCallback([]);
   } catch (error) {
     successCallback([]);

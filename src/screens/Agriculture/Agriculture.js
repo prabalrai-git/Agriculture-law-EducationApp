@@ -17,6 +17,12 @@ const Agriculture = ({navigation}) => {
     },
     {
       id: 4,
+      name: 'JTA संचार',
+      image: require('../../Assets/FarmImages/JTA.png'),
+      navigateTo: 'Queries',
+    },
+    {
+      id: 5,
       name: 'खर्च / बिक्री ट्र्याकिंग',
       image: require('../../Assets/FarmImages/Expenses.png'),
       navigateTo: 'Agriculture',
@@ -27,12 +33,6 @@ const Agriculture = ({navigation}) => {
     //   image: require('../../Assets/FarmImages/healthcare.png'),
     //   navigateTo: 'Agriculture',
     // },
-    {
-      id: 5,
-      name: 'JTA संचार',
-      image: require('../../Assets/FarmImages/JTA.png'),
-      navigateTo: 'Queries',
-    },
   ];
 
   return (
