@@ -23,6 +23,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {Avatar} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {log} from 'react-native-reanimated';
+import {numberWithCommas} from '../../../Helpers/NumberToMoney';
 
 const ItemFullDescription = ({route}) => {
   const [itemDetails, setItemDetails] = useState();
@@ -85,7 +86,7 @@ const ItemFullDescription = ({route}) => {
     };
 
     GetKrishiSaleCommentBySaleIdApi(data, res => {
-      console.log(res);
+      // console.log(res);
       setCommentList(res);
     });
   }, [reload]);
@@ -153,7 +154,9 @@ const ItemFullDescription = ({route}) => {
                   justifyContent: 'space-between',
                   marginTop: 10,
                 }}>
-                <Text style={styles.Price}>रु.{itemDetails?.Price}</Text>
+                <Text style={styles.Price}>
+                  Rs. {numberWithCommas(itemDetails?.Price)}
+                </Text>
 
                 <Text style={styles.Quantity}>
                   मात्रा: {itemDetails?.Quantity}

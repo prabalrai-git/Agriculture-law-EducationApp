@@ -56,13 +56,8 @@ const DropdownComponent = props => {
     editChecker,
   } = props;
 
-  // useEffect(() => {
-  //   console.log(editingProduct, 'this is the editedit');
-  // }, []);
-
   useEffect(() => {
     dropDownData();
-    // console.log('This is props', props);
   }, [
     areaUnits,
     baliType,
@@ -79,7 +74,7 @@ const DropdownComponent = props => {
     let data = [];
     if (areaUnits) {
       const newData = data.concat(areaUnits);
-      // console.log('This is the props data', newData);
+      // ('This is the props data', newData);
       setData(newData);
       return;
     }

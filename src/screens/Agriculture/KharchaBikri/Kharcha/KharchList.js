@@ -10,6 +10,7 @@ import React, {useEffect} from 'react';
 import {GetBaaliKharchaDetailsByUserBaaliIdApi} from '../../../../Services/appServices/agricultureService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useState} from 'react';
+import {numberWithCommas} from '../../../../Helpers/NumberToMoney';
 
 const width = Dimensions.get('window').width;
 
@@ -95,7 +96,9 @@ const KharchList = ({ProdCropID, baaliId, reload}) => {
                 />
                 <Text style={styles.eachLine}>
                   दर:{' '}
-                  <Text style={styles.eachLineInside}>{item.ResourceRate}</Text>
+                  <Text style={styles.eachLineInside}>
+                    Rs. {numberWithCommas(item.ResourceRate)}
+                  </Text>
                 </Text>
               </View>
               <View style={styles.lineContainer}>
@@ -110,7 +113,9 @@ const KharchList = ({ProdCropID, baaliId, reload}) => {
                 />
                 <Text style={styles.eachLine}>
                   कुल खर्च:{' '}
-                  <Text style={styles.eachLineInside}>{item.TotalCost}</Text>
+                  <Text style={styles.eachLineInside}>
+                    Rs. {numberWithCommas(item.TotalCost)}
+                  </Text>
                 </Text>
               </View>
               <View style={styles.lineContainer}>

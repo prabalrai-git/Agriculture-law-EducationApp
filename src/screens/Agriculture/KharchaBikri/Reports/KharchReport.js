@@ -3,6 +3,7 @@ import {useState} from 'react';
 import {useEffect} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {DataTable} from 'react-native-paper';
+import {numberWithCommas} from '../../../../Helpers/NumberToMoney';
 import {GetBaaliKharchaDetailsByUserBaaliIdApi} from '../../../../Services/appServices/agricultureService';
 
 const optionsPerPage = [2, 3, 4];
@@ -24,7 +25,7 @@ const KharchReport = ({route}) => {
       prodId: ProdCropID,
       baaliId: baaliId,
     };
-    console.log(route);
+    // console.log(route);
     GetBaaliKharchaDetailsByUserBaaliIdApi(data, res => {
       setTableData(res);
     });
@@ -43,9 +44,9 @@ const KharchReport = ({route}) => {
             marginRight: 10,
             marginTop: 15,
           }}>
-          कुल बिक्री रकम: Rs.
+          कुल खर्च रकम: Rs.
           {tableData?.forEach(number => (total += number.TotalCost))}
-          <Text style={{fontSize: 14}}>{total}</Text>
+          <Text style={{fontSize: 14}}>{numberWithCommas(total)}</Text>
         </Text>
       </View>
       <DataTable>
@@ -68,20 +69,43 @@ const KharchReport = ({route}) => {
             {tableData?.map((item, index) => {
               return (
                 <DataTable.Row
+                  key={index}
                   style={{
                     padding: 5,
                     backgroundColor: index % 2 === 0 ? '#f3f7f0' : 'white',
                   }}>
-                  <DataTable.Cell textStyle={{color: 'green'}}>
+                  <DataTable.Cell
+                    textStyle={{
+                      color: 'green',
+                      fontSize: 12,
+                      flexWrap: 'wrap',
+                    }}>
                     {item.KharchaHead}
                   </DataTable.Cell>
-                  <DataTable.Cell numeric>
+                  <DataTable.Cell
+                    textStyle={{
+                      fontSize: 12,
+                      flexWrap: 'wrap',
+                    }}
+                    numeric>
                     {item.ResourceAmount} {item.KUnit}
                   </DataTable.Cell>
-                  <DataTable.Cell numeric>
-                    Rs.{item.ResourceRate}
+                  <DataTable.Cell
+                    textStyle={{
+                      fontSize: 12,
+                      flexWrap: 'wrap',
+                    }}
+                    numeric>
+                    Rs.{numberWithCommas(item.ResourceRate)}
                   </DataTable.Cell>
-                  <DataTable.Cell numeric>Rs.{item.TotalCost}</DataTable.Cell>
+                  <DataTable.Cell
+                    textStyle={{
+                      fontSize: 12,
+                      flexWrap: 'wrap',
+                    }}
+                    numeric>
+                    Rs.{numberWithCommas(item.TotalCost)}
+                  </DataTable.Cell>
                 </DataTable.Row>
               );
             })}

@@ -10,6 +10,7 @@ import React from 'react';
 import {useState} from 'react';
 import {useEffect} from 'react';
 import {GetSalesDetailsofActiveProductionByUserApi} from '../../../../Services/appServices/agricultureService';
+import {numberWithCommas} from '../../../../Helpers/NumberToMoney';
 
 const width = Dimensions.get('window').width;
 
@@ -84,7 +85,7 @@ const BikriList = ({userCode, reload}) => {
                   }}
                 />
                 <Text style={styles.eachLine}>
-                  दर: <Text style={styles.eachLineInside}>{item.Rate}</Text>
+                  दर: <Text style={styles.eachLineInside}>Rs. {item.Rate}</Text>
                 </Text>
               </View>
               <View style={styles.lineContainer}>
@@ -99,7 +100,9 @@ const BikriList = ({userCode, reload}) => {
                 />
                 <Text style={styles.eachLine}>
                   कुल बिक्री:{' '}
-                  <Text style={styles.eachLineInside}>{item.TotalAmount}</Text>
+                  <Text style={styles.eachLineInside}>
+                    Rs. {numberWithCommas(item.TotalAmount)}
+                  </Text>
                 </Text>
               </View>
               <View style={styles.lineContainer}>
@@ -113,7 +116,7 @@ const BikriList = ({userCode, reload}) => {
                   }}
                 />
                 <Text style={styles.eachLine}>
-                  प्रवेश मिति:
+                  प्रवेश मिति:{' '}
                   <Text style={styles.eachLineInside}>
                     {item.SalesDate.split('T')[0]}
                   </Text>

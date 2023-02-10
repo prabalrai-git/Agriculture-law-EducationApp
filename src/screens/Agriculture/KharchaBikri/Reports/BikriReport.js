@@ -3,6 +3,7 @@ import {useEffect} from 'react';
 import {useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {DataTable} from 'react-native-paper';
+import {numberWithCommas} from '../../../../Helpers/NumberToMoney';
 import {GetSalesDetailsofActiveProductionByUserApi} from '../../../../Services/appServices/agricultureService';
 
 const optionsPerPage = [2, 3, 4];
@@ -48,9 +49,10 @@ const BikriReport = ({route}) => {
           }}>
           कुल बिक्री रकम: Rs.
           {tableData?.forEach(number => (total += number.TotalAmount))}
-          <Text style={{fontSize: 14}}>{total}</Text>
+          <Text style={{fontSize: 14}}>{numberWithCommas(total)}</Text>
         </Text>
       </View>
+      {/* <ScrollView></ScrollView> */}
       <DataTable>
         <DataTable.Header style={{backgroundColor: '#4cbb17', marginTop: 5}}>
           <DataTable.Title textStyle={styles.headerTxt}>
@@ -69,19 +71,50 @@ const BikriReport = ({route}) => {
         <ScrollView>
           <View style={{marginBottom: 140}}>
             {tableData?.map((item, index) => {
-              console.log(index, 'this index');
+              //   console.log(index, 'this index');
               return (
                 <DataTable.Row
+                  key={index}
                   style={{
                     padding: 5,
                     backgroundColor: index % 2 === 0 ? '#f3f7f0' : 'white',
                   }}>
-                  <DataTable.Cell textStyle={{color: 'green'}}>
+                  <DataTable.Cell
+                    // style={{flex: 1.5}}
+                    textStyle={{
+                      color: 'green',
+                      fontSize: 12,
+                      flex: 1,
+                      flexWrap: 'wrap',
+                    }}>
                     {item.VendorName}
                   </DataTable.Cell>
-                  <DataTable.Cell numeric>{item.Quantity}</DataTable.Cell>
-                  <DataTable.Cell numeric>Rs.{item.Rate}</DataTable.Cell>
-                  <DataTable.Cell numeric>Rs.{item.TotalAmount}</DataTable.Cell>
+                  <DataTable.Cell
+                    textStyle={{
+                      fontSize: 12,
+                      flexWrap: 'wrap',
+                    }}
+                    numeric>
+                    {item.Quantity}
+                  </DataTable.Cell>
+                  <DataTable.Cell
+                    textStyle={{
+                      fontSize: 12,
+
+                      flexWrap: 'wrap',
+                    }}
+                    numeric>
+                    Rs.{item.Rate}
+                  </DataTable.Cell>
+                  <DataTable.Cell
+                    textStyle={{
+                      fontSize: 12,
+
+                      flexWrap: 'wrap',
+                    }}
+                    numeric>
+                    Rs.{numberWithCommas(item.TotalAmount)}
+                  </DataTable.Cell>
                 </DataTable.Row>
               );
             })}

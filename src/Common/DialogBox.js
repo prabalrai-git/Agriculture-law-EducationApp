@@ -24,8 +24,6 @@ const DialogBox = ({
   setDeletingProduct,
   setDeletingFarm,
 }) => {
-  // console.log(deletingProduct, 'This is deleting product');
-
   const onDelete = () => {
     const deletingFarmData = () => {
       return {...deletingFarm, IsDeleted: true};
@@ -40,9 +38,7 @@ const DialogBox = ({
     }
     if (deletingProduct) {
       var productformData = deletingProductData();
-      // console.log(productformData, 'this is deletinf product data');
     }
-    // console.log('This is the data', formData, validation);
     if (deletingFarm) {
       InsertUpdateFarmApi(formData, res => {
         if (res) {

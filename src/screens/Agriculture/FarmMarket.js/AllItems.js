@@ -14,6 +14,7 @@ import {useEffect} from 'react';
 import {GetBajarItemByItemTypeApi} from '../../../Services/appServices/agricultureService';
 import EmptyFarmAfterFetch from '../../../Common/EmptyFarmAfterFetch';
 import AddMarketItemModal from './AddMarketItemModal';
+import {numberWithCommas} from '../../../Helpers/NumberToMoney';
 
 const AllItems = ({navigation, route}) => {
   const [searchText, setSearchText] = useState();
@@ -195,8 +196,11 @@ const AllItems = ({navigation, route}) => {
                             justifyContent: 'space-between',
                             width: width * 0.4,
                             marginTop: 4,
+                            flexWrap: 'wrap',
                           }}>
-                          <Text style={styles.Price}>रु.{item.Price}</Text>
+                          <Text style={styles.Price}>
+                            Rs. {numberWithCommas(item.Price)}
+                          </Text>
 
                           <Text style={styles.Quantity}>
                             मात्रा: {item.Quantity}
