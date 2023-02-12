@@ -135,7 +135,7 @@ const Bikri = ({route, navigation}) => {
 
       // console.log(data);
       InsertUpdateProductionSalesDetailsApi(data, res => {
-        console.log(res);
+        // console.log(res);
         if (res.SuccessMsg) {
           clearAllState();
           setModalVisiblity(false);

@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     margin: 25,
     right: 0,
-    bottom: 0,
+    bottom: 50,
     width: width * 0.34,
     backgroundColor: '#4cbb17',
     zIndex: 100,

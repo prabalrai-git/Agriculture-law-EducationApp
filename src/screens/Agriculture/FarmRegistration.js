@@ -287,7 +287,7 @@ const FarmRegistration = ({navigation}) => {
       );
       formData.append('SqId', 1);
 
-      console.log(formData);
+      // console.log(formData);
       try {
         const response = await axios.post(
           'https://lunivacare.ddns.net/Luniva360Agri/api/luniva360agriapp/InsertUpdateFarmWithFile',
@@ -299,7 +299,7 @@ const FarmRegistration = ({navigation}) => {
           },
         );
         if (response.data) {
-          console.log(response);
+          // console.log(response);
           clearAllState();
           setModalVisible(false);
           showMessage({
@@ -327,7 +327,7 @@ const FarmRegistration = ({navigation}) => {
           });
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         clearAllState();
         setModalVisible(false);
         showMessage({
@@ -442,7 +442,7 @@ const FarmRegistration = ({navigation}) => {
                 return (
                   <TouchableOpacity
                     onPress={() => {
-                      console.log(item);
+                      // console.log(item);
                       navigation.navigate('Bali', {
                         FarmId: item.frmID,
                         FarmName: item.frmName,

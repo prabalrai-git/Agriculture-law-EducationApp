@@ -160,7 +160,7 @@ const AddMarketItemModal = ({
       //   imageValueQuery.fileName,
       //   imageValueQuery.type,
       // );
-      console.log(validation);
+      // console.log(validation);
 
       try {
         // console.log(formData);
@@ -175,7 +175,7 @@ const AddMarketItemModal = ({
         );
         // console.log(response, '13122222223');
         if (response.data) {
-          // console.log(response.data);
+          console.log(response.data, 'this the response');
           clearAllState();
           setModalVisiblity(false);
           setReload(!reload);

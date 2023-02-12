@@ -163,7 +163,7 @@ const CreateProfile = ({navigation}) => {
           // console.log('this is the district data', data);
         }
       });
-      setState(item.label);
+      setState(item.value);
     }
   };
   const onSelectDistrict = item => {
@@ -181,7 +181,7 @@ const CreateProfile = ({navigation}) => {
           setMunicipalityList(data);
         }
       });
-      setDistrict(item.label);
+      setDistrict(item.value);
     }
   };
 
@@ -244,7 +244,7 @@ const CreateProfile = ({navigation}) => {
       NationalId: citizenshipNumber,
       UsrPassword: password,
     };
-    // console.log(data);
+    console.log(data);
     if (validation) {
       InsertUpdatePersonalInfoApi(data, res => {
         try {
