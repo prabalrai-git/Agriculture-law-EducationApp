@@ -1,6 +1,8 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Image, StyleSheet, Text, View} from 'react-native';
+import FarmRegistration from '../screens/Agriculture/FarmRegistration';
 import Queries from '../screens/Agriculture/JTACommunications/Queries/Queries';
 import Chat from '../screens/Chat/Chat';
 import Dashboard from '../screens/Dashboard/Dashboard';
@@ -11,6 +13,9 @@ const Tab = createBottomTabNavigator();
 
 const BottomNavigation = () => {
   const {t, i18n} = useTranslation();
+
+  const [fromBottomNavigation, setFromBottomNavigation] = useState(true);
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -52,6 +57,7 @@ const BottomNavigation = () => {
       <Tab.Screen
         name="Chat"
         component={Queries}
+        initialParams={{fromBottomNavigation}}
         options={{
           tabBarIcon: ({focused}) => (
             <View style={styles.container}>
@@ -73,7 +79,8 @@ const BottomNavigation = () => {
       />
       <Tab.Screen
         name="MeroKhet"
-        component={MeroKhet}
+        component={FarmRegistration}
+        initialParams={{fromBottomNavigation}}
         options={{
           tabBarIcon: ({focused}) => (
             <View style={styles.container}>
@@ -109,7 +116,7 @@ const BottomNavigation = () => {
                 }}
               />
               <Text style={{color: focused ? 'green' : 'black', fontSize: 14}}>
-                {t('More')}
+                थप
               </Text>
             </View>
           ),

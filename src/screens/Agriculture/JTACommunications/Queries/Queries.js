@@ -19,7 +19,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {showMessage} from 'react-native-flash-message';
 
-const Queries = ({navigation}) => {
+const Queries = ({navigation, route}) => {
+  const differentCss = route?.params?.fromBottomNavigation;
+  // console.log(fromBottomNavigation);
+
   const [modalVisibility, setModalVisiblity] = useState(false);
   const [queryList, setQueryList] = useState();
   const [reloadQueries, setReloadQueries] = useState(false);
@@ -169,7 +172,7 @@ const Queries = ({navigation}) => {
     <>
       <FAB
         icon="plus"
-        style={styles.fab}
+        style={[styles.fab, {bottom: differentCss ? 50 : 10}]}
         onPress={() => setModalVisiblity(true)}
         label="नयाँ जिज्ञासा"
         color="white"
@@ -343,7 +346,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     margin: 25,
     right: 0,
-    bottom: 50,
+    bottom: 10,
     width: width * 0.34,
     backgroundColor: '#4cbb17',
     zIndex: 100,

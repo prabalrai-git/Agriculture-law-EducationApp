@@ -167,15 +167,22 @@ const Login = ({navigation}) => {
     };
 
     ValidateOTPApi(data, res => {
+      // console.log(res, 'this res');
       if (res?.length > 0) {
-        navigation.navigate('CreateProfile');
+        navigation.navigate('CreateProfile', {
+          email: email,
+          userMobileNumber: userMobileNumber,
+        });
         setRegistrationId();
         setOtp();
         setOtpError();
         // setOpenOTPScreen(false);
       } else {
         setOtpError('कृपया सही OTP राख्नुहोस् !');
-        navigation.navigate('CreateProfile');
+        navigation.navigate('CreateProfile', {
+          email: email,
+          userMobileNumber: userMobileNumber,
+        });
       }
     });
   };

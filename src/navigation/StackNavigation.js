@@ -23,6 +23,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import OwnItems from '../screens/Agriculture/FarmMarket.js/OwnItems';
 import BikriReport from '../screens/Agriculture/KharchaBikri/Reports/BikriReport';
 import KharchReport from '../screens/Agriculture/KharchaBikri/Reports/KharchReport';
+import FarmMarketDashboard from '../screens/Agriculture/FarmMarket.js/FarmMarketDashboard';
 
 const width = Dimensions.get('window').width;
 
@@ -95,7 +96,38 @@ function StackNavigation() {
             fontWeight: '500',
             alignSelf: 'center',
           }}>
-          कृषि बजार
+          बजार
+        </Text>
+        {/* <TouchableOpacity onPress={() => setVisible(true)}>
+          <Image
+            source={require('../Assets/Images/list.png')}
+            style={{
+              tintColor: 'white',
+              width: 25,
+              height: 25,
+              // backgroundColor: 'red',
+            }}
+          />
+        </TouchableOpacity> */}
+      </View>
+    );
+  };
+  const CustomReportHeaderFarmerMarketMag = () => {
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          width: width * 0.78,
+        }}>
+        <Text
+          style={{
+            color: 'white',
+            fontSize: 20,
+            fontWeight: '500',
+            alignSelf: 'center',
+          }}>
+          माग
         </Text>
         {/* <TouchableOpacity onPress={() => setVisible(true)}>
           <Image
@@ -231,6 +263,13 @@ function StackNavigation() {
           }}
         />
         <Stack.Screen
+          name="FarmerMarketDash"
+          component={FarmMarketDashboard}
+          options={{
+            title: 'कृषि बजार',
+          }}
+        />
+        <Stack.Screen
           name="TopNavigationKrishiBazzar"
           component={TopNavigationKrishiBazzar}
           options={{
@@ -238,8 +277,20 @@ function StackNavigation() {
               backgroundColor: 'green',
             },
             headerTintColor: 'white',
-            title: 'कृषि बजार',
+            title: 'बजार',
             headerTitle: () => <CustomReportHeaderFarmerMarket />,
+          }}
+        />
+        <Stack.Screen
+          name="TopNavigationKrishiBazzarMag"
+          component={TopNavigationKrishiBazzar}
+          options={{
+            headerStyle: {
+              backgroundColor: 'green',
+            },
+            headerTintColor: 'white',
+            title: 'बजार',
+            headerTitle: () => <CustomReportHeaderFarmerMarketMag />,
           }}
         />
       </Stack.Navigator>

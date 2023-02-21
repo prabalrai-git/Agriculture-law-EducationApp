@@ -27,6 +27,7 @@ const AddMarketItemModal = ({
   modalVisibility,
   setReload,
   reload,
+  bajartype,
 }) => {
   const [isFocus, setIsFocus] = useState(false);
 
@@ -38,9 +39,11 @@ const AddMarketItemModal = ({
   const [itemType, setItemType] = useState();
   const [item, setItem] = useState();
   const [quantity, setQuantity] = useState();
-  const [price, setPrice] = useState();
+  const [lowerPrice, setLowerPrice] = useState();
   const [description, setDescription] = useState();
   const [imageKrishiBazzar, setImageKrishiBazzar] = useState();
+  const [unit, setUnit] = useState();
+  const [upperPrice, setUpperPrice] = useState();
   const [userCode, setUserCode] = useState();
 
   const [errors, setErrors] = useState({});
@@ -63,15 +66,23 @@ const AddMarketItemModal = ({
       handleValidation('quantity', 'enter quantity');
       isValid = false;
     }
-    if (!price) {
-      handleValidation('price', 'enter price');
+    if (!lowerPrice) {
+      handleValidation('lowerPrice', 'enter price');
       isValid = false;
     }
     if (!description) {
       handleValidation('description', 'enter description');
       isValid = false;
     }
-    if (!imageKrishiBazzar) {
+    if (!unit) {
+      handleValidation('unit', 'enter description');
+      isValid = false;
+    }
+    if (!upperPrice) {
+      handleValidation('upperPrice', 'enter description');
+      isValid = false;
+    }
+    if (!bajartype && !imageKrishiBazzar) {
       handleValidation('image', 'फोटो चयन गर्नुहोस्!');
       isValid = false;
     }
@@ -128,7 +139,9 @@ const AddMarketItemModal = ({
     setDescription();
     setItemType();
     setItem();
-    setPrice();
+    setLowerPrice();
+    setUpperPrice();
+    setUnit();
     setQuantity();
     setImageKrishiBazzar();
     setErrors({});
@@ -145,7 +158,7 @@ const AddMarketItemModal = ({
       formData.append('itemtype', itemType?.value);
       formData.append('itemid', item?.value);
       formData.append('quantity', quantity);
-      formData.append('price', price);
+      formData.append('price', lowerPrice);
       formData.append('itemdescription', description.trim());
       formData.append('userid', userCode);
       formData.append('isactive', true);
@@ -155,6 +168,10 @@ const AddMarketItemModal = ({
         name: imageKrishiBazzar.fileName,
         type: imageKrishiBazzar.type,
       });
+      formData.append('upperprice', 5000);
+      formData.append('unit', 'per kg');
+      formData.append('bajratype', bajartype ? 2 : 1);
+
       // console.log(
       //   imageValueQuery.uri,
       //   imageValueQuery.fileName,
@@ -163,7 +180,7 @@ const AddMarketItemModal = ({
       // console.log(validation);
 
       try {
-        // console.log(formData);
+        console.log(formData);
         const response = await axios.post(
           'https://lunivacare.ddns.net/Luniva360Agri/api/luniva360agriapp/InsertUpdateKrishiBajarItemsQueryWithImageFile',
           formData,
@@ -173,7 +190,7 @@ const AddMarketItemModal = ({
             },
           },
         );
-        // console.log(response, '13122222223');
+        console.log(response, '13122222223');
         if (response.data) {
           console.log(response.data, 'this the response');
           clearAllState();
@@ -181,7 +198,7 @@ const AddMarketItemModal = ({
           setReload(!reload);
           showMessage({
             message: 'सफल',
-            description: 'उत्पादन बजारमा थपिएको छ',
+            description: bajartype ? 'माग थपिएको छ' : 'उत्पादन बजारमा थपिएको छ',
             type: 'success',
             color: 'white',
             position: 'bottom',
@@ -237,7 +254,7 @@ const AddMarketItemModal = ({
                 fontWeight: '500',
                 marginTop: 10,
               }}>
-              उत्पादन थप्नुहोस्:
+              {bajartype ? 'माग गर्नुहोस्' : 'उत्पादन थप्नुहोस्'}
             </Text>
             <TouchableOpacity
               onPress={() => {
@@ -371,7 +388,7 @@ const AddMarketItemModal = ({
                     }></TextInput>
                 </View>
                 <View style={{flexDirection: 'column'}}>
-                  <Text style={styles.label}>मूल्य:</Text>
+                  <Text style={styles.label}>एकाइ:</Text>
                   <TextInput
                     style={[
                       styles.input,
@@ -381,15 +398,60 @@ const AddMarketItemModal = ({
                         paddingBottom: 10,
                         paddingLeft: 10,
                         width: width * 0.366,
-                        borderColor: errors.price ? 'red' : 'black',
+                        borderColor: errors.unit ? 'red' : 'black',
                       },
                     ]}
-                    value={price}
-                    keyboardType="numeric"
-                    onChangeText={text => setPrice(text)}
-                    placeholder="मूल्य राख्नुहोस्"
+                    value={unit}
+                    onChangeText={text => setUnit(text)}
+                    placeholder="एकाइ राख्नुहोस्"
                     placeholderTextColor={
-                      errors.price ? 'red' : 'grey'
+                      errors.unit ? 'red' : 'grey'
+                    }></TextInput>
+                </View>
+              </View>
+              <View style={{flexDirection: 'row'}}>
+                <View style={{flexDirection: 'column'}}>
+                  <Text style={styles.label}>तल्लो मूल्य:</Text>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      {
+                        paddingTop: 10,
+                        paddingRight: 0,
+                        paddingBottom: 10,
+                        paddingLeft: 10,
+                        width: width * 0.366,
+                        borderColor: errors.lowerPrice ? 'red' : 'black',
+                      },
+                    ]}
+                    value={lowerPrice}
+                    keyboardType="numeric"
+                    onChangeText={text => setLowerPrice(text)}
+                    placeholder="तल्लो मूल्य राख्नुहोस्"
+                    placeholderTextColor={
+                      errors.lowerPrice ? 'red' : 'grey'
+                    }></TextInput>
+                </View>
+                <View style={{flexDirection: 'column'}}>
+                  <Text style={styles.label}>माथिल्लो मूल्य:</Text>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      {
+                        paddingTop: 10,
+                        paddingRight: 0,
+                        paddingBottom: 10,
+                        paddingLeft: 10,
+                        width: width * 0.366,
+                        borderColor: errors.upperPrice ? 'red' : 'black',
+                      },
+                    ]}
+                    value={upperPrice}
+                    keyboardType="numeric"
+                    onChangeText={text => setUpperPrice(text)}
+                    placeholder="माथिल्लो मूल्य राख्नुहोस्"
+                    placeholderTextColor={
+                      errors.upperPrice ? 'red' : 'grey'
                     }></TextInput>
                 </View>
               </View>

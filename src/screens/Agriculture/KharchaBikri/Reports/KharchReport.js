@@ -72,11 +72,11 @@ const KharchReport = ({route}) => {
                   key={index}
                   style={{
                     padding: 5,
-                    backgroundColor: index % 2 === 0 ? '#f3f7f0' : 'white',
+                    backgroundColor: index % 2 === 0 ? '#EACCD1' : 'white',
                   }}>
                   <DataTable.Cell
                     textStyle={{
-                      color: 'green',
+                      color: '#DE4842',
                       fontSize: 12,
                       flexWrap: 'wrap',
                     }}>

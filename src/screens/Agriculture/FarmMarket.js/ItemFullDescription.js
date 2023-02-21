@@ -140,7 +140,7 @@ const ItemFullDescription = ({route}) => {
           <LinearGradient
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
-            colors={['#006B05', 'lightgrey']}
+            colors={[('#006B05', 'lightgrey')]}
             style={styles.linearGradient}>
             <View
               style={{
@@ -227,7 +227,10 @@ const ItemFullDescription = ({route}) => {
                 borderRadius: 6,
               }}>
               <Text style={{color: 'black', fontWeight: '600', fontSize: 16}}>
-                उत्पादन जानकारी:
+                {route.params.bajartype
+                  ? 'मागकर्ता जानकारी'
+                  : 'उत्पादन जानकारी'}
+                :
               </Text>
 
               {/* <Text

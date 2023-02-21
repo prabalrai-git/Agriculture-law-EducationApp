@@ -19,20 +19,32 @@ import {numberWithCommas} from '../../../Helpers/NumberToMoney';
 const AllItems = ({navigation, route}) => {
   const [searchText, setSearchText] = useState();
   const [itemsList, setItemsList] = useState();
+  const [itemListMag, setItemListMag] = useState();
   const [state, setState] = useState({open: false});
   const [modalVisibility, setModalVisiblity] = useState(false);
   const [reload, setReload] = useState(false);
 
   // form states
+  // console.log(route, 'this dif log');
+  const bajartype = route.params?.bajartype;
+
+  // useEffect(() => {
+  //   console.log(itemListMag);
+  //   console.log('==========================');
+  //   console.log(itemsList);
+  // }, [itemListMag, itemsList]);
 
   useEffect(() => {
     // setItemsList();
     const data = {
-      itemtypeId: route?.params.typeId,
+      itemtypeId: route?.params?.typeId,
     };
     // console.log(data, 'this data');
     GetBajarItemByItemTypeApi(data, res => {
-      setItemsList(res);
+      const magData = res.filter(item => item.BajraType == 2);
+      const sellData = res.filter(item => item.BajraType == 1);
+      setItemListMag(magData);
+      setItemsList(sellData);
     });
 
     // GetBajarItemByTypeIdApi(data, res => {
@@ -57,6 +69,29 @@ const AllItems = ({navigation, route}) => {
   //   );
   // };
 
+  const actions = [
+    {
+      icon: 'plus',
+      color: 'white',
+      style: {backgroundColor: bajartype ? '#0071BB' : 'green'},
+      labelTextColor: 'white',
+      label: bajartype ? 'माग गर्नुहोस्' : 'उत्पादन थप्नुहोस्',
+      onPress: () => {
+        setModalVisiblity(true);
+      },
+    },
+    {
+      icon: 'notebook-multiple',
+      style: {backgroundColor: bajartype ? '#0071BB' : 'green'},
+
+      label: 'मेरो उत्पादनहरु',
+      color: 'white',
+      labelTextColor: 'white',
+
+      onPress: () => navigation.navigate('OwnItems'),
+    },
+  ];
+
   return (
     <>
       <Provider>
@@ -65,6 +100,7 @@ const AllItems = ({navigation, route}) => {
           modalVisibility={modalVisibility}
           setReload={setReload}
           reload={reload}
+          bajartype={bajartype ? bajartype : null}
         />
         <View
           style={{
@@ -76,43 +112,32 @@ const AllItems = ({navigation, route}) => {
             padding: 0,
           }}>
           <Portal>
-            <FAB.Group
-              fabStyle={{
-                backgroundColor: '#4cbb17',
-              }}
-              open={open}
-              visible
-              backdropColor="rgba(0,0,0,0.6)"
-              icon={open ? 'close' : 'menu'}
-              actions={[
-                {
-                  icon: 'plus',
-                  color: 'white',
-                  style: {backgroundColor: 'green'},
-                  labelTextColor: 'white',
-                  label: 'उत्पादन थप्नुहोस्',
-                  onPress: () => {
-                    setModalVisiblity(true);
-                  },
-                },
-                {
-                  icon: 'notebook-multiple',
-                  style: {backgroundColor: 'green'},
-
-                  label: 'मेरो उत्पादनहरु',
-                  color: 'white',
-                  labelTextColor: 'white',
-
-                  onPress: () => navigation.navigate('OwnItems'),
-                },
-              ]}
-              onStateChange={onStateChange}
-              onPress={() => {
-                if (open) {
-                  // do something if the speed dial is open
-                }
-              }}
-            />
+            {bajartype ? (
+              <FAB
+                icon="plus"
+                style={[styles.fab]}
+                onPress={() => setModalVisiblity(true)}
+                label="नयाँ माग "
+                color="white"
+              />
+            ) : (
+              <FAB.Group
+                fabStyle={{
+                  backgroundColor: bajartype ? '#0071BB' : '#4cbb17',
+                }}
+                open={open}
+                visible
+                backdropColor="rgba(0,0,0,0.6)"
+                icon={open ? 'close' : 'menu'}
+                actions={bajartype ? actions.slice(0, 1) : actions}
+                onStateChange={onStateChange}
+                onPress={() => {
+                  if (open) {
+                    // do something if the speed dial is open
+                  }
+                }}
+              />
+            )}
           </Portal>
         </View>
         <View style={{backgroundColor: 'white', flex: 1}}>
@@ -126,8 +151,13 @@ const AllItems = ({navigation, route}) => {
               backgroundColor: 'white',
               // elevation: 10,
             }}>
-            <Text style={styles.itemNumberTxt}>
-              कुल उत्पादन: {itemsList ? itemsList.length : 0}
+            <Text
+              style={[
+                styles.itemNumberTxt,
+                {backgroundColor: bajartype ? '#0071BB' : '#01a16c'},
+              ]}>
+              {bajartype ? 'कुल माग' : 'कुल उत्पादन'} :{' '}
+              {bajartype ? itemListMag?.length : itemsList?.length}
             </Text>
             <Searchbar
               placeholder="खोज्नुहोस्.."
@@ -155,10 +185,10 @@ const AllItems = ({navigation, route}) => {
               style={
                 itemsList ? styles.itemMainContainer : styles.mainContainerEmpty
               }>
-              {!itemsList ? (
+              {!itemsList || !itemListMag ? (
                 <EmptyFarmAfterFetch message={'कुनै उत्पादन छैन!!!'} />
               ) : (
-                itemsList?.map(item => {
+                (bajartype ? itemListMag : itemsList).map(item => {
                   // console.log(
                   //   'https://lunivacare.ddns.net/Luniva360Agri' +
                   //     item.ImageFilePath,
@@ -170,6 +200,7 @@ const AllItems = ({navigation, route}) => {
                       onPress={() =>
                         navigation.navigate('ItemFullDescription', {
                           krishiSaleId: item.KId,
+                          bajartype: bajartype ? bajartype : null,
                         })
                       }>
                       <View style={styles.imageContainer}>
@@ -199,10 +230,19 @@ const AllItems = ({navigation, route}) => {
                             flexWrap: 'wrap',
                           }}>
                           <Text style={styles.Price}>
-                            Rs. {numberWithCommas(item.Price)}
+                            Rs. {numberWithCommas(item.Price)} - Rs.
+                            {numberWithCommas(item.UpperPrice)}
                           </Text>
 
-                          <Text style={styles.Quantity}>
+                          <Text
+                            style={[
+                              styles.Quantity,
+                              {
+                                backgroundColor: bajartype
+                                  ? '#0071BB'
+                                  : '#01a16c',
+                              },
+                            ]}>
                             मात्रा: {item.Quantity}
                           </Text>
                         </View>
@@ -222,6 +262,15 @@ const AllItems = ({navigation, route}) => {
 export default AllItems;
 
 const styles = StyleSheet.create({
+  fab: {
+    position: 'absolute',
+    margin: 25,
+    right: 0,
+    bottom: 0,
+    width: width * 0.28,
+    backgroundColor: '#0071BB',
+    zIndex: 100,
+  },
   itemNumberTxt: {
     color: 'white',
     fontSize: 14,
@@ -280,7 +329,7 @@ const styles = StyleSheet.create({
   },
   Price: {
     color: 'black',
-    fontSize: 15,
+    fontSize: 12,
     fontWeight: '600',
     left: 0,
   },

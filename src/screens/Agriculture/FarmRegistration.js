@@ -40,7 +40,9 @@ import {log} from 'react-native-reanimated';
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
-const FarmRegistration = ({navigation}) => {
+const FarmRegistration = ({navigation, route}) => {
+  const differentCss = route.params?.fromBottomNavigation;
+
   const [modalVisible, setModalVisible] = useState(false);
   const [isCultivated, setIsCultivated] = useState(true);
   const [locationDetails, setLocationDetails] = useState();
@@ -420,7 +422,7 @@ const FarmRegistration = ({navigation}) => {
     <>
       <FAB
         icon="plus"
-        style={styles.fab}
+        style={[styles.fab, {bottom: differentCss ? 50 : 10}]}
         onPress={() => setModalVisible(true)}
         label="नयाँ दर्ता "
         color="white"

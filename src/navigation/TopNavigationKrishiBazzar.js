@@ -7,10 +7,12 @@ import {GetBajarItemTypeApi} from '../Services/appServices/agricultureService';
 
 const Tab = createMaterialTopTabNavigator();
 
-const TopNavigationKrishiBazzar = () => {
+const TopNavigationKrishiBazzar = ({route}) => {
   const [options, setOptions] = useState();
 
   const [visible, setVisible] = useState(false);
+
+  const bajartype = route.params?.bajartype;
 
   useEffect(() => {
     GetBajarItemTypeApi(res => {
@@ -38,9 +40,12 @@ const TopNavigationKrishiBazzar = () => {
             color: 'white',
           },
           headerTintColor: '#fff',
-          tabBarStyle: {backgroundColor: '#4cbb17', height: 32},
+          tabBarStyle: {
+            backgroundColor: bajartype ? '#0071BB' : '#4cbb17',
+            height: 32,
+          },
           tabBarIndicatorStyle: {
-            backgroundColor: 'darkgreen',
+            backgroundColor: bajartype ? 'darkblue' : 'darkgreen',
             height: 4,
             borderRadius: 10,
           },
@@ -67,7 +72,7 @@ const TopNavigationKrishiBazzar = () => {
               </View>
             ),
           }}
-          initialParams={{typeId: 0}}
+          initialParams={{typeId: 0, bajartype}}
         />
         <Tab.Screen
           name="तरकारी"
@@ -86,7 +91,7 @@ const TopNavigationKrishiBazzar = () => {
               </View>
             ),
           }}
-          initialParams={{typeId: 1}}
+          initialParams={{typeId: 1, bajartype}}
         />
         <Tab.Screen
           name="फलफुल"
@@ -105,7 +110,7 @@ const TopNavigationKrishiBazzar = () => {
               </View>
             ),
           }}
-          initialParams={{typeId: 2}}
+          initialParams={{typeId: 2, bajartype}}
         />
         <Tab.Screen
           name="पशु"
@@ -124,7 +129,7 @@ const TopNavigationKrishiBazzar = () => {
               </View>
             ),
           }}
-          initialParams={{typeId: 3}}
+          initialParams={{typeId: 3, bajartype}}
         />
         <Tab.Screen
           name="बिउ/बेर्ना"
@@ -147,7 +152,7 @@ const TopNavigationKrishiBazzar = () => {
               </View>
             ),
           }}
-          initialParams={{typeId: 4}}
+          initialParams={{typeId: 4, bajartype}}
         />
       </Tab.Navigator>
     </>

@@ -29,7 +29,8 @@ import DropdownComponent from '../../Common/DropdownComponent';
 Feather.loadFont();
 const width = Dimensions.get('window').width;
 
-const CreateProfile = ({navigation}) => {
+const CreateProfile = ({navigation, route}) => {
+  const {email, userMobileNumber} = route.params;
   const [cameraImage, setCameraImage] = useState();
   const [galleryImage, setGalleryImage] = useState();
   const [value, setValue] = React.useState('');
@@ -227,10 +228,13 @@ const CreateProfile = ({navigation}) => {
       PCode: 'e35db3d0-7de6-4231-a6b8-21f568e988c3',
       FullName: fullName,
       Sex: gender,
-      Age: 10,
+      Age:
+        Number(
+          new Date().toDateString().slice(new Date().toDateString().length - 4),
+        ) - Number(DOB?.toDateString().slice(DOB?.toDateString().length - 4)),
       DateofBirth: DOB,
-      MobileNo: 9818158171,
-      EmailId: 'pdsf17@gmail.com',
+      MobileNo: userMobileNumber,
+      EmailId: email,
       District: district,
       VDCMun: municipality,
       WardNo: ward,
