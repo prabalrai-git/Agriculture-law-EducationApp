@@ -149,29 +149,32 @@ const AddMarketItemModal = ({
 
   const onSubmit = async () => {
     // new service with image upload
+
+    const imagePath =
+      'https://lunivacare.ddns.net/Luniva360Agri//KrishiBajar/49d10767-31e1-48cf-9438-d27d76199f71/49d10767-31e1-48cf-9438-d27d76199f71_22022023134039.jpg';
     const validation = validate();
 
     if (validation) {
       var formData = new FormData();
-
       formData.append('kid', 0);
       formData.append('itemtype', itemType?.value);
       formData.append('itemid', item?.value);
       formData.append('quantity', quantity);
       formData.append('price', lowerPrice);
-      formData.append('itemdescription', description.trim());
+      formData.append('itemdescription', description?.trim());
       formData.append('userid', userCode);
       formData.append('isactive', true);
       formData.append('issold', true);
       formData.append('imagefilepath', {
-        uri: imageKrishiBazzar.uri,
-        name: imageKrishiBazzar.fileName,
-        type: imageKrishiBazzar.type,
+        uri: imageKrishiBazzar ? imageKrishiBazzar.uri : imagePath,
+        name: imageKrishiBazzar ? imageKrishiBazzar.fileName : 'image.jpg',
+        type: imageKrishiBazzar ? imageKrishiBazzar.type : 'image/jpeg',
       });
       formData.append('upperprice', 5000);
       formData.append('unit', 'per kg');
       formData.append('bajratype', bajartype ? 2 : 1);
 
+      // console.log(imageKrishiBazzar);
       // console.log(
       //   imageValueQuery.uri,
       //   imageValueQuery.fileName,
@@ -179,8 +182,9 @@ const AddMarketItemModal = ({
       // );
       // console.log(validation);
 
+      console.log(formData);
+
       try {
-        console.log(formData);
         const response = await axios.post(
           'https://lunivacare.ddns.net/Luniva360Agri/api/luniva360agriapp/InsertUpdateKrishiBajarItemsQueryWithImageFile',
           formData,
@@ -190,7 +194,7 @@ const AddMarketItemModal = ({
             },
           },
         );
-        console.log(response, '13122222223');
+        // console.log(response, '13122222223');
         if (response.data) {
           console.log(response.data, 'this the response');
           clearAllState();

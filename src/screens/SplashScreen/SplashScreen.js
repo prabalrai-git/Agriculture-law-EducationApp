@@ -56,13 +56,15 @@ const SplashScreen = ({navigation}) => {
         }}>
         <View style={styles.container}>
           <Image
-            source={require('../../Assets/Images/lunivalogo.png')}
+            source={require('../../Assets/Images/krishiba.png')}
             style={{
               justifyContent: 'center',
-              width: 200,
-              height: 100,
+              width: 500,
+              height: 300,
               resizeMode: 'contain',
               alignSelf: 'center',
+              marginLeft: 'auto',
+              marginRight: 'auto',
             }}
           />
         </View>
@@ -88,7 +90,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     alignItems: 'center',
     bottom: -150,
     // marginBottom: 20,

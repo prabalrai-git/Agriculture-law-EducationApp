@@ -140,7 +140,7 @@ const ItemFullDescription = ({route}) => {
           <LinearGradient
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
-            colors={[('#006B05', 'lightgrey')]}
+            colors={['#006B05', 'lightgrey']}
             style={styles.linearGradient}>
             <View
               style={{

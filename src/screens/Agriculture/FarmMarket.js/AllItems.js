@@ -82,7 +82,7 @@ const AllItems = ({navigation, route}) => {
     },
     {
       icon: 'notebook-multiple',
-      style: {backgroundColor: bajartype ? '#0071BB' : 'green'},
+      style: {backgroundColor: 'green'},
 
       label: 'मेरो उत्पादनहरु',
       color: 'white',
@@ -123,7 +123,7 @@ const AllItems = ({navigation, route}) => {
             ) : (
               <FAB.Group
                 fabStyle={{
-                  backgroundColor: bajartype ? '#0071BB' : '#4cbb17',
+                  backgroundColor: '#4cbb17',
                 }}
                 open={open}
                 visible
@@ -198,10 +198,15 @@ const AllItems = ({navigation, route}) => {
                       style={styles.eachItem}
                       key={item.KId}
                       onPress={() =>
-                        navigation.navigate('ItemFullDescription', {
-                          krishiSaleId: item.KId,
-                          bajartype: bajartype ? bajartype : null,
-                        })
+                        navigation.navigate(
+                          bajartype
+                            ? 'ItemFullDescriptionMag'
+                            : 'ItemFullDescription',
+                          {
+                            krishiSaleId: item.KId,
+                            bajartype: bajartype ? bajartype : null,
+                          },
+                        )
                       }>
                       <View style={styles.imageContainer}>
                         <Image
@@ -238,9 +243,7 @@ const AllItems = ({navigation, route}) => {
                             style={[
                               styles.Quantity,
                               {
-                                backgroundColor: bajartype
-                                  ? '#0071BB'
-                                  : '#01a16c',
+                                backgroundColor: '#01a16c',
                               },
                             ]}>
                             मात्रा: {item.Quantity}
@@ -268,7 +271,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     width: width * 0.28,
-    backgroundColor: '#0071BB',
+    backgroundColor: '#4cbb17',
     zIndex: 100,
   },
   itemNumberTxt: {

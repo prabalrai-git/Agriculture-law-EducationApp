@@ -90,15 +90,16 @@ const Dashboard = ({navigation}) => {
       <StatusBar backgroundColor={'darkgreen'} />
       {/* Start of header */}
       <View style={styles.topbar}>
-        <View style={{flexDirection: 'row', marginLeft: -30}}>
+        <View style={{flexDirection: 'row', marginLeft: -50}}>
           <Image
-            source={require('../../Assets/Images/logo1.png')}
+            source={require('../../Assets/Images/krishiba.png')}
             style={{
               resizeMode: 'contain',
-              width: 35,
-              height: 35,
+              width: 85,
+              height: 85,
               alignSelf: 'center',
-              marginRight: 5,
+              marginTop: 5,
+              marginRight: -14,
             }}
           />
           <Text
@@ -109,7 +110,7 @@ const Dashboard = ({navigation}) => {
               color: 'white',
               alignSelf: 'center',
             }}>
-            Luniva Technology
+            KRISHI BA
           </Text>
         </View>
         <View

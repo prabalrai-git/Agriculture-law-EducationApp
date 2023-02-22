@@ -41,11 +41,11 @@ const TopNavigationKrishiBazzar = ({route}) => {
           },
           headerTintColor: '#fff',
           tabBarStyle: {
-            backgroundColor: bajartype ? '#0071BB' : '#4cbb17',
+            backgroundColor: '#4cbb17',
             height: 32,
           },
           tabBarIndicatorStyle: {
-            backgroundColor: bajartype ? 'darkblue' : 'darkgreen',
+            backgroundColor: 'darkgreen',
             height: 4,
             borderRadius: 10,
           },

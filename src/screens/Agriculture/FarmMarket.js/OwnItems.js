@@ -12,7 +12,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useState} from 'react';
 import {GetBajarItemByUserIdApi} from '../../../Services/appServices/agricultureService';
 import {width} from '../../../Common/WidthAndHeight';
-import {log} from 'react-native-reanimated';
 
 const OwnItems = ({navigation}) => {
   const [myItems, setMyItems] = useState();

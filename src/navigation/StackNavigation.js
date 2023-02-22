@@ -249,6 +249,13 @@ function StackNavigation() {
           }}
         />
         <Stack.Screen
+          name="ItemFullDescriptionMag"
+          component={ItemFullDescription}
+          options={{
+            title: 'माग विवरण',
+          }}
+        />
+        <Stack.Screen
           name="BikriReport"
           component={BikriReport}
           options={{

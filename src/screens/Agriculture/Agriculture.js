@@ -37,7 +37,7 @@ const Agriculture = ({navigation}) => {
 
   return (
     <View>
-      <Text style={styles.titleTxt}>कृषि सम्बन्धित सेवाहरू</Text>
+      <Text style={styles.titleTxt}>कृषि सम्बन्धित सेवाहरू:</Text>
       {data.map(item => {
         return (
           <TouchableOpacity

@@ -238,7 +238,7 @@ const Login = ({navigation}) => {
         <View style={styles.topview}>
           <ImageBackground
             resizeMode="contain"
-            source={require('../../Assets/Images/lunivalogo.png')}
+            source={require('../../Assets/Images/krishiba.png')}
             style={styles.banner}
           />
         </View>
@@ -391,13 +391,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 40,
   },
-  topview: {
-    height: responsiveHeight(25),
-    marginBottom: -70,
-  },
+  // topview: {
+  //   height: responsiveHeight(25),
+  //   marginBottom: -70,
+  // },
   banner: {
-    width: '100%',
-    height: '70%',
+    width: 300,
+    height: 200,
+    marginLeft: 'auto',
+    marginRight: 'auto',
 
     // justifyContent: 'center',
     // alignSelf: 'center',
